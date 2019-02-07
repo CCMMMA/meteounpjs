@@ -16,6 +16,21 @@
         .ui-autocomplete-loading {
             background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
         }
+
+        /* 1em @ 48em (768px) increasing to 2em @ 120em (1920px) https://websemantics.uk/articles/responsive-fonts/ */
+        @media (min-width: 48rem) {
+            :root {
+                font-size: calc(1rem + ((1vw - .48rem) * 1.389));
+                /* .48rem = viewportWidthMinimum /100 */
+                /* 1.389rem = 100 * fontSizeDifference / viewportWidthDifference */
+            }
+        }
+
+        @media (min-width: 120em) {
+            :root {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>

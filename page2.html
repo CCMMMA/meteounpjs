@@ -17,49 +17,105 @@
             background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
         }
 
+        /* 1em @ 48em (768px) increasing to 2em @ 120em (1920px) https://websemantics.uk/articles/responsive-fonts/ */
+        @media (min-width: 48rem) {
+            :root {
+                font-size: calc(1rem + ((1vw - .48rem) * 1.389));
+                /* .48rem = viewportWidthMinimum /100 */
+                /* 1.389rem = 100 * fontSizeDifference / viewportWidthDifference */
+            }
+        }
+
+        @media (min-width: 120em) {
+            :root {
+                font-size: 2rem;
+            }
+        }
+
+        .very-specific-design {
+            width: 1152px;
+            height: 832px;
+            padding: 0px;
+            text-align: center;
+            background: white;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transform-origin: center center;
+        }
+
+        .scaleable-wrapper {
+            padding: 0px;
+            resize: both;
+            position: relative;
+            background: white;
+            height: 100vh;
+            width: 100vw;
+        }
 
     </style>
 </head>
 <body>
-    <div id="container" style="background-color:#f00";>
-        <table>
-            <tr>
-                <td width="64px" align="right" valign="top"><img id="leftBarImage" width="64px"/></td>
-                <td><div id="plot"></div></td>
-                <td width="64px" align="left" valign="top"><img id="rightBarImage" width="64px"/></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td align="center" valign="top">
-                    <img id="bottomBarImage"/></td>
-                <td>
 
-                </td>
-            </tr>
-        </table>
+    <div class="scaleable-wrapper" id="scaleable-wrapper">
+
+        <div class="very-specific-design" id="very-specific-design">
+
+            <table>
+                <tr>
+                    <td width="64px" align="right" valign="top"><img id="leftBarImage" width="64px"/></td>
+                    <td><div id="plot"></div></td>
+                    <td width="64px" align="left" valign="top"><img id="rightBarImage" width="64px"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td align="center" valign="top">
+                        <img id="bottomBarImage" height="64px"/></td>
+                    <td>
+
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
     </div>
 
+
+
     <script>
-/*
-        // global vars
-        var winWidth = $(window).width();
-        var winHeight = $(window).height();
+        var $el = $("#very-specific-design");
+        var elHeight = $el.outerHeight();
+        var elWidth = $el.outerWidth();
 
-        // set initial div height / width
-        $('#container').css({
-            'width': winWidth,
-            'height': winHeight,
-        });
+        var $wrapper = $("#scaleable-wrapper");
 
-        // make sure div stays full width/height on resize
-        $(window).resize(function(){
-            $('#container').css({
-                'width': winWidth,
-                'height': winHeight,
+
+
+        function doResize(event, ui) {
+
+            var scale, origin;
+
+            scale = Math.min(
+                ui.size.width / elWidth,
+                ui.size.height / elHeight
+            );
+
+            $el.css({
+                transform: "translate(-50%, -50%) " + "scale(" + scale + ")"
             });
-            console.log(winWidth+","+winHeight);
-        });
-*/
+
+        }
+
+        var starterData = {
+            size: {
+                width: $wrapper.width(),
+                height: $wrapper.height()
+            }
+        }
+        doResize(null, starterData);
+
         function getURLParameter(sParam, defaultValue) {
 
             var sPageURL = window.location.search.substring(1);
