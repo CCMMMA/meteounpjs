@@ -6,6 +6,8 @@
     var loadingUrl="images/animated_progress_bar.gif";
 
 
+
+
     function pad(n, width, z) {
         z = z || '0';
         n = n + '';
@@ -277,11 +279,11 @@
         let _rightBarImageId=rightBarImageId;
         let _bottomBarImageId=bottomBarImageId;
 
-        var _mapObject=null;
+        var _map=null;
         var _controlLayers=null;
         var _center=new L.LatLng(40.85, 14.28);
         var _zoom = 5;
-        var _domain="d01";
+        var _domain="d00";
         var _prefix="reg";
         var _windLayer = null;
         var _t2cLayer= null;
@@ -362,34 +364,56 @@
         L.Icon.Default.imagePath = 'images';
 
         //Inizializzo la mappa
-        _mapObject = new L.Map('map-container-mapid');
+        _map = new L.Map('map-container-mapid');
 
         //Setto la visualizzazione di defautl a Napoli
-        _mapObject.setView(_center, _zoom);
+        _map.setView(_center, _zoom);
 
         var layerInstance = worldImageryLayer;
 
         //Aggiungo il layer alla mappa
-        layerInstance.addTo(_mapObject);
+        layerInstance.addTo(_map);
+
+        console.log("Added background map");
 
         // Evento sulla modifica dello zoom della mappa
-        _mapObject.on('zoomend', function () {
-            _zoom = _mapObject.getZoom();
-            change_domain(_mapObject.getBounds());
+        _map.on('zoomend', function () {
+            _zoom = _map.getZoom();
+            change_domain(_map.getBounds());
         });
 
-        _mapObject.on('moveend', function(e) {
-            _center = _mapObject.getBounds().getCenter();
-            change_domain(_mapObject.getBounds());
+        _map.on('moveend', function(e) {
+            _center = _map.getBounds().getCenter();
+            change_domain(_map.getBounds());
         });
 
         var loadingControl = L.Control.loading({
             spinjs: true
         });
-        _mapObject.addControl(loadingControl);
+        _map.addControl(loadingControl);
 
         // Add the geojson layer to the layercontrol
-        _controlLayers = L.control.layers(baseMaps,overlayMaps,{ collapsed: true }).addTo(_mapObject);
+        _controlLayers = L.control.layers(baseMaps,overlayMaps,{ collapsed: true }).addTo(_map);
+
+        divMap.update=function(place, prod, output, ncepDate) {
+
+            //$("#plot").empty();
+            let baseBarImageUrl=apiBaseUrl+"/products/"+prod+"/forecast/legend";
+
+            $("#"+_topBarImageId).attr('src',baseBarImageUrl+"/top/"+output);
+            $("#"+_leftBarImageId).attr('src',baseBarImageUrl+"/left/"+output);
+
+
+            change_domain(_map.getBounds());
+
+            $("#"+_rightBarImageId).attr('src',baseBarImageUrl+"/right/"+output);
+            $("#"+_bottomBarImageId).attr('src',baseBarImageUrl+"/bottom/"+output);
+
+        };
+        divMap.update(place,prod,output,ncepDate);
+
+
+        /*****************************************/
 
         function  change_domain(bounds) {
             console.log("prefix:" + _prefix);
@@ -555,14 +579,15 @@
 
             if (_infoLayer != null) {
                 _controlLayers.removeLayer(_infoLayer);
-                _mapObject.removeLayer(_infoLayer);
+                _map.removeLayer(_infoLayer);
             }
 
             _infoLayer = new L.TileLayer.GeoJSON(geojsonURL, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
 
             //Aggiungo il layer alla mappa
-            _mapObject.addLayer(_infoLayer);
+            _map.addLayer(_infoLayer);
             _controlLayers.addOverlay(_infoLayer,"Info");
+            console.log("Added info layer");
         }
 
 
@@ -591,7 +616,7 @@
                     LOGSCALE:"false"
                 }
             );
-            _mapObject.addLayer(_cloudLayer);
+            _map.addLayer(_cloudLayer);
             _controlLayers.addOverlay(_cloudLayer,"Cloud");
         }
 
@@ -649,7 +674,7 @@
                     LOGSCALE:"false"
                 }
             );
-            _mapObject.addLayer(_rainLayer);
+            _map.addLayer(_rainLayer);
             _controlLayers.addOverlay(_rainLayer,"Rain");
         }
 
@@ -678,7 +703,7 @@
                     LOGSCALE:"false"
                 }
             );
-            _mapObject.addLayer(_snowLayer);
+            _map.addLayer(_snowLayer);
             _controlLayers.addOverlay(_snowLayer,"Snow");
         }
 
@@ -689,7 +714,7 @@
 
                 if (_windLayer != null) {
                     _controlLayers.removeLayer(_windLayer);
-                    _mapObject.removeLayer(_windLayer);
+                    _map.removeLayer(_windLayer);
                 }
 
                 _windLayer = L.velocityLayer({
@@ -714,27 +739,11 @@
                         "#BB2018", "#7A1610", "#641610" ]          // define your own array of hex/rgb colors
                 });
 
-                _mapObject.addLayer(_windLayer);
+                _map.addLayer(_windLayer);
                 _controlLayers.addOverlay(_windLayer,"Wind");
             });
         }
 
-        divMap.update=function(place, prod, output, ncepDate) {
-
-            //$("#plot").empty();
-            let baseBarImageUrl=apiBaseUrl+"/products/"+prod+"/forecast/legend";
-
-            $("#"+_topBarImageId).attr('src',baseBarImageUrl+"/top/"+output);
-            $("#"+_leftBarImageId).attr('src',baseBarImageUrl+"/left/"+output);
-
-
-            // ...
-
-            $("#"+_rightBarImageId).attr('src',baseBarImageUrl+"/right/"+output);
-            $("#"+_bottomBarImageId).attr('src',baseBarImageUrl+"/bottom/"+output);
-
-        };
-        divMap.update(place,prod,output,ncepDate);
         return divMap;
     };
 
@@ -935,6 +944,7 @@
         return control(this, place, prod, output, dateTime);
 
     };
+
 
 })( jQueryProtect ); // Use jQuery protected.
 
