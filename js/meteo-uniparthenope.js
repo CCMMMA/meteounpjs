@@ -6,8 +6,6 @@
     var loadingUrl="images/animated_progress_bar.gif";
 
 
-
-
     function pad(n, width, z) {
         z = z || '0';
         n = n + '';
@@ -306,8 +304,6 @@
 
         container.append(divMap);
 
-
-
         var navionicsLayer = new JNC.Leaflet.NavionicsOverlay({
             navKey: 'Navionics_webapi_00480',
             chartType: JNC.NAVIONICS_CHARTS.NAUTICAL,
@@ -378,7 +374,7 @@
 
         // Evento sulla modifica dello zoom della mappa
         _mapObject.on('zoomend', function () {
-            _zoom = _map.getZoom();
+            _zoom = _mapObject.getZoom();
             change_domain(_mapObject.getBounds());
         });
 
@@ -412,7 +408,7 @@
                 addInfoLayer();
             }
 
-            console.log("domain:" + domain);
+            console.log("domain:" + _domain);
             var new_domain = "d01";
             var boundsD01 = L.latLngBounds(L.latLng(27.64, -19.68), L.latLng(63.48, 34.80));
             var boundsD02 = L.latLngBounds(L.latLng(34.40, 3.58), L.latLng(47.83, 22.26));
@@ -476,7 +472,7 @@
                 filter: function (feature, layer) {
                     var index = feature.properties.id.search(/[0-9]/);
                     var get_type = feature.properties.id.substring(0, index);
-                    return get_type == prefix;
+                    return get_type == _prefix;
                 },
                 onEachFeature: function (feature, layer) {
                     if (feature.properties) {
@@ -559,13 +555,13 @@
 
             if (_infoLayer != null) {
                 _controlLayers.removeLayer(_infoLayer);
-                _map.removeLayer(_infoLayer);
+                _mapObject.removeLayer(_infoLayer);
             }
 
             _infoLayer = new L.TileLayer.GeoJSON(geojsonURL, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
 
             //Aggiungo il layer alla mappa
-            _map.addLayer(_infoLayer);
+            _mapObject.addLayer(_infoLayer);
             _controlLayers.addOverlay(_infoLayer,"Info");
         }
 
@@ -595,8 +591,8 @@
                     LOGSCALE:"false"
                 }
             );
-            _map.addLayer(_cloudLayer);
-            _controlLayers.addOverlay(cloudLayer,"Cloud");
+            _mapObject.addLayer(_cloudLayer);
+            _controlLayers.addOverlay(_cloudLayer,"Cloud");
         }
 
         function addT2CLayer() {
@@ -653,7 +649,7 @@
                     LOGSCALE:"false"
                 }
             );
-            _map.addLayer(_rainLayer);
+            _mapObject.addLayer(_rainLayer);
             _controlLayers.addOverlay(_rainLayer,"Rain");
         }
 
@@ -682,7 +678,7 @@
                     LOGSCALE:"false"
                 }
             );
-            _map.addLayer(_snowLayer);
+            _mapObject.addLayer(_snowLayer);
             _controlLayers.addOverlay(_snowLayer,"Snow");
         }
 
@@ -693,7 +689,7 @@
 
                 if (_windLayer != null) {
                     _controlLayers.removeLayer(_windLayer);
-                    _map.removeLayer(_windLayer);
+                    _mapObject.removeLayer(_windLayer);
                 }
 
                 _windLayer = L.velocityLayer({
@@ -718,7 +714,7 @@
                         "#BB2018", "#7A1610", "#641610" ]          // define your own array of hex/rgb colors
                 });
 
-                _map.addLayer(_windLayer);
+                _mapObject.addLayer(_windLayer);
                 _controlLayers.addOverlay(_windLayer,"Wind");
             });
         }
@@ -922,8 +918,6 @@
 
     };
 
-
-
     $.fn.MeteoUniparthenopePlot = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId ) {
 
         return plot(this, place, prod, output, dateTime,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId);
@@ -941,7 +935,6 @@
         return control(this, place, prod, output, dateTime);
 
     };
-
 
 })( jQueryProtect ); // Use jQuery protected.
 
