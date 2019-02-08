@@ -279,11 +279,11 @@
         let _rightBarImageId=rightBarImageId;
         let _bottomBarImageId=bottomBarImageId;
 
-        var _mapObject=null;
+        var _map=null;
         var _controlLayers=null;
         var _center=new L.LatLng(40.85, 14.28);
         var _zoom = 5;
-        var _domain="d01";
+        var _domain="d00";
         var _prefix="reg";
         var _windLayer = null;
         var _t2cLayer= null;
@@ -366,34 +366,56 @@
         L.Icon.Default.imagePath = 'images';
 
         //Inizializzo la mappa
-        _mapObject = new L.Map('map-container-mapid');
+        _map = new L.Map('map-container-mapid');
 
         //Setto la visualizzazione di defautl a Napoli
-        _mapObject.setView(_center, _zoom);
+        _map.setView(_center, _zoom);
 
         var layerInstance = worldImageryLayer;
 
         //Aggiungo il layer alla mappa
-        layerInstance.addTo(_mapObject);
+        layerInstance.addTo(_map);
+
+        console.log("Added background map");
 
         // Evento sulla modifica dello zoom della mappa
-        _mapObject.on('zoomend', function () {
+        _map.on('zoomend', function () {
             _zoom = _map.getZoom();
-            change_domain(_mapObject.getBounds());
+            change_domain(_map.getBounds());
         });
 
-        _mapObject.on('moveend', function(e) {
-            _center = _mapObject.getBounds().getCenter();
-            change_domain(_mapObject.getBounds());
+        _map.on('moveend', function(e) {
+            _center = _map.getBounds().getCenter();
+            change_domain(_map.getBounds());
         });
 
         var loadingControl = L.Control.loading({
             spinjs: true
         });
-        _mapObject.addControl(loadingControl);
+        _map.addControl(loadingControl);
 
         // Add the geojson layer to the layercontrol
-        _controlLayers = L.control.layers(baseMaps,overlayMaps,{ collapsed: true }).addTo(_mapObject);
+        _controlLayers = L.control.layers(baseMaps,overlayMaps,{ collapsed: true }).addTo(_map);
+
+        divMap.update=function(place, prod, output, ncepDate) {
+
+            //$("#plot").empty();
+            let baseBarImageUrl=apiBaseUrl+"/products/"+prod+"/forecast/legend";
+
+            $("#"+_topBarImageId).attr('src',baseBarImageUrl+"/top/"+output);
+            $("#"+_leftBarImageId).attr('src',baseBarImageUrl+"/left/"+output);
+
+
+            change_domain(_map.getBounds());
+
+            $("#"+_rightBarImageId).attr('src',baseBarImageUrl+"/right/"+output);
+            $("#"+_bottomBarImageId).attr('src',baseBarImageUrl+"/bottom/"+output);
+
+        };
+        divMap.update(place,prod,output,ncepDate);
+
+
+        /*****************************************/
 
         function  change_domain(bounds) {
             console.log("prefix:" + _prefix);
@@ -412,7 +434,7 @@
                 addInfoLayer();
             }
 
-            console.log("domain:" + domain);
+            console.log("domain:" + _domain);
             var new_domain = "d01";
             var boundsD01 = L.latLngBounds(L.latLng(27.64, -19.68), L.latLng(63.48, 34.80));
             var boundsD02 = L.latLngBounds(L.latLng(34.40, 3.58), L.latLng(47.83, 22.26));
@@ -567,6 +589,7 @@
             //Aggiungo il layer alla mappa
             _map.addLayer(_infoLayer);
             _controlLayers.addOverlay(_infoLayer,"Info");
+            console.log("Added info layer");
         }
 
 
@@ -596,7 +619,7 @@
                 }
             );
             _map.addLayer(_cloudLayer);
-            _controlLayers.addOverlay(cloudLayer,"Cloud");
+            _controlLayers.addOverlay(_cloudLayer,"Cloud");
         }
 
         function addT2CLayer() {
@@ -723,22 +746,7 @@
             });
         }
 
-        divMap.update=function(place, prod, output, ncepDate) {
 
-            //$("#plot").empty();
-            let baseBarImageUrl=apiBaseUrl+"/products/"+prod+"/forecast/legend";
-
-            $("#"+_topBarImageId).attr('src',baseBarImageUrl+"/top/"+output);
-            $("#"+_leftBarImageId).attr('src',baseBarImageUrl+"/left/"+output);
-
-
-            // ...
-
-            $("#"+_rightBarImageId).attr('src',baseBarImageUrl+"/right/"+output);
-            $("#"+_bottomBarImageId).attr('src',baseBarImageUrl+"/bottom/"+output);
-
-        };
-        divMap.update(place,prod,output,ncepDate);
         return divMap;
     };
 
