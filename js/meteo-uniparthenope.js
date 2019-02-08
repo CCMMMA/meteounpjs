@@ -943,7 +943,7 @@
     };
 
 
-}( jQuery ));
+})( jQueryProtect ); // Use jQuery protected.
 
 
 
