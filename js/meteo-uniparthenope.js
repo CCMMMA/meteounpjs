@@ -260,7 +260,7 @@
         return divPlot;
     };
 
-    function map(container,place="com63049",prod="wrf5",output="gen",ncepDate=null,
+    function map(container,place="com63049",prod="wrf5",output="gen",ncepDate=null,baseMapIdx=0,
                   topBarImageId,
                   leftBarImageId,
                   rightBarImageId,
@@ -284,7 +284,7 @@
         var _center=new L.LatLng(40.85, 14.28);
         var _zoom = 5;
         var _domain="d00";
-        var _prefix="reg";
+        var _prefix="";
         var _windLayer = null;
         var _t2cLayer= null;
         var _rainLayer= null;
@@ -302,9 +302,11 @@
 
 
         // Append the title
-        divMap.append('<div id="map-container-mapid"></div>');
+        divMap.append('<div id="map-container-mapid" style="height: 512px;position: inherit !important;"></div>');
 
         container.append(divMap);
+
+
 
         var navionicsLayer = new JNC.Leaflet.NavionicsOverlay({
             navKey: 'Navionics_webapi_00480',
@@ -361,7 +363,7 @@
 
         var overlayMaps = {};
 
-        L.Icon.Default.imagePath = 'images';
+        //L.Icon.Default.imagePath = 'images';
 
         //Inizializzo la mappa
         _map = new L.Map('map-container-mapid');
@@ -369,12 +371,35 @@
         //Setto la visualizzazione di defautl a Napoli
         _map.setView(_center, _zoom);
 
-        var layerInstance = worldImageryLayer;
+        var layerInstance = null;
+        switch (parseInt(baseMapIdx)) {
+            case 1:
+                layerInstance=navionicsLayer;
+                break;
+            case 2:
+                layerInstance=navionicsSonarMapLayer;
+                break;
+            case 3:
+                layerInstance=navionicsSkiLayer;
+                break;
+            case 4:
+                layerInstance=darkGreyLayer;
+                break;
+            case 5:
+                layerInstance=osmLayer;
+                break;
+            default:
+                console.log("worldImageryLayer");
+                layerInstance=worldImageryLayer;
+
+        }
 
         //Aggiungo il layer alla mappa
         layerInstance.addTo(_map);
 
-        console.log("Added background map");
+        console.log("Added background map:"+baseMapIdx);
+
+
 
         // Evento sulla modifica dello zoom della mappa
         _map.on('zoomend', function () {
@@ -387,13 +412,17 @@
             change_domain(_map.getBounds());
         });
 
+
+
         var loadingControl = L.Control.loading({
             spinjs: true
         });
         _map.addControl(loadingControl);
 
+
         // Add the geojson layer to the layercontrol
         _controlLayers = L.control.layers(baseMaps,overlayMaps,{ collapsed: true }).addTo(_map);
+
 
         divMap.update=function(place, prod, output, ncepDate) {
 
@@ -410,6 +439,7 @@
             $("#"+_bottomBarImageId).attr('src',baseBarImageUrl+"/bottom/"+output);
 
         };
+
         divMap.update(place,prod,output,ncepDate);
 
 
@@ -463,6 +493,7 @@
                 addSnowLayer();
             }
         }
+
 
         function addInfoLayer() {
 
@@ -602,7 +633,7 @@
             }
 
             _cloudLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/'+
-                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'00.nc', {
+                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'.nc', {
                     layers: 'CLDFRA_TOTAL',
                     styles: 'raster/tcldBars',
                     format: 'image/png',
@@ -631,7 +662,7 @@
             }
 
             _t2cLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/'+
-                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'00.nc', {
+                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'.nc', {
                     layers: 'T2C',
                     styles: 'default-scalar/tspBars',
                     format: 'image/png',
@@ -660,7 +691,7 @@
             }
 
             _rainLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/'+
-                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'00.nc', {
+                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'.nc', {
                     layers: 'DELTA_RAIN',
                     styles: 'raster/crhBars',
                     format: 'image/png',
@@ -689,7 +720,7 @@
             }
 
             _snowLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/'+
-                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'00.nc', {
+                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'.nc', {
                     layers: 'HOURLY_SWE',
                     styles: 'raster/sweBars',
                     format: 'image/png',
@@ -927,15 +958,17 @@
 
     };
 
+
+
     $.fn.MeteoUniparthenopePlot = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId ) {
 
         return plot(this, place, prod, output, dateTime,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId);
 
     };
 
-    $.fn.MeteoUniparthenopeMap = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId) {
+    $.fn.MeteoUniparthenopeMap = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,baseMapIdx=0,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId) {
 
-        return map(this, place, prod, output, dateTime,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId);
+        return map(this, place, prod, output, dateTime,baseMapIdx,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId);
 
     };
 
@@ -946,7 +979,7 @@
     };
 
 
-})( jQueryProtect ); // Use jQuery protected.
+})( jQueryProtect); // Use jQuery protected.
 
 
 
