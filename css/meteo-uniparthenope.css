@@ -30,6 +30,3 @@ td.data{background-color:#F0F0F0; font-size:1rem; border-bottom:1px solid #c0c0c
     height:1.5rem;
 }
 
-div#map-container-mapid{
-    position: inherit !important;
-}
