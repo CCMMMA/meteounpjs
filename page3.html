@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Meteo Uniparthenope</title>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <link rel="stylesheet" href="css/jquery-ui.css"/>
     <link rel="stylesheet" href="css/jquery-ui-timepicker-addon.min.css"/>
     <link rel="stylesheet" href="css/meteo-uniparthenope.css"/>
     <link rel="stylesheet" href="css/leaflet.css"/>
@@ -24,15 +24,20 @@
     <script src="js/leaflet-velocity.min.js"></script>
     <script src="js/spin.js"></script>
     <script src="js/Control.Loading.js"></script>
-    <script src="js/underscore-min.js"></script>
+    <!--<script src="js/underscore-min.js"></script>-->
     <!--<script src="js/moment.js"></script>-->
+    <!--
     <script src="js/backbone-min.js"></script>
     <script src="js/ol.js"></script>
+    -->
     <!-- Protect jQuery variable. -->
+
     <script>
         let jQueryProtect = jQuery;
     </script>
-    <script src="js/webapi.min.js"></script>
+
+    <!--<script src="js/webapi.min.js"></script>-->
+    <script src="js/webapi.min.no-dep.js"></script>
     <script src="js/meteo-uniparthenope.js"></script>
     <style>
         .ui-autocomplete-loading {
@@ -55,8 +60,8 @@
         }
 
         .very-specific-design {
-            width: 1152px;
-            height: 832px;
+            width: 1024px;
+            height: 512px;
             padding: 0px;
             text-align: center;
             background: white;
@@ -79,12 +84,52 @@
     </style>
 </head>
 <body>
-<div id="map"></div>
+<div class="scaleable-wrapper" id="scaleable-wrapper">
+
+    <div class="very-specific-design" id="very-specific-design">
+
+        <div id="map" style="width: 1024px; height: 512px"></div>
+
+    </div>
+
+</div>
+
 
 
 
 
 <script>
+
+    var $el = $("#very-specific-design");
+    var elHeight = $el.outerHeight();
+    var elWidth = $el.outerWidth();
+
+    var $wrapper = $("#scaleable-wrapper");
+
+
+
+    function doResize(event, ui) {
+
+        var scale, origin;
+
+        scale = Math.min(
+            ui.size.width / elWidth,
+            ui.size.height / elHeight
+        );
+
+        $el.css({
+            transform: "translate(-50%, -50%) " + "scale(" + scale + ")"
+        });
+
+    }
+
+    var starterData = {
+        size: {
+            width: $wrapper.width(),
+            height: $wrapper.height()
+        }
+    }
+    doResize(null, starterData);
 
 
     function getURLParameter(sParam, defaultValue) {
@@ -110,11 +155,12 @@
     var _output=getURLParameter("output","gen");
     var _place=getURLParameter("place","it000");
     var _ncepDate=getURLParameter("date",null);
+    var _baseMapIdx=getURLParameter("baseMapIdx",0);
 
     jQueryProtect( document ).ready(function() {
 
-        map=jQueryProtect("#map").MeteoUniparthenopeMap(_place,_prod,_output,_ncepDate,
-        "topBarImage",
+        map=jQueryProtect("#map").MeteoUniparthenopeMap(_place,_prod,_output,_ncepDate,_baseMapIdx,
+            "topBarImage",
             "leftBarImage",
             "rightBarImage",
             "bottomBarImage");
