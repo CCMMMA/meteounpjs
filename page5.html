@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <style>
+        .ui-autocomplete-loading {
+            background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+        }
+
+        /* 1em @ 48em (768px) increasing to 2em @ 120em (1920px) https://websemantics.uk/articles/responsive-fonts/ */
+        @media (min-width: 48rem) {
+            :root {
+                font-size: calc(1rem + ((1vw - .48rem) * 1.389));
+                /* .48rem = viewportWidthMinimum /100 */
+                /* 1.389rem = 100 * fontSizeDifference / viewportWidthDifference */
+            }
+        }
+
+        @media (min-width: 120em) {
+            :root {
+                font-size: 2rem;
+            }
+        }
+
+        .very-specific-design {
+            width: 1024px;
+            height: 512px;
+            padding: 0px;
+            text-align: center;
+            background: white;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transform-origin: center center;
+        }
+
+        .scaleable-wrapper {
+            padding: 0px;
+            resize: both;
+            position: relative;
+            background: white;
+            height: 100vh;
+            width: 100vw;
+        }
+
+    </style>
+</head>
+<body>
+<div class="scaleable-wrapper" id="scaleable-wrapper">
+
+    <div class="very-specific-design" id="very-specific-design">
+
+        <div id="chartContainer" style="height: 512px; width: 100%;"></div>
+    </div>
+
+</div>
+
+<script>
+    var $el = $("#very-specific-design");
+    var elHeight = $el.outerHeight();
+    var elWidth = $el.outerWidth();
+
+    var $wrapper = $("#scaleable-wrapper");
+
+
+
+    function doResize(event, ui) {
+
+        var scale, origin;
+
+        scale = Math.min(
+            ui.size.width / elWidth,
+            ui.size.height / elHeight
+        );
+
+        $el.css({
+            transform: "translate(-50%, -50%) " + "scale(" + scale + ")"
+        });
+
+    }
+
+    var starterData = {
+        size: {
+            width: $wrapper.width(),
+            height: $wrapper.height()
+        }
+    }
+    doResize(null, starterData);
+
+    function getURLParameter(sParam, defaultValue) {
+
+        var sPageURL = window.location.search.substring(1);
+
+        var sURLVariables = sPageURL.split('&');
+
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+        return defaultValue;
+    }
+
+    $( document ).ready(function() {
+        console.log("ready!");
+
+        var prod=getURLParameter("prod","wrf5");
+        var place=getURLParameter("place","com63049");
+
+        var t2cPoints = [];
+        var slpPoints = [];
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light2",
+            title: {
+                text: "Forecast - "+place
+            },
+            axisX: {
+                valueFormatString: "DD MMM,YY HHZ"
+            },
+            axisY: {
+                title: "Temperature (in °C)",
+                includeZero: false,
+                suffix: " °C"
+            },
+            axisY: {
+                title: "Sea Level Preesure (in °HPa)",
+                includeZero: false,
+                suffix: " HPa"
+            },
+
+            data: [
+                {
+                    name: "slp",
+                    type: "column",
+                    yValueFormatString: "##.# HPa",
+                    dataPoints: slpPoints
+                },
+                {
+                    name: "t2c",
+                    type: "line",
+                    axisYType: "secondary",
+                    yValueFormatString: "#0.## °C",
+                    dataPoints: t2cPoints
+                }]
+        });
+
+        function addData(data) {
+            var timeSeries=data['timeseries'];
+            for (var i = 0; i < timeSeries.length; i++) {
+                let date=timeSeries[i].dateTime;
+                let year = date.substring(0, 4);
+                let month = date.substring(4, 6);
+                let day = date.substring(6, 8);
+                let hour = date.substring(9, 11);
+                let sDateTime=year + "-" + month + "-" + day+ "T"+hour+":00:00Z";
+
+                let dateTime = new Date(sDateTime);
+
+                t2cPoints.push({
+                    x: dateTime,
+                    y: timeSeries[i].t2c
+                });
+                slpPoints.push({
+                    x: dateTime,
+                    y: timeSeries[i].slp
+                });
+            }
+            chart.render();
+
+        }
+
+        $.getJSON("http://api.meteo.uniparthenope.it/products/"+prod+"/timeseries/"+place, addData);
+    });
+
+</script>
+</body>
+</html>
