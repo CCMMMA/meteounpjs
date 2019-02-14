@@ -2,9 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meteo Uniparthenope</title>
+    <link rel="stylesheet" href="css/jquery-ui.css"/>
+    <link rel="stylesheet" href="css/jquery-ui-timepicker-addon.min.css"/>
+    <link rel="stylesheet" href="css/meteo-uniparthenope.css"/>
+    <script src="js/jquery-1.12.4.js"></script>
+    <script src="js/jquery-ui-1.12.1.js"></script>
+    <script src="js/jquery-ui-sliderAccess.js"></script>
+    <script src="js/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="js/canvasjs.min.js"></script>
+    <script>
+        let jQueryProtect = jQuery;
+    </script>
+    <script src="js/meteo-uniparthenope.js"></script>
     <style>
         .ui-autocomplete-loading {
             background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
@@ -24,72 +35,15 @@
                 font-size: 2rem;
             }
         }
-
-        .very-specific-design {
-            width: 1024px;
-            height: 512px;
-            padding: 0px;
-            text-align: center;
-            background: white;
-            position: relative;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            transform-origin: center center;
-        }
-
-        .scaleable-wrapper {
-            padding: 0px;
-            resize: both;
-            position: relative;
-            background: white;
-            height: 100vh;
-            width: 100vw;
-        }
-
     </style>
 </head>
 <body>
-<div class="scaleable-wrapper" id="scaleable-wrapper">
 
-    <div class="very-specific-design" id="very-specific-design">
-
-        <div id="chartContainer" style="height: 512px; width: 100%;"></div>
-    </div>
-
-</div>
+<div id="chart"></div>
 
 <script>
-    var $el = $("#very-specific-design");
-    var elHeight = $el.outerHeight();
-    var elWidth = $el.outerWidth();
-
-    var $wrapper = $("#scaleable-wrapper");
 
 
-
-    function doResize(event, ui) {
-
-        var scale, origin;
-
-        scale = Math.min(
-            ui.size.width / elWidth,
-            ui.size.height / elHeight
-        );
-
-        $el.css({
-            transform: "translate(-50%, -50%) " + "scale(" + scale + ")"
-        });
-
-    }
-
-    var starterData = {
-        size: {
-            width: $wrapper.width(),
-            height: $wrapper.height()
-        }
-    }
-    doResize(null, starterData);
 
     function getURLParameter(sParam, defaultValue) {
 
@@ -107,77 +61,17 @@
         return defaultValue;
     }
 
+    var chart=null;
+
+    var _prod=getURLParameter("prod","wrf5");
+    var _place=getURLParameter("place","com63049");
+    var _output=getURLParameter("output","gen");
+    var _step=parseInt(getURLParameter("step","1"));
+
+
     $( document ).ready(function() {
         console.log("ready!");
-
-        var prod=getURLParameter("prod","wrf5");
-        var place=getURLParameter("place","com63049");
-
-        var t2cPoints = [];
-        var slpPoints = [];
-
-        var chart = new CanvasJS.Chart("chartContainer", {
-            animationEnabled: true,
-            theme: "light2",
-            title: {
-                text: "Forecast - "+place
-            },
-            axisX: {
-                valueFormatString: "DD MMM,YY HHZ"
-            },
-            axisY: {
-                title: "Temperature (in °C)",
-                includeZero: false,
-                suffix: " °C"
-            },
-            axisY: {
-                title: "Sea Level Preesure (in °HPa)",
-                includeZero: false,
-                suffix: " HPa"
-            },
-
-            data: [
-                {
-                    name: "slp",
-                    type: "column",
-                    yValueFormatString: "##.# HPa",
-                    dataPoints: slpPoints
-                },
-                {
-                    name: "t2c",
-                    type: "line",
-                    axisYType: "secondary",
-                    yValueFormatString: "#0.## °C",
-                    dataPoints: t2cPoints
-                }]
-        });
-
-        function addData(data) {
-            var timeSeries=data['timeseries'];
-            for (var i = 0; i < timeSeries.length; i++) {
-                let date=timeSeries[i].dateTime;
-                let year = date.substring(0, 4);
-                let month = date.substring(4, 6);
-                let day = date.substring(6, 8);
-                let hour = date.substring(9, 11);
-                let sDateTime=year + "-" + month + "-" + day+ "T"+hour+":00:00Z";
-
-                let dateTime = new Date(sDateTime);
-
-                t2cPoints.push({
-                    x: dateTime,
-                    y: timeSeries[i].t2c
-                });
-                slpPoints.push({
-                    x: dateTime,
-                    y: timeSeries[i].slp
-                });
-            }
-            chart.render();
-
-        }
-
-        $.getJSON("http://api.meteo.uniparthenope.it/products/"+prod+"/timeseries/"+place, addData);
+        chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_step);
     });
 
 </script>
