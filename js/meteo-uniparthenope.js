@@ -195,6 +195,141 @@
         return divBox;
     };
 
+    function chart(container,place="com63049",prod="wrf5",output="gen", step=1)  {
+        console.log( "chart:"+container );
+
+        //$("#"+container).empty();
+        container.empty();
+
+
+        var placeUrl=apiBaseUrl+"/places/"+place;
+
+
+        var timeseriesUrl=apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?step="+step;
+        console.log("placeUrl: "+placeUrl);
+        console.log("timeseriesUrl: "+timeseriesUrl);
+
+        let divBox=null;
+
+        // Get the place data
+        $.getJSON( placeUrl, function( placeData ) {
+            console.log(placeData);
+
+            // Create the main container
+            divBox=$('<div>');
+            divBox.attr('id','box');
+            divBox.attr('class','box');
+
+            // Append the title
+            divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
+
+            // Append the loading div
+            divBox.append('<div id="chart-loadingDiv"><img src="'+loadingUrl+'" width="100%"/></div>');
+            divBox.append('<div id="chart-container-canvasDiv" style="height: inherit; width: inherit; display:none"></div>');
+
+            // Create the ink container
+            /*
+            var divInk=$('<div>');
+            divInk.attr('class','meteo.ink');
+            divInk.append('<a href="http://meteo.uniparthenope.it" target="_blank" title="Meteo">CCMMMA: http://meteo.uniparthenope.it</a>');
+            divInk.append('<br/>');
+            divInk.append('&copy;2019 '+
+                '<a href="http://meteo.uniparthenope.it/" title="Meteo siti web" target="_blank">'+
+                '<b>meteo.uniparthenope.it</b> - <b>CCMMMA</b> Universit&agrave; Parthenope</a>');
+
+            divBox.append(divInk);
+            */
+            container.append(divBox);
+
+            console.log("-----------------------------------");
+
+            var dataPoints = [];
+            var dataPoints2 = [];
+            var data=[];
+
+            var axisY=null, axisY2=null;
+
+            if (prod==='wrf5' && output==="gen") {
+                axisY={
+                    title: "Sea Level Pressure (HPa)",
+                    includeZero: false,
+                    suffix: " HPa"
+                };
+                axisY2={
+                    title: "Temperature (°C)",
+                    includeZero: false,
+                    suffix: " °C"
+                };
+                data.push({
+                    name: "slp",
+                    type: "column",
+                    yValueFormatString: "##.# HPa",
+                    dataPoints: dataPoints
+                });
+                data.push({
+                    name: "t2c",
+                    type: "line",
+                    axisYType: "secondary",
+                    yValueFormatString: "#0.## °C",
+                    dataPoints: dataPoints2
+                });
+            }
+
+
+
+            var chart = new CanvasJS.Chart("chart-container-canvasDiv", {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "Forecast"
+                },
+                axisX: {
+                    valueFormatString: "DD MMM,YY HHZ"
+                },
+                axisY: axisY,
+                axisY2: axisY2,
+
+                data: data
+            });
+
+
+            $.getJSON( timeseriesUrl, function( data ) {
+                let timeseriesData=data['timeseries'];
+                console.log("-------------> "+timeseriesData);
+
+                $.each( timeseriesData, function( key, val ) {
+
+                    let date = val.dateTime;
+                    let year = date.substring(0, 4);
+                    let month = date.substring(4, 6);
+                    let day = date.substring(6, 8);
+                    let hour = date.substring(9, 11);
+                    let sDateTime = year + "-" + month + "-" + day + "T" + hour + ":00:00Z";
+
+                    let dateTime = new Date(sDateTime);
+
+                    if (prod==='wrf5' && output==="gen") {
+
+                        dataPoints.push({
+                            x: dateTime,
+                            y: val.slp
+                        });
+
+                        dataPoints2.push({
+                            x: dateTime,
+                            y: val.t2c
+                        });
+                    }
+                });
+
+                $('#chart-loadingDiv').hide();
+                $('#chart-container-canvasDiv').show();
+                chart.render();
+            });
+        });
+        return divBox;
+    };
+
     function plot(container,place="com63049",prod="wrf5",output="gen",ncepDate=null,
                   topBarImageId,
                   leftBarImageId,
@@ -958,7 +1093,11 @@
 
     };
 
+    $.fn.MeteoUniparthenopeChart = function( place = "com63049", prod = "wrf5", output="gen", step=1 ) {
 
+        return chart(this, place, prod, output, step);
+
+    };
 
     $.fn.MeteoUniparthenopePlot = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,topBarImageId,leftBarImageId,rightBarImageId,bottomBarImageId ) {
 
