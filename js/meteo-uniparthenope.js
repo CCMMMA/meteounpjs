@@ -255,14 +255,14 @@
                     title="Pressure and Temperature";
 
                     axisY = {
-                        title: "Temperature (°C)",
-                        includeZero: false,
-                        suffix: " °C"
-                    };
-                    axisY2 = {
                         title: "Sea Level Pressure (HPa)",
                         includeZero: false,
                         suffix: " HPa"
+                    };
+                    axisY2 = {
+                        title: "Temperature (°C)",
+                        includeZero: false,
+                        suffix: " °C"
                     };
                     data.push({
                         name: "t2c",
@@ -341,7 +341,7 @@
                     text: title
                 },
                 axisX: {
-                    valueFormatString: "DD MMM,YY HHZ"
+                    valueFormatString: "DD MMM, HHZ"
                 },
                 axisY: axisY,
                 axisY2: axisY2,
