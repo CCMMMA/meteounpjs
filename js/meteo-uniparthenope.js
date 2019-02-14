@@ -243,36 +243,92 @@
 
             console.log("-----------------------------------");
 
+            var title = "Forecast";
             var dataPoints = [];
             var dataPoints2 = [];
             var data=[];
 
             var axisY=null, axisY2=null;
 
-            if (prod==='wrf5' && output==="gen") {
-                axisY={
-                    title: "Sea Level Pressure (HPa)",
-                    includeZero: false,
-                    suffix: " HPa"
-                };
-                axisY2={
-                    title: "Temperature (°C)",
-                    includeZero: false,
-                    suffix: " °C"
-                };
-                data.push({
-                    name: "slp",
-                    type: "column",
-                    yValueFormatString: "##.# HPa",
-                    dataPoints: dataPoints
-                });
-                data.push({
-                    name: "t2c",
-                    type: "line",
-                    axisYType: "secondary",
-                    yValueFormatString: "#0.## °C",
-                    dataPoints: dataPoints2
-                });
+            if (prod==='wrf5') {
+                if (output === "gen" || output === "tsp") {
+                    title+=" - Sea Level Pressure and Temperature";
+                    axisY = {
+                        title: "Sea Level Pressure (HPa)",
+                        includeZero: false,
+                        suffix: " HPa"
+                    };
+                    axisY2 = {
+                        title: "Temperature (°C)",
+                        includeZero: false,
+                        suffix: " °C"
+                    };
+                    data.push({
+                        name: "slp",
+                        type: "column",
+                        yValueFormatString: "##.# HPa",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "t2c",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °C",
+                        dataPoints: dataPoints2
+                    });
+                } else if (output==="wn1") {
+                    title+=" - Wind Speed and Direction at 10m";
+                    axisY = {
+                        title: "Wind Speed at 10m (knt)",
+                        includeZero: false,
+                        suffix: " knt"
+                    };
+                    axisY2 = {
+                        title: "Wind Direction at 10m (°N)",
+                        maximum: 359,
+                        includeZero: false,
+                        suffix: " °"
+                    };
+                    data.push({
+                        name: "ws",
+                        type: "column",
+                        yValueFormatString: "##.# knt",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "wd",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °",
+                        dataPoints: dataPoints2
+                    });
+                } else if (output==="crh") {
+                    title+=" - Hourly cumulated Rain";
+                    axisY= {
+                        title: "Hourly cumulated rain (mm)",
+                        includeZero: false,
+                        suffix: " °"
+                    };
+                    axisY2 = {
+                        title: "Cloud fraction (%)",
+                        includeZero: false,
+                        maximum: 100,
+                        suffix: " %"
+                    };
+                    data.push({
+                        name: "crh",
+                        type: "column",
+                        yValueFormatString: "##.# mm",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "crf",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## %",
+                        dataPoints: dataPoints2
+                    });
+                }
             }
 
 
@@ -281,7 +337,7 @@
                 animationEnabled: true,
                 theme: "light2",
                 title: {
-                    text: "Forecast"
+                    text: title
                 },
                 axisX: {
                     valueFormatString: "DD MMM,YY HHZ"
@@ -308,17 +364,41 @@
 
                     let dateTime = new Date(sDateTime);
 
-                    if (prod==='wrf5' && output==="gen") {
+                    if (prod==='wrf5') {
+                        if (output === "gen" || output === "tsp") {
 
-                        dataPoints.push({
-                            x: dateTime,
-                            y: val.slp
-                        });
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.slp
+                            });
 
-                        dataPoints2.push({
-                            x: dateTime,
-                            y: val.t2c
-                        });
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.t2c
+                            });
+                        } else if (output=="wn1") {
+
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.ws10n
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.wd10
+                            });
+                        } else if (output=="crh") {
+
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.crh
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.clf * 100
+                            });
+                        }
                     }
                 });
 
