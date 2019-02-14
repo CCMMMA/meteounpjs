@@ -252,32 +252,33 @@
 
             if (prod==='wrf5') {
                 if (output === "gen" || output === "tsp") {
-                    title+=" - Sea Level Pressure and Temperature";
+                    title="Pressure and Temperature";
+
                     axisY = {
-                        title: "Sea Level Pressure (HPa)",
-                        includeZero: false,
-                        suffix: " HPa"
-                    };
-                    axisY2 = {
                         title: "Temperature (°C)",
                         includeZero: false,
                         suffix: " °C"
                     };
+                    axisY2 = {
+                        title: "Sea Level Pressure (HPa)",
+                        includeZero: false,
+                        suffix: " HPa"
+                    };
                     data.push({
-                        name: "slp",
+                        name: "t2c",
                         type: "column",
-                        yValueFormatString: "##.# HPa",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °C",
                         dataPoints: dataPoints
                     });
                     data.push({
-                        name: "t2c",
+                        name: "slp",
                         type: "line",
-                        axisYType: "secondary",
-                        yValueFormatString: "#0.## °C",
+                        yValueFormatString: "##.# HPa",
                         dataPoints: dataPoints2
                     });
                 } else if (output==="wn1") {
-                    title+=" - Wind Speed and Direction at 10m";
+                    title="Wind Speed and Direction at 10m";
                     axisY = {
                         title: "Wind Speed at 10m (knt)",
                         includeZero: false,
@@ -303,7 +304,7 @@
                         dataPoints: dataPoints2
                     });
                 } else if (output==="crh") {
-                    title+=" - Hourly cumulated Rain";
+                    title="Clouds and Rain";
                     axisY= {
                         title: "Hourly cumulated rain (mm)",
                         includeZero: false,
@@ -367,12 +368,12 @@
                     if (prod==='wrf5') {
                         if (output === "gen" || output === "tsp") {
 
-                            dataPoints.push({
+                            dataPoints2.push({
                                 x: dateTime,
                                 y: val.slp
                             });
 
-                            dataPoints2.push({
+                            dataPoints.push({
                                 x: dateTime,
                                 y: val.t2c
                             });
