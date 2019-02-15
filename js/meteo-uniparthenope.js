@@ -5,7 +5,77 @@
     var weatherIconUrl="images/";
     var loadingUrl="images/animated_progress_bar.gif";
 
+    var windColors = [
+        "#000033",
+        "#0117BA",
+        "#011FF3",
+        "#0533FC",
+        "#1957FF",
+        "#3B8BF4",
+        "#4FC6F8",
+        "#68F5E7",
+        "#77FEC6",
+        "#92FB9E",
+        "#A8FE7D",
+        "#CAFE5A",
+        "#EDFD4D",
+        "#F5D03A",
+        "#EFA939",
+        "#FA732E",
+        "#E75326",
+        "#EE3021",
+        "#BB2018",
+        "#7A1610",
+        "#641610"
+    ];
 
+    function windKnt2color(ws) {
+        var index=0;
+
+        if (ws>=0 && ws<1) {
+            index=0;
+        } else if (ws>=1 && ws<3) {
+            index=1;
+        } else if (ws>=3 && ws<5) {
+            index=2;
+        } else if (ws>=5 && ws<7) {
+            index=3;
+        } else if (ws>=7 && ws<9) {
+            index=4;
+        } else if (ws>=9 && ws<11) {
+            index=5;
+        } else if (ws>=11 && ws<15) {
+            index=6;
+        } else if (ws>=15 && ws<17) {
+            index=7;
+        } else if (ws>=17 && ws<19) {
+            index=8;
+        } else if (ws>=19 && ws<21) {
+            index=9;
+        } else if (ws>=21 && ws<23) {
+            index=10;
+        } else if (ws>=23 && ws<25) {
+            index=11;
+        } else if (ws>=25 && ws<27) {
+            index=12;
+        } else if (ws>=27 && ws<30) {
+            index=13;
+        } else if (ws>=30 && ws<35) {
+            index=14;
+        } else if (ws>=35 && ws<40) {
+            index=15;
+        } else if (ws>=40 && ws<45) {
+            index=16;
+        } else if (ws>=45 && ws<50) {
+            index=17;
+        } else  {
+            index=18;
+        }
+
+        // 0 1 3 5 7 9 11 13 15 17 19 21 23 25 27 30 35 40 45 50
+
+        return windColors[index];
+    }
 
 
     function pad(n, width, z) {
@@ -248,7 +318,7 @@
             var dataPoints2 = [];
             var data=[];
 
-            var axisY=null, axisY2=null;
+            var axisY=null, axisY2=null, colorSet=null;
 
             if (prod==='wrf5') {
                 if (output === "gen" || output === "tsp") {
@@ -278,6 +348,7 @@
                         dataPoints: dataPoints2
                     });
                 } else if (output==="wn1") {
+
                     title="Wind Speed and Direction at 10m";
                     axisY = {
                         title: "Wind Speed at 10m (knt)",
@@ -333,8 +404,7 @@
             }
 
 
-
-            var chart = new CanvasJS.Chart("chart-container-canvasDiv", {
+            var options= {
                 animationEnabled: true,
                 theme: "light2",
                 title: {
@@ -347,7 +417,12 @@
                 axisY2: axisY2,
 
                 data: data
-            });
+            };
+
+
+            var chart = new CanvasJS.Chart("chart-container-canvasDiv", options);
+
+
 
 
             $.getJSON( timeseriesUrl, function( data ) {
@@ -381,7 +456,8 @@
 
                             dataPoints.push({
                                 x: dateTime,
-                                y: val.ws10n
+                                y: val.ws10n,
+                                color: windKnt2color(val.ws10n)
                             });
 
                             dataPoints2.push({
