@@ -165,7 +165,15 @@
         return isNaN(month) ? null : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month];
     };
 
-    function box(container,type="minibox",place="com63049",prod="wrf5")  {
+    function formatDate(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var strTime = hours + ':' + minutes;
+        return  date.getDate()+ "/" + (date.getMonth()+1)+ "/" + date.getFullYear() + "  " + strTime;
+    }
+
+    function box(container,type="minibox",place="com63049",prod="wrf5", hours=0)  {
         console.log( "box:"+container );
 
         //$("#"+container).empty();
@@ -174,12 +182,13 @@
 
         var placeUrl=apiBaseUrl+"/places/"+place;
 
+
         let step=1;
         if (type=="minibox" || type=="compactbox" || type=="daybox") {
             step=24;
         }
 
-        var timeseriesUrl=apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?step="+step;
+        var timeseriesUrl=apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?hours="+hours+"&step="+step;
         console.log("placeUrl: "+placeUrl);
         console.log("timeseriesUrl: "+timeseriesUrl);
 
@@ -229,6 +238,14 @@
                     '<td width="21%" colspan="2">Wind (kn)</td>' +
                     '<td width="28%">Rain (mm)</td>' +
                     '</tr>');
+            } else {
+                table.append('<tr class="legenda">' +
+                    '<td width="32%" colspan="2">Forecast</td>' +
+                    '<td width="9%" class="press">Press (HPa)</td>' +
+                    '<td width="9%" class="temp">Temp &deg;C</td>' +
+                    '<td width="21%" colspan="2">Wind (kn)</td>' +
+                    '<td width="28%">Rain (mm)</td>' +
+                    '</tr>')
             }
             divBox.append(table);
 
@@ -252,6 +269,14 @@
                 console.log("-------------> "+timeseriesData);
 
                 $.each( timeseriesData, function( key, val ) {
+
+                    let year = val['dateTime'].substring(0, 4);
+                    let month = val['dateTime'].substring(4, 6);
+                    let day = val['dateTime'].substring(6, 8);
+                    let hour = val['dateTime'].substring(9, 11);
+                    let sDateTime = year + "-" + month + "-" + day + "T" + hour + ":00:00Z";
+
+                    let dateTime = new Date(sDateTime);
 
                     let weekDayLabel=dayOfWeek(val['dateTime']);
                     let monthDay=monthOfYear(val['dateTime']) + "-" + val['dateTime'].substring(6,8);
@@ -320,6 +345,22 @@
                         row+='  <td class="data">'+val['winds']+'</td>';
                         row+='  <td class="data">'+val['ws10n']+'</td>';
                         row+='  <td class="data">'+val['crh']+'</td>';
+                    } else {
+                        row+='  <td class="data">'
+                        row+='    <a href="'+val['link']+'" target="_blank" class="day" title="Meteo '+placeData['long_name']['it']+' - '+formatDate(dateTime)+'" >';
+                        row+=       formatDate(dateTime);
+                        row+='    </a>';
+                        row+='  </td>';
+                        row+='  <td class="data">';
+                        row+='    <a href="'+val['link']+'" target="_blank" class="day" title="Meteo '+placeData['long_name']['it']+' - '+formatDate(dateTime)+'" >';
+                        row+='      <img src="'+wIconUrl+'" class="weathericon" alt="'+wTextLabel+'" title="'+wTextLabel+'" />';
+                        row+='    </a>';
+                        row+='  </td>';
+                        row+='  <td class="data press">'+val['slp']+'</td>';
+                        row+='  <td class="data temp">'+val['t2c']+'</td>';
+                        row+='  <td class="data">'+val['winds']+'</td>';
+                        row+='  <td class="data">'+val['ws10n']+'</td>';
+                        row+='  <td class="data">'+val['crh']+'</td>';
                     }
                     row+='</tr>';
                     table.append(row);
@@ -331,7 +372,7 @@
         return divBox;
     };
 
-    function chart(container,place="com63049",prod="wrf5",output="gen", step=1)  {
+    function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, step=1)  {
         console.log( "chart:"+container );
 
         //$("#"+container).empty();
@@ -341,7 +382,7 @@
         var placeUrl=apiBaseUrl+"/places/"+place;
 
 
-        var timeseriesUrl=apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?step="+step;
+        var timeseriesUrl=apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?hours="+hours+"&step="+step;
         console.log("placeUrl: "+placeUrl);
         console.log("timeseriesUrl: "+timeseriesUrl);
 
@@ -423,7 +464,8 @@
                     };
                     axisY2 = {
                         title: "Wind Direction at 10m (°N)",
-                        maximum: 359,
+                        maximum: 360,
+                        interval: 45,
                         includeZero: false,
                         suffix: " °"
                     };
@@ -1297,6 +1339,11 @@
         return divControl;
     };
 
+    $.fn.MeteoUniparthenopeBox = function( place = "com63049", prod = "wrf5", hours=0 ) {
+
+        return box(this, "", place, prod, hours);
+
+    };
 
 
     $.fn.MeteoUniparthenopeDayBox = function( place = "com63049", prod = "wrf5" ) {
@@ -1317,9 +1364,9 @@
 
     };
 
-    $.fn.MeteoUniparthenopeChart = function( place = "com63049", prod = "wrf5", output="gen", step=1 ) {
+    $.fn.MeteoUniparthenopeChart = function( place = "com63049", prod = "wrf5", output="gen", hours=0, step=1 ) {
 
-        return chart(this, place, prod, output, step);
+        return chart(this, place, prod, output, hours, step);
 
     };
 
