@@ -5,6 +5,66 @@
     var weatherIconUrl="images/";
     var loadingUrl="images/animated_progress_bar.gif";
 
+    var conColors = [
+        "#FFFFFF",
+        "#CCFFFF",
+        "#3366FF",
+        "#00CC00",
+        "#FFFF00",
+        "#FF3301",
+        "#660033"
+    ];
+
+    var scmColors = [
+        "#F8F0FD",
+        "#E1CAFF",
+        "#60F3F0",
+        "#30FC4B",
+        "#FEF400",
+        "#FFA302",
+        "#F60000",
+        "#C0C0C0",
+
+    ];
+
+    var sssColors = [
+        "#1001F3",
+        "#0076FF",
+        "#04B6FF",
+        "#AEFE00",
+        "#FFFF00",
+        "#FF9403",
+        "#DB0200",
+        "#DBADAC"
+    ];
+
+    var sstColors = [
+        "#140756",
+        "#4141C7",
+        "#206EEB",
+        "#459CFB",
+        "#7FB7F4",
+        "#B5F1F5",
+        "#D0FAC4",
+        "#00D580",
+        "#0FA609",
+        "#82D718",
+        "#D5ED05",
+        "#FDFD26",
+        "#F6D403",
+        "#F3A000",
+        "#FC6608",
+        "#F60305",
+        "#C00A18",
+        "#680A06",
+        "#720008",
+        "#97009C",
+        "#FF05FF",
+        "#FDB0F9"
+
+    ];
+
+
     var tempColors = [
         "#2400d8",
         "#181cf7",
@@ -49,6 +109,132 @@
         "#7A1610",
         "#641610"
     ];
+
+
+
+    function sss2color(sss) {
+        var index=0;
+
+        // 37.5 37.75 38 38.25 38.5 38.75 39
+        if (sss<37.5) {
+            index=0;
+        } else if (sss>=37.5 && sss<37.5) {
+            index=1;
+        } else if (sss>=37.75 && sss<38) {
+            index=2;
+        } else if (sss>=38 && sss<38.25) {
+            index=3;
+        } else if (sss>=38.25 && sss<38.5) {
+            index=4;
+        } else if (sss>=38.5 && sss<38.75) {
+            index=5;
+        } else if (sss>=38.75 && sss<39) {
+            index=6;
+        } else if (sss>=39 ) {
+            index=7 ;
+        }
+
+        return sssColors[index];
+    }
+
+    function sst2color(sst) {
+        var index=0;
+
+        // 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
+        if (sst<10) {
+            index=0;
+        } else if (sst>=10 && sst<11) {
+            index=1;
+        } else if (sst>=11 && sst<12) {
+            index=2;
+        } else if (sst>=12 && sst<13) {
+            index=3;
+        } else if (sst>=13 && sst<14) {
+            index=4;
+        } else if (sst>=14 && sst<15) {
+            index=5;
+        } else if (sst>=15 && sst<16) {
+            index=6;
+        } else if (sst>=16 && sst<17) {
+            index=6;
+        } else if (sst>=17 && sst<18) {
+            index=6;
+        } else if (sst>=18 && sst<19) {
+            index=6;
+        } else if (sst>=19 && sst<20) {
+            index=6;
+        } else if (sst>=20 && sst<21) {
+            index=6;
+        } else if (sst>=21 && sst<22) {
+            index=6;
+        } else if (sst>=22 && sst<23) {
+            index=6;
+        } else if (sst>=23 && sst<24) {
+            index=6;
+        } else if (sst>=24 && sst<25) {
+            index=6;
+        } else if (sst>=25 && sst<26) {
+            index=6;
+        } else if (sst>=26 && sst<27) {
+            index=6;
+        } else if (sst>=27 && sst<28) {
+            index=6;
+        } else if (sst>=28 && sst<29) {
+            index=6;
+        } else if (sst>=29 && sst<30) {
+            index=6;
+        } else if (sst>=30 ) {
+            index=7 ;
+        }
+
+        return sstColors[index];
+    }
+
+    function con2color(conc) {
+        var index=0;
+
+        // 1 18 230 700 4600 46000
+        if (conc<18) {
+            index=0;
+        } else if (conc>=18 && conc<230) {
+            index=1;
+        } else if (conc>=230 && conc<700) {
+            index=2;
+        } else if (conc>=700 && conc<4600) {
+            index=3;
+        } else if (conc>=4600 && conc<46000) {
+            index=4;
+        } else if (conc>=46000 ) {
+            index=5 ;
+        }
+
+        return conColors[index];
+    }
+
+    function scm2color(scm) {
+        var index=0;
+
+        // 0.1 0.2 0.3 0.4 0.5 0.6 0.7
+        if (scm<0.1) {
+            index=0;
+        } else if (scm>=.1 && scm<.2) {
+            index=1;
+        } else if (scm>=.2 && scm<.3) {
+            index=2;
+        } else if (scm>=.3 && scm<.4) {
+            index=3;
+        } else if (scm>=.4 && scm<.5) {
+            index=4;
+        } else if (scm>=.5 && scm<.6) {
+            index=5;
+        } else if (scm>=.6 && scm<.7) {
+            index=5;
+        } else if (scm>=.7 ) {
+            index=8;
+        }
+
+        return scmColors[index];
+    }
 
     function temp2color(temp) {
         var index=0;
@@ -509,6 +695,105 @@
                         dataPoints: dataPoints2
                     });
                 }
+            } else if (prod==='wcm3') {
+                if (output === "gen" || output === "con") {
+                    title = "Particle concentration";
+
+                    axisY = {
+                        title: "Number of Particles (#)",
+                        includeZero: false,
+                        suffix: ""
+                    };
+
+                    data.push({
+                        name: "con",
+                        type: "column",
+                        yValueFormatString: "##.# ",
+                        dataPoints: dataPoints
+                    });
+                }
+            } else if (prod==='rms3') {
+                if (output === "gen" || output === "scu") {
+                    title="Surface current";
+                    axisY = {
+                        title: "Current Speed at the surface (m/s)",
+                        includeZero: false,
+                        suffix: " m/s"
+                    };
+                    axisY2 = {
+                        title: "Current Direction at the surface (°N)",
+                        maximum: 360,
+                        interval: 45,
+                        includeZero: false,
+                        suffix: " °"
+                    };
+                    data.push({
+                        name: "scm",
+                        type: "column",
+                        yValueFormatString: "##.# m/s",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "scd",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °",
+                        dataPoints: dataPoints2
+                    });
+                } else if (output === "sst") {
+                    title="Surface temperature";
+                    axisY = {
+                        title: "Surface temperature (°C)",
+                        includeZero: false,
+                        suffix: " °C"
+                    };
+                    data.push({
+                        name: "sst",
+                        type: "column",
+                        yValueFormatString: "##.# °C",
+                        dataPoints: dataPoints
+                    });
+
+                } else if (output === "sss") {
+                    title="Surface salinity";
+                    axisY = {
+                        title: "Surface salinity (1/1000)",
+                        includeZero: false,
+                        suffix: " "
+                    };
+                    data.push({
+                        name: "sss",
+                        type: "line",
+                        yValueFormatString: "##.# ",
+                        dataPoints: dataPoints
+                    });
+
+                } else if (output === "sts") {
+                    title="Surface temperature and salinity";
+                    axisY = {
+                        title: "Surface temperature (°C)",
+                        includeZero: false,
+                        suffix: " °C"
+                    };
+                    axisY2 = {
+                        title: "Surface salinity (1/1000)",
+                        includeZero: false,
+                        suffix: " "
+                    };
+                    data.push({
+                        name: "sst",
+                        type: "column",
+                        yValueFormatString: "##.# °C",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "sss",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## ",
+                        dataPoints: dataPoints2
+                    });
+                }
             }
 
 
@@ -583,6 +868,53 @@
                             dataPoints2.push({
                                 x: dateTime,
                                 y: val.clf * 100
+                            });
+                        }
+                    } else if (prod==='wcm3') {
+                        if (output === "gen" || output === "con") {
+
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.con,
+                                color: con2color(val.con)
+                            });
+                        }
+                    } else if (prod==='rms3') {
+                        if (output === "gen" || output === "scu") {
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.scm,
+                                color: scm2color(val.scm)
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.scd
+                            });
+                        } else if (output === "sst") {
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.sst,
+                                color: sst2color(val.sst)
+                            });
+
+                        } else if (output === "sss") {
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.sss,
+                                color: sss2color(val.sss)
+                            });
+
+                        } else if (output === "sts") {
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.sst,
+                                color: sst2color(val.sst)
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.sss
                             });
                         }
                     }
@@ -668,6 +1000,10 @@
                   bottomBarImageId)  {
         console.log( "map");
 
+
+
+
+
         if (ncepDate==null) {
             if (prod != "rdr1" && prod != "rdr2") {
                 let dateTime = new Date();
@@ -693,6 +1029,11 @@
         var _cloudLayer= null;
         var _infoLayer= null;
 
+        var _prod=prod;
+        var _place=place;
+        var _output=output;
+        var _ncepdate=ncepDate;
+
 
         //$("#"+container).empty();
         container.empty();
@@ -707,474 +1048,495 @@
 
         container.append(divMap);
 
+        var placeUrl=apiBaseUrl+"/places/"+place;
+        console.log("placeUrl:"+placeUrl);
+
+        // Get the place data
+        $.getJSON( placeUrl, function( placeData ) {
 
 
-        var navionicsLayer = new JNC.Leaflet.NavionicsOverlay({
-            navKey: 'Navionics_webapi_00480',
-            chartType: JNC.NAVIONICS_CHARTS.NAUTICAL,
-            isTransparent: false,
-            // Enable Navionics logo with payoff
-            logoPayoff: true,
-            zIndex: 1
-        });
+            console.log(placeData['bbox']['coordinates']);
+            console.log("----------------");
 
-        var navionicsSonarMapLayer=new JNC.Leaflet.NavionicsOverlay({
-            navKey: 'Navionics_webapi_00480',
-            chartType: JNC.NAVIONICS_CHARTS.SONARCHART,
-            isTransparent: false,
-            zIndex: 1
-        });
+            var marker0=L.marker([placeData['bbox']['coordinates'][0][1],placeData['bbox']['coordinates'][0][0]]);
+            var marker1=L.marker([placeData['bbox']['coordinates'][1][1],placeData['bbox']['coordinates'][1][0]]);
+            var marker2=L.marker([placeData['bbox']['coordinates'][2][1],placeData['bbox']['coordinates'][2][0]]);
 
-        var navionicsSkiLayer=new JNC.Leaflet.NavionicsOverlay({
-            navKey: 'Navionics_webapi_00480',
-            chartType: JNC.NAVIONICS_CHARTS.SKI,
-            isTransparent: false,
-            zIndex: 1
-        });
+            var group = new L.featureGroup([marker0, marker1, marker2]);
 
 
-        var worldImageryLayer = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, ' +
-                    'AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-            }
-        );
+            //Inizializzo la mappa
+            _map = new L.Map('map-container-mapid');
+            _center = new L.LatLng(placeData['cLat'], placeData['cLon']);
 
-        var darkGreyLayer = L.tileLayer(
-            "http://{s}.sm.mapstack.stamen.com/" +
-            "(toner-lite,$fff[difference],$fff[@23],$fff[hsl-saturation@20])/" +
-            "{z}/{x}/{y}.png", {
-                attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, ' +
-                    'NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
-            }
-        );
+            console.log(_center);
+            _map.setView(_center, _zoom);
 
-        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }
-        );
-
-        var baseMaps = {
-            "Satellite": worldImageryLayer,
-            "Navionics Marine Chart": navionicsLayer,
-            "Navionics Sonar Map": navionicsSonarMapLayer,
-            "Navionics Ski": navionicsSkiLayer,
-            "Dark Gray": darkGreyLayer,
-            "Open Street Map": osmLayer
-        };
-
-        var overlayMaps = {};
-
-        //L.Icon.Default.imagePath = 'images';
-
-        //Inizializzo la mappa
-        _map = new L.Map('map-container-mapid');
-
-        //Setto la visualizzazione di defautl a Napoli
-        _map.setView(_center, _zoom);
-
-        var layerInstance = null;
-        switch (parseInt(baseMapIdx)) {
-            case 1:
-                layerInstance=navionicsLayer;
-                break;
-            case 2:
-                layerInstance=navionicsSonarMapLayer;
-                break;
-            case 3:
-                layerInstance=navionicsSkiLayer;
-                break;
-            case 4:
-                layerInstance=darkGreyLayer;
-                break;
-            case 5:
-                layerInstance=osmLayer;
-                break;
-            default:
-                console.log("worldImageryLayer");
-                layerInstance=worldImageryLayer;
-
-        }
-
-        //Aggiungo il layer alla mappa
-        layerInstance.addTo(_map);
-
-        console.log("Added background map:"+baseMapIdx);
-
-
-
-        // Evento sulla modifica dello zoom della mappa
-        _map.on('zoomend', function () {
+            _map.fitBounds(group.getBounds());
             _zoom = _map.getZoom();
-            change_domain(_map.getBounds());
-        });
-
-        _map.on('moveend', function(e) {
             _center = _map.getBounds().getCenter();
-            change_domain(_map.getBounds());
-        });
+
+            var navionicsLayer = new JNC.Leaflet.NavionicsOverlay({
+                navKey: 'Navionics_webapi_00480',
+                chartType: JNC.NAVIONICS_CHARTS.NAUTICAL,
+                isTransparent: false,
+                // Enable Navionics logo with payoff
+                logoPayoff: true,
+                zIndex: 1
+            });
+
+            var navionicsSonarMapLayer = new JNC.Leaflet.NavionicsOverlay({
+                navKey: 'Navionics_webapi_00480',
+                chartType: JNC.NAVIONICS_CHARTS.SONARCHART,
+                isTransparent: false,
+                zIndex: 1
+            });
+
+            var navionicsSkiLayer = new JNC.Leaflet.NavionicsOverlay({
+                navKey: 'Navionics_webapi_00480',
+                chartType: JNC.NAVIONICS_CHARTS.SKI,
+                isTransparent: false,
+                zIndex: 1
+            });
 
 
-
-        var loadingControl = L.Control.loading({
-            spinjs: true
-        });
-        _map.addControl(loadingControl);
-
-
-        // Add the geojson layer to the layercontrol
-        _controlLayers = L.control.layers(baseMaps,overlayMaps,{ collapsed: true }).addTo(_map);
-
-
-        divMap.update=function(place, prod, output, ncepDate) {
-
-            //$("#plot").empty();
-            let baseBarImageUrl=apiBaseUrl+"/products/"+prod+"/forecast/legend";
-
-            $("#"+_topBarImageId).attr('src',baseBarImageUrl+"/top/"+output);
-            $("#"+_leftBarImageId).attr('src',baseBarImageUrl+"/left/"+output);
-
-
-            change_domain(_map.getBounds());
-
-            $("#"+_rightBarImageId).attr('src',baseBarImageUrl+"/right/"+output);
-            $("#"+_bottomBarImageId).attr('src',baseBarImageUrl+"/bottom/"+output);
-
-        };
-
-        divMap.update(place,prod,output,ncepDate);
-
-
-        /*****************************************/
-
-        function  change_domain(bounds) {
-            console.log("prefix:" + _prefix);
-            var new_prefix = "reg";
-            if (_zoom >= 0 && _zoom <= 6) {
-                new_prefix = 'reg';
-            } else if (_zoom >= 7 && _zoom <= 10) {
-                new_prefix = 'prov';
-            } else {
-                new_prefix = 'com';
-            }
-            console.log("new_prefix:" + new_prefix);
-
-            if (new_prefix != _prefix) {
-                _prefix = new_prefix;
-                addInfoLayer();
-            }
-
-            console.log("domain:" + _domain);
-            var new_domain = "d01";
-            var boundsD01 = L.latLngBounds(L.latLng(27.64, -19.68), L.latLng(63.48, 34.80));
-            var boundsD02 = L.latLngBounds(L.latLng(34.40, 3.58), L.latLng(47.83, 22.26));
-            var boundsD03 = L.latLngBounds(L.latLng(39.15, 13.56), L.latLng(41.62, 16.31));
-
-            console.log("bounds:" + bounds.getWest() + "," + bounds.getSouth() + " - " + bounds.getEast() + "," + bounds.getNorth());
-            console.log("boundsD03:" + boundsD03.getWest() + "," + boundsD03.getSouth() + " - " + boundsD03.getEast() + "," + boundsD03.getNorth());
-            console.log("boundsD02:" + boundsD02.getWest() + "," + boundsD02.getSouth() + " - " + boundsD02.getEast() + "," + boundsD02.getNorth());
-            console.log("boundsD01:" + boundsD01.getWest() + "," + boundsD01.getSouth() + " - " + boundsD01.getEast() + "," + boundsD01.getNorth());
-
-            if ( boundsD03.contains(bounds) ) {
-                new_domain="d03";
-            } else if ( boundsD02.contains(bounds) ) {
-                new_domain="d02";
-            } else {
-                new_domain="d01";
-            }
-            console.log("new_domain:"+new_domain);
-
-            if ( new_domain != _domain ) {
-                console.log("Remove");
-                _domain=new_domain;
-                console.log("Add")
-                addWindLayer();
-                ////addT2CLayer();
-                addCloudLayer();
-                addRainLayer();
-                addSnowLayer();
-            }
-        }
-
-
-        function addInfoLayer() {
-
-            var geojsonURL = apiBaseUrl + '/apps/owm/wrf5/'+_prefix+'/{z}/{x}/{y}.geojson?date=' + ncepDate;
-            console.log("geojsonURL:"+geojsonURL);
-
-            // Creo lo syle per i marker
-            var style = {
-                "clickable": true,
-                "color": "#00D",
-                "fillColor": "#00D",
-                "weight": 1.0,
-                "opacity": 0.3,
-                "fillOpacity": 0.2
-            };
-
-            // Creo il layer Json
-            // Opzioni per il layer json
-            option_geojsonTileLayer = {
-                clipTiles: true,
-            };
-
-            // opzioni del json per il layer json
-            geojsonOptions_geojsonTileLayer = {
-                style: style,
-                pointToLayer: function (features, latlng) {
-                    var file = features.properties.icon;
-                    //console.log(file);
-                    return L.marker(latlng, {icon: img_array[file]});
-                },
-                filter: function (feature, layer) {
-                    var index = feature.properties.id.search(/[0-9]/);
-                    var get_type = feature.properties.id.substring(0, index);
-                    return get_type == _prefix;
-                },
-                onEachFeature: function (feature, layer) {
-                    if (feature.properties) {
-                        //console.log(feature.properties);
-                        country = feature.properties.country;
-                        city = feature.properties.name;
-                        id = feature.properties.id;
-                        clouds = parseInt(feature.properties.clf * 100); //clouds
-                        dateTime = feature.properties.dateTime;
-                        humidity = feature.properties.rh2; //umidity
-                        pressure = feature.properties.slp; //pressure
-                        temp = feature.properties.t2c; //temp
-                        text = feature.properties.text;
-                        wind_direction = feature.properties.wd10; // wind_deg
-                        wind_speed = feature.properties.ws10n; //wind_speed
-                        wind_chill = feature.properties.wchill; //wind_chill
-                        winds = feature.properties.winds; //winds
-
-
-
-                        popupString = "<div class='popup'>" +
-                            "<table class='tg' style='undefined;table-layout: fixed; width: 230px'>" +
-                            "<colgroup>" +
-                            "<col style='width: 85px'>" +
-                            "<col style='width: 60px'>" +
-                            "</colgroup>" +
-                            "<tr>" +
-                            "<th class='tg-baqh' colspan='2'><a href='/place/" + id + "'>" + city + "</a></th>" +
-                            "</tr>" +
-                            "<tr>" +
-                            "<td class='tg-7un6'>COUNTRY</td>" +
-                            "<td class='tg-7un6'>" + country + "</td>" +
-                            "</tr>";
-
-                        //creazione popup place
-                        popupString +=
-                            "<tr>" +
-                            "<td class='tg-j0tj'>TEMP</td>" +
-                            "<td class='tg-j0tj'>" + temp + "°C</td>" +
-                            "</tr>" +
-                            "<tr>" +
-                            "<td class='tg-7un6'>METEO</td>" +
-                            "<td class='tg-7un6'>" + text + "</td>" +
-                            "</tr>" +
-                            "<tr>" +
-                            "<td class='tg-j0tj'>CLOUDS</td>" +
-                            "<td class='tg-j0tj'>" + clouds  + "%</td>" +
-                            "</tr>" +
-                            "<tr>" +
-                            "<td class='tg-7un6'>HUMIDITY</td>" +
-                            "<td class='tg-7un6'>" + humidity + "%</td>" +
-                            "</tr>" +
-                            "<tr>" +
-                            "<td class='tg-j0tj'>PRESSURE</td>" +
-                            "<td class='tg-j0tj'>" + pressure + " HPa</td>" +
-                            "</tr>" +
-                            "<tr>" +
-                            "<td class='tg-7un6'>WIND DIRECTION</td>" +
-                            "<td class='tg-7un6'>" + wind_direction + " °N</td>" +
-                            "</tr>" +
-                            "<tr>" +
-                            "<td class='tg-j0tj'>WIND SPEED</td>" +
-                            "<td class='tg-j0tj'>" + wind_speed + " knt</td>" +
-                            "</tr>" +
-                            "<td class='tg-7un6'>WIND CHILL</td>" +
-                            "<td class='tg-7un6'>" + wind_chill + " *C</td>" +
-                            "</tr>" +
-                            "<td class='tg-j0tj'>WIND</td>" +
-                            "<td class='tg-j0tj'>" + winds + "</td>" +
-                            "</tr>" +
-                            "</table>" +
-                            "</div>";
-
-                        popupString += "</table>" + "</div>";
-
-                        layer.bindPopup(popupString);
-                    }
+            var worldImageryLayer = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, ' +
+                        'AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                 }
+            );
+
+            var darkGreyLayer = L.tileLayer(
+                "http://{s}.sm.mapstack.stamen.com/" +
+                "(toner-lite,$fff[difference],$fff[@23],$fff[hsl-saturation@20])/" +
+                "{z}/{x}/{y}.png", {
+                    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, ' +
+                        'NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+                }
+            );
+
+            var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }
+            );
+
+            var baseMaps = {
+                "Satellite": worldImageryLayer,
+                "Navionics Marine Chart": navionicsLayer,
+                "Navionics Sonar Map": navionicsSonarMapLayer,
+                "Navionics Ski": navionicsSkiLayer,
+                "Dark Gray": darkGreyLayer,
+                "Open Street Map": osmLayer
             };
 
-            if (_infoLayer != null) {
-                _controlLayers.removeLayer(_infoLayer);
-                _map.removeLayer(_infoLayer);
-            }
+            var overlayMaps = {};
 
-            _infoLayer = new L.TileLayer.GeoJSON(geojsonURL, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
+
+            var layerInstance = null;
+            switch (parseInt(baseMapIdx)) {
+                case 1:
+                    layerInstance = navionicsLayer;
+                    break;
+                case 2:
+                    layerInstance = navionicsSonarMapLayer;
+                    break;
+                case 3:
+                    layerInstance = navionicsSkiLayer;
+                    break;
+                case 4:
+                    layerInstance = darkGreyLayer;
+                    break;
+                case 5:
+                    layerInstance = osmLayer;
+                    break;
+                default:
+                    console.log("worldImageryLayer");
+                    layerInstance = worldImageryLayer;
+
+            }
 
             //Aggiungo il layer alla mappa
-            _map.addLayer(_infoLayer);
-            _controlLayers.addOverlay(_infoLayer,"Info");
-            console.log("Added info layer");
-        }
+            layerInstance.addTo(_map);
+
+            console.log("Added background map:" + baseMapIdx);
 
 
-        function addCloudLayer() {
-            let year=ncepDate.substring(0,4);
-            let month=ncepDate.substring(4,6);
-            let day=ncepDate.substring(6,8);
-
-            if (_cloudLayer != null) {
-                _controlLayers.removeLayer(_cloudLayer);
-                _map.removeLayer(_cloudLayer);
-            }
-
-            _cloudLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/'+
-                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'.nc', {
-                    layers: 'CLDFRA_TOTAL',
-                    styles: 'raster/tcldBars',
-                    format: 'image/png',
-                    transparent: true,
-                    opacity : 0.8,
-                    COLORSCALERANGE:"0.125,1",
-                    NUMCOLORBANDS:"250",
-                    ABOVEMAXCOLOR:"extend",
-                    BELOWMINCOLOR:"transparent",
-                    BGCOLOR:"extend",
-                    LOGSCALE:"false"
-                }
-            );
-            _map.addLayer(_cloudLayer);
-            _controlLayers.addOverlay(_cloudLayer,"Cloud");
-        }
-
-        function addT2CLayer() {
-            let year=ncepdate.substring(0,4);
-            let month=ncepdate.substring(4,6);
-            let day=ncepdate.substring(6,8);
-
-            if (_t2cLayer != null) {
-                _controlLayers.removeLayer(_t2cLayer);
-                _map.removeLayer(_t2cLayer);
-            }
-
-            _t2cLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/'+
-                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'.nc', {
-                    layers: 'T2C',
-                    styles: 'default-scalar/tspBars',
-                    format: 'image/png',
-                    transparent: true,
-                    opacity : 0.8,
-                    COLORSCALERANGE:"-40,50",
-                    NUMCOLORBANDS:"19",
-                    ABOVEMAXCOLOR:"extend",
-                    BELOWMINCOLOR:"extend",
-                    BGCOLOR:"extend",
-                    LOGSCALE:"false"
-                }
-            );
-            //map.addLayer(t2cLayer);
-            _controlLayers.addOverlay(_t2cLayer,"Temperature");
-        }
-
-        function addRainLayer() {
-            let year=ncepDate.substring(0,4);
-            let month=ncepDate.substring(4,6);
-            let day=ncepDate.substring(6,8);
-
-            if (_rainLayer != null) {
-                _controlLayers.removeLayer(_rainLayer);
-                _map.removeLayer(_rainLayer);
-            }
-
-            _rainLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/'+
-                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'.nc', {
-                    layers: 'DELTA_RAIN',
-                    styles: 'raster/crhBars',
-                    format: 'image/png',
-                    transparent: true,
-                    opacity : 0.8,
-                    COLORSCALERANGE:".2,60",
-                    NUMCOLORBANDS:"15",
-                    ABOVEMAXCOLOR:"extend",
-                    BELOWMINCOLOR:"transparent",
-                    BGCOLOR:"extend",
-                    LOGSCALE:"false"
-                }
-            );
-            _map.addLayer(_rainLayer);
-            _controlLayers.addOverlay(_rainLayer,"Rain");
-        }
-
-        function addSnowLayer() {
-            let year=ncepDate.substring(0,4);
-            let month=ncepDate.substring(4,6);
-            let day=ncepDate.substring(6,8);
-
-            if (_snowLayer != null) {
-                _controlLayers.removeLayer(_snowLayer);
-                _map.removeLayer(_snowLayer);
-            }
-
-            _snowLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/'+
-                _domain+'/archive/'+year+'/'+month+'/'+day+'/wrf5_'+_domain+'_'+ncepDate+'.nc', {
-                    layers: 'HOURLY_SWE',
-                    styles: 'raster/sweBars',
-                    format: 'image/png',
-                    transparent: true,
-                    opacity : 0.8,
-                    COLORSCALERANGE:"0.5,15.5",
-                    NUMCOLORBANDS:"6",
-                    ABOVEMAXCOLOR:"extend",
-                    BELOWMINCOLOR:"transparent",
-                    BGCOLOR:"extend",
-                    LOGSCALE:"false"
-                }
-            );
-            _map.addLayer(_snowLayer);
-            _controlLayers.addOverlay(_snowLayer,"Snow");
-        }
-
-        function addWindLayer() {
-
-            // load data (u, v grids) from somewhere (e.g. https://github.com/danwild/wind-js-server)
-            $.getJSON(apiBaseUrl+'/products/wrf5/forecast/'+_domain+'/grib/json?date='+ncepDate, function (data) {
-
-                if (_windLayer != null) {
-                    _controlLayers.removeLayer(_windLayer);
-                    _map.removeLayer(_windLayer);
-                }
-
-                _windLayer = L.velocityLayer({
-                    displayValues: true,
-                    displayOptions: {
-                        velocityType: 'Wind 10m',
-                        position: 'bottomleft',
-                        displayPosition: 'bottomleft',
-                        displayEmptyString: 'No wind data',
-                        angleConvention: 'meteoCW',
-                        speedUnit: 'kt'
-                    },
-                    data: data,
-
-                    // OPTIONAL
-                    minVelocity: 0,          // used to align color scale
-                    maxVelocity: 25.72,         // used to align color scale
-                    velocityScale: 0.005,    // modifier for particle animations, arbitrarily defaults to 0.005
-                    colorScale: [ "#000033", "#0117BA", "#011FF3", "#0533FC", "#1957FF", "#3B8BF4",
-                        "#4FC6F8", "#68F5E7", "#77FEC6", "#92FB9E", "#A8FE7D", "#CAFE5A",
-                        "#EDFD4D", "#F5D03A", "#EFA939", "#FA732E", "#E75326", "#EE3021",
-                        "#BB2018", "#7A1610", "#641610" ]          // define your own array of hex/rgb colors
-                });
-
-                _map.addLayer(_windLayer);
-                _controlLayers.addOverlay(_windLayer,"Wind");
+            // Evento sulla modifica dello zoom della mappa
+            _map.on('zoomend', function () {
+                _zoom = _map.getZoom();
+                change_domain(_map.getBounds());
             });
-        }
+
+            _map.on('moveend', function (e) {
+                _center = _map.getBounds().getCenter();
+                change_domain(_map.getBounds());
+            });
+
+
+            var loadingControl = L.Control.loading({
+                spinjs: true
+            });
+            _map.addControl(loadingControl);
+
+
+            // Add the geojson layer to the layercontrol
+            _controlLayers = L.control.layers(baseMaps, overlayMaps, {collapsed: true}).addTo(_map);
+
+
+            divMap.update = function (place, prod, output, ncepDate) {
+
+
+
+                //$("#plot").empty();
+                let baseBarImageUrl = apiBaseUrl + "/products/" + prod + "/forecast/legend";
+
+                $("#" + _topBarImageId).attr('src', baseBarImageUrl + "/top/" + output);
+                $("#" + _leftBarImageId).attr('src', baseBarImageUrl + "/left/" + output);
+
+
+                change_domain(_map.getBounds());
+
+                $("#" + _rightBarImageId).attr('src', baseBarImageUrl + "/right/" + output);
+                $("#" + _bottomBarImageId).attr('src', baseBarImageUrl + "/bottom/" + output);
+
+
+            };
+
+            divMap.update(place, prod, output, ncepDate);
+
+
+
+            /*****************************************/
+
+            function change_domain(bounds) {
+                console.log("prefix:" + _prefix);
+                var new_prefix = "reg";
+                if (_zoom >= 0 && _zoom <= 6) {
+                    new_prefix = 'reg';
+                } else if (_zoom >= 7 && _zoom <= 10) {
+                    new_prefix = 'prov';
+                } else {
+                    new_prefix = 'com';
+                }
+                console.log("new_prefix:" + new_prefix);
+
+                if (new_prefix != _prefix) {
+                    _prefix = new_prefix;
+                    addInfoLayer();
+                }
+
+                console.log("domain:" + _domain);
+                var new_domain = "d01";
+                var boundsD01 = L.latLngBounds(L.latLng(27.64, -19.68), L.latLng(63.48, 34.80));
+                var boundsD02 = L.latLngBounds(L.latLng(34.40, 3.58), L.latLng(47.83, 22.26));
+                var boundsD03 = L.latLngBounds(L.latLng(39.15, 13.56), L.latLng(41.62, 16.31));
+
+                console.log("bounds:" + bounds.getWest() + "," + bounds.getSouth() + " - " + bounds.getEast() + "," + bounds.getNorth());
+                console.log("boundsD03:" + boundsD03.getWest() + "," + boundsD03.getSouth() + " - " + boundsD03.getEast() + "," + boundsD03.getNorth());
+                console.log("boundsD02:" + boundsD02.getWest() + "," + boundsD02.getSouth() + " - " + boundsD02.getEast() + "," + boundsD02.getNorth());
+                console.log("boundsD01:" + boundsD01.getWest() + "," + boundsD01.getSouth() + " - " + boundsD01.getEast() + "," + boundsD01.getNorth());
+
+                if (boundsD03.contains(bounds)) {
+                    new_domain = "d03";
+                } else if (boundsD02.contains(bounds)) {
+                    new_domain = "d02";
+                } else {
+                    new_domain = "d01";
+                }
+                console.log("new_domain:" + new_domain);
+
+                if (new_domain != _domain) {
+                    console.log("Remove");
+                    _domain = new_domain;
+                    console.log("Add")
+                    addWindLayer();
+                    ////addT2CLayer();
+                    addCloudLayer();
+                    addRainLayer();
+                    addSnowLayer();
+                }
+            }
+
+
+            function addInfoLayer() {
+
+                var geojsonURL = apiBaseUrl + '/apps/owm/wrf5/' + _prefix + '/{z}/{x}/{y}.geojson?date=' + ncepDate;
+                console.log("geojsonURL:" + geojsonURL);
+
+                // Creo lo syle per i marker
+                var style = {
+                    "clickable": true,
+                    "color": "#00D",
+                    "fillColor": "#00D",
+                    "weight": 1.0,
+                    "opacity": 0.3,
+                    "fillOpacity": 0.2
+                };
+
+                // Creo il layer Json
+                // Opzioni per il layer json
+                option_geojsonTileLayer = {
+                    clipTiles: true,
+                };
+
+                // opzioni del json per il layer json
+                geojsonOptions_geojsonTileLayer = {
+                    style: style,
+                    pointToLayer: function (features, latlng) {
+                        var file = features.properties.icon;
+                        //console.log(file);
+                        return L.marker(latlng, {icon: img_array[file]});
+                    },
+                    filter: function (feature, layer) {
+                        var index = feature.properties.id.search(/[0-9]/);
+                        var get_type = feature.properties.id.substring(0, index);
+                        return get_type == _prefix;
+                    },
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties) {
+                            //console.log(feature.properties);
+                            country = feature.properties.country;
+                            city = feature.properties.name;
+                            id = feature.properties.id;
+                            clouds = parseInt(feature.properties.clf * 100); //clouds
+                            dateTime = feature.properties.dateTime;
+                            humidity = feature.properties.rh2; //umidity
+                            pressure = feature.properties.slp; //pressure
+                            temp = feature.properties.t2c; //temp
+                            text = feature.properties.text;
+                            wind_direction = feature.properties.wd10; // wind_deg
+                            wind_speed = feature.properties.ws10n; //wind_speed
+                            wind_chill = feature.properties.wchill; //wind_chill
+                            winds = feature.properties.winds; //winds
+
+
+                            popupString = "<div class='popup'>" +
+                                "<table class='tg' style='undefined;table-layout: fixed; width: 230px'>" +
+                                "<colgroup>" +
+                                "<col style='width: 85px'>" +
+                                "<col style='width: 60px'>" +
+                                "</colgroup>" +
+                                "<tr>" +
+                                "<th class='tg-baqh' colspan='2'><a href='/place/" + id + "'>" + city + "</a></th>" +
+                                "</tr>" +
+                                "<tr>" +
+                                "<td class='tg-7un6'>COUNTRY</td>" +
+                                "<td class='tg-7un6'>" + country + "</td>" +
+                                "</tr>";
+
+                            //creazione popup place
+                            popupString +=
+                                "<tr>" +
+                                "<td class='tg-j0tj'>TEMP</td>" +
+                                "<td class='tg-j0tj'>" + temp + "°C</td>" +
+                                "</tr>" +
+                                "<tr>" +
+                                "<td class='tg-7un6'>METEO</td>" +
+                                "<td class='tg-7un6'>" + text + "</td>" +
+                                "</tr>" +
+                                "<tr>" +
+                                "<td class='tg-j0tj'>CLOUDS</td>" +
+                                "<td class='tg-j0tj'>" + clouds + "%</td>" +
+                                "</tr>" +
+                                "<tr>" +
+                                "<td class='tg-7un6'>HUMIDITY</td>" +
+                                "<td class='tg-7un6'>" + humidity + "%</td>" +
+                                "</tr>" +
+                                "<tr>" +
+                                "<td class='tg-j0tj'>PRESSURE</td>" +
+                                "<td class='tg-j0tj'>" + pressure + " HPa</td>" +
+                                "</tr>" +
+                                "<tr>" +
+                                "<td class='tg-7un6'>WIND DIRECTION</td>" +
+                                "<td class='tg-7un6'>" + wind_direction + " °N</td>" +
+                                "</tr>" +
+                                "<tr>" +
+                                "<td class='tg-j0tj'>WIND SPEED</td>" +
+                                "<td class='tg-j0tj'>" + wind_speed + " knt</td>" +
+                                "</tr>" +
+                                "<td class='tg-7un6'>WIND CHILL</td>" +
+                                "<td class='tg-7un6'>" + wind_chill + " *C</td>" +
+                                "</tr>" +
+                                "<td class='tg-j0tj'>WIND</td>" +
+                                "<td class='tg-j0tj'>" + winds + "</td>" +
+                                "</tr>" +
+                                "</table>" +
+                                "</div>";
+
+                            popupString += "</table>" + "</div>";
+
+                            layer.bindPopup(popupString);
+                        }
+                    }
+                };
+
+                if (_infoLayer != null) {
+                    _controlLayers.removeLayer(_infoLayer);
+                    _map.removeLayer(_infoLayer);
+                }
+
+                _infoLayer = new L.TileLayer.GeoJSON(geojsonURL, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
+
+                //Aggiungo il layer alla mappa
+                _map.addLayer(_infoLayer);
+                _controlLayers.addOverlay(_infoLayer, "Info");
+                console.log("Added info layer");
+            }
+
+
+            function addCloudLayer() {
+                let year = ncepDate.substring(0, 4);
+                let month = ncepDate.substring(4, 6);
+                let day = ncepDate.substring(6, 8);
+
+                if (_cloudLayer != null) {
+                    _controlLayers.removeLayer(_cloudLayer);
+                    _map.removeLayer(_cloudLayer);
+                }
+
+                _cloudLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/' +
+                    _domain + '/archive/' + year + '/' + month + '/' + day + '/wrf5_' + _domain + '_' + ncepDate + '.nc', {
+                        layers: 'CLDFRA_TOTAL',
+                        styles: 'raster/tcldBars',
+                        format: 'image/png',
+                        transparent: true,
+                        opacity: 0.8,
+                        COLORSCALERANGE: "0.125,1",
+                        NUMCOLORBANDS: "250",
+                        ABOVEMAXCOLOR: "extend",
+                        BELOWMINCOLOR: "transparent",
+                        BGCOLOR: "extend",
+                        LOGSCALE: "false"
+                    }
+                );
+                _map.addLayer(_cloudLayer);
+                _controlLayers.addOverlay(_cloudLayer, "Cloud");
+            }
+
+            function addT2CLayer() {
+                let year = ncepdate.substring(0, 4);
+                let month = ncepdate.substring(4, 6);
+                let day = ncepdate.substring(6, 8);
+
+                if (_t2cLayer != null) {
+                    _controlLayers.removeLayer(_t2cLayer);
+                    _map.removeLayer(_t2cLayer);
+                }
+
+                _t2cLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/' +
+                    _domain + '/archive/' + year + '/' + month + '/' + day + '/wrf5_' + _domain + '_' + ncepDate + '.nc', {
+                        layers: 'T2C',
+                        styles: 'default-scalar/tspBars',
+                        format: 'image/png',
+                        transparent: true,
+                        opacity: 0.8,
+                        COLORSCALERANGE: "-40,50",
+                        NUMCOLORBANDS: "19",
+                        ABOVEMAXCOLOR: "extend",
+                        BELOWMINCOLOR: "extend",
+                        BGCOLOR: "extend",
+                        LOGSCALE: "false"
+                    }
+                );
+                //map.addLayer(t2cLayer);
+                _controlLayers.addOverlay(_t2cLayer, "Temperature");
+            }
+
+            function addRainLayer() {
+                let year = ncepDate.substring(0, 4);
+                let month = ncepDate.substring(4, 6);
+                let day = ncepDate.substring(6, 8);
+
+                if (_rainLayer != null) {
+                    _controlLayers.removeLayer(_rainLayer);
+                    _map.removeLayer(_rainLayer);
+                }
+
+                _rainLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/' +
+                    _domain + '/archive/' + year + '/' + month + '/' + day + '/wrf5_' + _domain + '_' + ncepDate + '.nc', {
+                        layers: 'DELTA_RAIN',
+                        styles: 'raster/crhBars',
+                        format: 'image/png',
+                        transparent: true,
+                        opacity: 0.8,
+                        COLORSCALERANGE: ".2,60",
+                        NUMCOLORBANDS: "15",
+                        ABOVEMAXCOLOR: "extend",
+                        BELOWMINCOLOR: "transparent",
+                        BGCOLOR: "extend",
+                        LOGSCALE: "false"
+                    }
+                );
+                _map.addLayer(_rainLayer);
+                _controlLayers.addOverlay(_rainLayer, "Rain");
+            }
+
+            function addSnowLayer() {
+                let year = ncepDate.substring(0, 4);
+                let month = ncepDate.substring(4, 6);
+                let day = ncepDate.substring(6, 8);
+
+                if (_snowLayer != null) {
+                    _controlLayers.removeLayer(_snowLayer);
+                    _map.removeLayer(_snowLayer);
+                }
+
+                _snowLayer = L.tileLayer.wms('http://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/wrf5/' +
+                    _domain + '/archive/' + year + '/' + month + '/' + day + '/wrf5_' + _domain + '_' + ncepDate + '.nc', {
+                        layers: 'HOURLY_SWE',
+                        styles: 'raster/sweBars',
+                        format: 'image/png',
+                        transparent: true,
+                        opacity: 0.8,
+                        COLORSCALERANGE: "0.5,15.5",
+                        NUMCOLORBANDS: "6",
+                        ABOVEMAXCOLOR: "extend",
+                        BELOWMINCOLOR: "transparent",
+                        BGCOLOR: "extend",
+                        LOGSCALE: "false"
+                    }
+                );
+                _map.addLayer(_snowLayer);
+                _controlLayers.addOverlay(_snowLayer, "Snow");
+            }
+
+            function addWindLayer() {
+
+                // load data (u, v grids) from somewhere (e.g. https://github.com/danwild/wind-js-server)
+                $.getJSON(apiBaseUrl + '/products/wrf5/forecast/' + _domain + '/grib/json?date=' + ncepDate, function (data) {
+
+                    if (_windLayer != null) {
+                        _controlLayers.removeLayer(_windLayer);
+                        _map.removeLayer(_windLayer);
+                    }
+
+                    _windLayer = L.velocityLayer({
+                        displayValues: true,
+                        displayOptions: {
+                            velocityType: 'Wind 10m',
+                            position: 'bottomleft',
+                            displayPosition: 'bottomleft',
+                            displayEmptyString: 'No wind data',
+                            angleConvention: 'meteoCW',
+                            speedUnit: 'kt'
+                        },
+                        data: data,
+
+                        // OPTIONAL
+                        minVelocity: 0,          // used to align color scale
+                        maxVelocity: 25.72,         // used to align color scale
+                        velocityScale: 0.005,    // modifier for particle animations, arbitrarily defaults to 0.005
+                        colorScale: ["#000033", "#0117BA", "#011FF3", "#0533FC", "#1957FF", "#3B8BF4",
+                            "#4FC6F8", "#68F5E7", "#77FEC6", "#92FB9E", "#A8FE7D", "#CAFE5A",
+                            "#EDFD4D", "#F5D03A", "#EFA939", "#FA732E", "#E75326", "#EE3021",
+                            "#BB2018", "#7A1610", "#641610"]          // define your own array of hex/rgb colors
+                    });
+
+                    _map.addLayer(_windLayer);
+                    _controlLayers.addOverlay(_windLayer, "Wind");
+                });
+            }
+        });
 
         return divMap;
     };
