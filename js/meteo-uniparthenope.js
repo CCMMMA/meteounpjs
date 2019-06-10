@@ -1545,10 +1545,16 @@
     function control(container,place="com63049",prod="wrf5",output="gen",dateTime=null)  {
         console.log( "control:"+container );
 
+        /*
         let _prod="wrf5";
         let _output="gen";
         let _place="com63049";
         let _ncepDate=null;
+        */
+        let _prod=prod;
+        let _output=output;
+        let _place=place;
+        let _ncepDate=dateTime;
 
         function update() {
 
@@ -1654,6 +1660,7 @@
                 update();
             }
         });
+
 
 
 
