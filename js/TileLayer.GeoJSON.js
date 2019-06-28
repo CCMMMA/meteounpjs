@@ -3,7 +3,7 @@
 L.TileLayer.Ajax = L.TileLayer.extend({
     _requests: [],
     _addTile: function (tilePoint) {
-        var tile = { datum: null, processed: false };
+        let tile = { datum: null, processed: false };
         this._tiles[tilePoint.x + ':' + tilePoint.y] = tile;
         this._loadTile(tile, tilePoint);
     },
@@ -13,7 +13,7 @@ L.TileLayer.Ajax = L.TileLayer.extend({
             if (req.readyState !== 4) {
                 return;
             }
-            var s = req.status;
+            let s = req.status;
             if ((s >= 200 && s < 300 && s != 204) || s === 304) {
                 tile.datum = JSON.parse(req.responseText);
                 layer._tileLoaded(tile, tilePoint);
@@ -25,8 +25,8 @@ L.TileLayer.Ajax = L.TileLayer.extend({
     // Load the requested tile via AJAX
     _loadTile: function (tile, tilePoint) {
         this._adjustTilePoint(tilePoint);
-        var layer = this;
-        var req = new XMLHttpRequest();
+        let layer = this;
+        let req = new XMLHttpRequest();
         this._requests.push(req);
         req.onreadystatechange = this._xhrHandler(req, layer, tile, tilePoint);
         req.open('GET', this.getTileUrl(tilePoint), true);
@@ -80,15 +80,15 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
 
     // Remove clip path elements from other earlier zoom levels
     _removeOldClipPaths: function  () {
-        for (var clipPathId in this._clipPathRectangles) {
-            var prefix = clipPathId.split('tileClipPath')[0];
+        for (let clipPathId in this._clipPathRectangles) {
+            let prefix = clipPathId.split('tileClipPath')[0];
             if (this._getUniqueId() === prefix) {
-                var clipPathZXY = clipPathId.split('_').slice(1);
-                var zoom = parseInt(clipPathZXY[0], 10);
+                let clipPathZXY = clipPathId.split('_').slice(1);
+                let zoom = parseInt(clipPathZXY[0], 10);
                 if (zoom !== this._map.getZoom()) {
-                    var rectangle = this._clipPathRectangles[clipPathId];
+                    let rectangle = this._clipPathRectangles[clipPathId];
                     this._map.removeLayer(rectangle);
-                    var clipPath = document.getElementById(clipPathId);
+                    let clipPath = document.getElementById(clipPathId);
                     if (clipPath !== null) {
                         clipPath.parentNode.removeChild(clipPath);
                     }
@@ -118,10 +118,10 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             this._map._pathRoot = L.Path.prototype._createElement('svg');
             this._map._panes.overlayPane.appendChild(this._map._pathRoot);
         }
-        var svg = this._map._pathRoot;
+        let svg = this._map._pathRoot;
 
         // create the defs container if it doesn't exist
-        var defs = null;
+        let defs = null;
         if (svg.getElementsByTagName('defs').length === 0) {
             defs = document.createElementNS(L.Path.SVG_NS, 'defs');
             svg.insertBefore(defs, svg.firstChild);
@@ -131,14 +131,14 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         }
 
         // Create the clipPath for the tile if it doesn't exist
-        var clipPathId = this._getUniqueId() + 'tileClipPath_' + tilePoint.z + '_' + tilePoint.x + '_' + tilePoint.y;
-        var clipPath = document.getElementById(clipPathId);
+        let clipPathId = this._getUniqueId() + 'tileClipPath_' + tilePoint.z + '_' + tilePoint.x + '_' + tilePoint.y;
+        let clipPath = document.getElementById(clipPathId);
         if (clipPath === null) {
             clipPath = document.createElementNS(L.Path.SVG_NS, 'clipPath');
             clipPath.id = clipPathId;
 
             // Create a hidden L.Rectangle to represent the tile's area
-            var tileSize = this.options.tileSize,
+            let tileSize = this.options.tileSize,
             nwPoint = tilePoint.multiplyBy(tileSize),
             sePoint = nwPoint.add([tileSize, tileSize]),
             nw = this._map.unproject(nwPoint),
@@ -153,8 +153,8 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
 
             // Add a clip path element to the SVG defs element
             // With a path element that has the hidden rectangle's SVG path string  
-            var path = document.createElementNS(L.Path.SVG_NS, 'path');
-            var pathString = this._clipPathRectangles[clipPathId].getPathString();
+            let path = document.createElementNS(L.Path.SVG_NS, 'path');
+            let pathString = this._clipPathRectangles[clipPathId].getPathString();
             path.setAttribute('d', pathString);
             clipPath.appendChild(path);
             defs.appendChild(clipPath);
@@ -172,7 +172,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     // * If options.clipTiles is set, and the browser is using SVG, perform SVG clipping on each
     // tile's GeometryCollection 
     addTileData: function (geojson, tilePoint) {
-        var features = L.Util.isArray(geojson) ? geojson : geojson.features,
+        let features = L.Util.isArray(geojson) ? geojson : geojson.features,
             i, len, feature;
 
         if (features) {
@@ -186,14 +186,14 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             return this;
         }
 
-        var options = this.geojsonLayer.options;
+        let options = this.geojsonLayer.options;
 
         if (options.filter && !options.filter(geojson)) { return; }
 
-        var parentLayer = this.geojsonLayer;
-        var incomingLayer = null;
+        let parentLayer = this.geojsonLayer;
+        let incomingLayer = null;
         if (this.options.unique && typeof(this.options.unique) === 'function') {
-            var key = this.options.unique(geojson);
+            let key = this.options.unique(geojson);
 
             // When creating the layer for a unique key,
             // Force the geojson to be a geometry collection
