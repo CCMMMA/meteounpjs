@@ -995,10 +995,10 @@
         return divPlot;
     };
 
-    function map(container,place="com63049",prod="wrf5",output="gen",ncepDate=null,mapName="muggles")  {
+    function map(container,place="com63049",prod="wrf5",output="gen",ncepDate=null,mapName="muggles",prefix=null)  {
         console.log( "map");
 
-
+        let _language="en";
 
 
 
@@ -1086,7 +1086,7 @@
 
                     $.each(dataMaps["baseMaps"], function (index, value) {  // To be sync
                         let baseMapName = Object.keys(value)[0];
-                        let isActive = eval(value[baseMapName]);
+
                         //console.log(baseMapName + ":" + isActive);
 
                         let urlBaseMap = api_url_basemaps + "/" + baseMapName;
@@ -1096,9 +1096,22 @@
                             url: urlBaseMap,
                             async: false,
                             success: function (dataBaseMap) {
-                                let name = dataBaseMap["name"]["en"];
+                                let isActive = false;
+                                let name = dataBaseMap["name"][_language];
                                 let type = dataBaseMap["type"];
                                 let extras = dataBaseMap["extras"];
+
+
+                                console.log(name+":"+Cookies.get('baseMap'));
+                                if (Cookies.get('baseMap')) {
+
+                                    if ( name == Cookies.get('baseMap')) {
+                                        console.log(name + " is active!");
+                                        isActive=true;
+                                    }
+                                } else {
+                                    isActive=eval(value[baseMapName]);
+                                }
 
                                 switch (type) {
                                     case 'tiled':
@@ -1115,6 +1128,7 @@
                                 }
                                 if (isActive == true) {
                                     baseMaps[name].addTo(_map);
+                                    Cookies.set("baseMap",name);
                                 }
                             }
                         });
@@ -1134,6 +1148,21 @@
                     _map.on('moveend', function (e) {
                         _center = _map.getBounds().getCenter();
                         change_domain(mapName,_map.getBounds());
+                    });
+
+                    _map.on('baselayerchange', function (e) {
+                        console.log("baselayerchange:"+e.name);
+                        Cookies.set("baseMap",e.name);
+                    });
+
+                    _map.on('overlayadd', function (e) {
+                        console.log("overlayadd:"+e.name);
+                        Cookies.set(e.name,true);
+                    });
+
+                    _map.on('overlayremove', function (e) {
+                        console.log("overlayremove:"+e.name);
+                        Cookies.set(e.name,false);
                     });
 
 
@@ -1164,20 +1193,23 @@
 
 
             function change_domain(mapName, bounds) {
-                console.log("prefix:" + _prefix);
-                let new_prefix = "reg";
-                if (_zoom >= 0 && _zoom <= 6) {
-                    new_prefix = 'reg';
-                } else if (_zoom >= 7 && _zoom <= 10) {
-                    new_prefix = 'prov';
-                } else {
-                    new_prefix = 'com';
-                }
-                console.log("new_prefix:" + new_prefix);
+                if (prefix==null) {
+                    //console.log("prefix:" + _prefix);
+                    let new_prefix = "reg";
+                    if (_zoom >= 0 && _zoom <= 6) {
+                        new_prefix = 'reg';
+                    } else if (_zoom >= 7 && _zoom <= 10) {
+                        new_prefix = 'prov';
+                    } else {
+                        new_prefix = 'com';
+                    }
+                    console.log("new_prefix:" + new_prefix);
 
-                if (new_prefix != _prefix) {
-                    _prefix = new_prefix;
-                    //addInfoLayer();
+                    if (new_prefix != _prefix) {
+                        _prefix = new_prefix;
+                    }
+                } else {
+                    _prefix = prefix;
                 }
 
                 console.log("domain:" + _domain);
@@ -1186,10 +1218,6 @@
                 let boundsD02 = L.latLngBounds(L.latLng(34.40, 3.58), L.latLng(47.83, 22.26));
                 let boundsD03 = L.latLngBounds(L.latLng(39.15, 13.56), L.latLng(41.62, 16.31));
 
-                //console.log("bounds:" + bounds.getWest() + "," + bounds.getSouth() + " - " + bounds.getEast() + "," + bounds.getNorth());
-                //console.log("boundsD03:" + boundsD03.getWest() + "," + boundsD03.getSouth() + " - " + boundsD03.getEast() + "," + boundsD03.getNorth());
-                //console.log("boundsD02:" + boundsD02.getWest() + "," + boundsD02.getSouth() + " - " + boundsD02.getEast() + "," + boundsD02.getNorth());
-                //console.log("boundsD01:" + boundsD01.getWest() + "," + boundsD01.getSouth() + " - " + boundsD01.getEast() + "," + boundsD01.getNorth());
 
                 if (boundsD03.contains(bounds)) {
                     new_domain = "d03";
@@ -1198,17 +1226,16 @@
                 } else {
                     new_domain = "d01";
                 }
-                console.log("new_domain:" + new_domain);
+                //console.log("new_domain:" + new_domain);
 
                 if (new_domain != _domain) {
-                    //console.log("Remove");
+
                     _domain = new_domain;
-                    //console.log("Add")
-                    // Re-add the layers
-                    //addWindLayer();
+
 
                     let urlMap = api_url_maps + "/" + mapName;
                     //console.log("url:" + urlMap);
+
 
                     $.ajax({
                         url: urlMap,
@@ -1219,8 +1246,8 @@
 
                             $.each(dataMaps["layers"], function (index, value) {
                                 let layerName = Object.keys(value)[0];
-                                let isActive = eval(value[layerName]);
-                                console.log(layerName + ":" + isActive);
+
+                                //console.log(layerName + ":" + isActive);
 
                                 let urlLayer = api_url_layers + "/" + layerName;
                                 //console.log("url:" + urlLayer);
@@ -1229,7 +1256,8 @@
                                     url: urlLayer,
                                     async: false,
                                     success: function (dataLayer) {
-                                        let name = dataLayer["name"]["en"];
+                                        let isActive = false;
+                                        let name = dataLayer["name"][_language];
                                         let type = dataLayer["type"]
                                         let extras = dataLayer["extras"];
 
@@ -1238,11 +1266,23 @@
                                         let day = ncepDate.substring(6, 8);
 
 
+
+                                        if (Cookies.get(name)) {
+                                            isActive=eval(Cookies.get(name))
+                                            console.log(name +" is "+isActive)
+                                        } else {
+                                            console.log(name + ": not defined;")
+                                            isActive=eval(value[layerName]);
+                                            console.log("From API:"+isActive);
+                                        }
+                                        Cookies.set(name,isActive);
+
+
                                         let url = null;
 
                                         if ("url" in dataLayer) {
                                             url = dataLayer["url"];
-                                            console.log("url dataLayer:" + url);
+                                            //console.log("url dataLayer:" + url);
                                             let newUrl = url.replace("{domain}", _domain);
                                             newUrl = newUrl.replace("{prefix}", _prefix);
                                             newUrl = newUrl.replace("{year}", year);
@@ -1251,7 +1291,7 @@
                                             newUrl = newUrl.replace("{domain}", _domain);
                                             newUrl = newUrl.replace("{ncepDate}", ncepDate);
                                             url = newUrl;
-                                            console.log("url dataLayer dopo la modifica:" + url);
+                                            //console.log("url dataLayer dopo la modifica:" + url);
                                         }
 
                                         if (name in overlayMaps && overlayMaps[name] != null) {
@@ -1259,7 +1299,6 @@
                                             _controlLayers.removeLayer(overlayMaps[name]);
                                             _map.removeLayer(overlayMaps[name]);
                                         }
-
                                         let layerInstance=null;
                                         switch (type) {
                                             case 'wms':
@@ -1284,7 +1323,7 @@
                                                         //console.log(extras);
 
                                                         layerInstance = L.velocityLayer(extras);
-                                                        console.log("layer:" + layerInstance);
+                                                        //console.log("layer:" + layerInstance);
                                                     }
 
                                                 });
@@ -1294,168 +1333,40 @@
                                                 console.log("ICON TYPE");
                                                 //effettuo la chiamata all'API con ajax
 
-                                                let sizeIco = [50, 50];
-                                                let iconAnchor = [9, 21];
-                                                let popupAnchor = [20,-17];
+                                                console.log("RICHIAMO IL LAYER DI NOME: "+urlLayer);
 
                                                 $.ajax({
                                                     url:urlLayer,
                                                     async:false,
                                                     success: function(data){
-                                                        console.log("urlLayer PROVA CON ICON: "+urlLayer);
-
                                                         option_geojsonTileLayer = { clipTiles: true, };
+
                                                         geojsonOptions_geojsonTileLayer = {
                                                             style: data["style"],
                                                             pointToLayer: function (features, latlng) {
-                                                                let iconObject = null;
-
-                                                                /*  MUST FINALIZE THE CONTROL LAYER ICONS DYNAMICALLY !!!!!!!!!! */
-                                                                switch (features.properties.icon) {
-
-                                                                   case 'sunny_night.png':
-                                                                         iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][0]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][0]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
 
 
-                                                                    case 'shower1_night.png':
-                                                                         iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][1]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][1]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
+                                                                let icon = features.properties.icon;
 
-                                                                    case'cloudy2_night.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][2]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][2]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-                                                                    case'shower2_night.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][3]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][3]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-                                                                    case'cloudy1_night.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][4]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][4]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-
-                                                                    case'sunny.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][5]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][5]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-                                                                    case'cloudy1.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][6]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][6]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-
-                                                                    case'cloudy2.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][7]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][7]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-
-                                                                    case 'cloudy3.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][8]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][8]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-                                                                    case 'cloudy4.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][9]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][9]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-                                                                    case'cloudy5.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][10]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][10]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-                                                                    case'shower1.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][11]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][11]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-                                                                    case 'shower2.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][12]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][12]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-
-
-                                                                    case 'shower3.png':
-                                                                        iconObject = L.icon({
-                                                                            iconUrl: data["extras"]["icons"][13]["iconUrl"],
-                                                                            iconRetinaUrl: data["extras"]["icons"][13]["iconUrl"],
-                                                                            iconSize: sizeIco,
-                                                                            iconAnchor: iconAnchor,
-                                                                            popupAnchor: popupAnchor
-                                                                        });
-                                                                        break;
-                                                                }
-
+                                                                let iconObject = L.icon({
+                                                                    iconUrl: data["extras"]["icons"][icon]["url"],
+                                                                    iconRetinaUrl: data["extras"]["icons"][icon]["url"],
+                                                                    iconSize: data["extras"]["icons"][icon]["iconSize"],
+                                                                    iconAnchor: data["extras"]["icons"][icon]["iconAnchor"],
+                                                                    popupAnchor: data["extras"]["icons"][icon]["popupAnchor"]
+                                                                });
 
                                                                 return L.marker(latlng,{icon: iconObject});
                                                             },
                                                             filter: function (features, layer) {
+                                                                /*
                                                                 let index = features.properties.id.search(/[0-9]/);
                                                                 let get_type = features.properties.id.substring(0, index);
                                                                 return get_type == _prefix;
+
+                                                                 */
+                                                                console.log("filter:"+features.properties.id.startsWith(_prefix));
+                                                                return features.properties.id.startsWith(_prefix);
                                                             },
 
                                                             onEachFeature: function (feature, layer) {
@@ -1475,8 +1386,13 @@
                                                                         if ( "eval" in item) {
                                                                             let formula=item["eval"].replace(item["property"],"feature.properties."+item["property"]);
                                                                             value=eval(formula);
-                                                                        }
+                                                                            if(value == undefined)
+                                                                            {
+                                                                                console.log("FIND "+ item["property"] +" UNDEFINED");
+                                                                            }
 
+                                                                                console.log(item["property"]+" E' "+value);
+                                                                        }
                                                                         let unit="";
                                                                         if ("unit" in item) unit=item["unit"];
 
@@ -1487,23 +1403,25 @@
                                                                             "</tr>";
                                                                     });
 
-
                                                                     popupString +=
                                                                             "</table>" +
                                                                         "</div>";
 
                                                                     layer.bindPopup(popupString);
+
+
                                                                 }
+
                                                             }
                                                         };
 
-                                                        console.log("url ICON LAYER:"+url);
+                                                        console.log("url:"+url);
                                                         layerInstance= new L.TileLayer.GeoJSON(url, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
                                                     }
                                                 });
 
-
                                                 break;
+
                                         }
                                         if (layerInstance != null) {
                                             console.log("RICHIAMO IL LAYER: "+name);
@@ -1515,7 +1433,6 @@
                                             console.log("AGGIUNGO IN OVERLAY IL LAYER: "+name);
                                             _controlLayers.addOverlay(overlayMaps[name], name);
                                         }
-
                                     }
                                 });
                             });
@@ -1729,9 +1646,9 @@
 
     };
 
-    $.fn.MeteoUniparthenopeMap = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,mapName="muggles") {
+    $.fn.MeteoUniparthenopeMap = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,mapName="muggles",prefix=null) {
 
-        return map(this, place, prod, output, dateTime,mapName);
+        return map(this, place, prod, output, dateTime,mapName,prefix);
 
     };
 
