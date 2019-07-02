@@ -1386,12 +1386,7 @@
                                                                         if ( "eval" in item) {
                                                                             let formula=item["eval"].replace(item["property"],"feature.properties."+item["property"]);
                                                                             value=eval(formula);
-                                                                            if(value == undefined)
-                                                                            {
-                                                                                console.log("FIND "+ item["property"] +" UNDEFINED");
-                                                                            }
-
-                                                                                console.log(item["property"]+" E' "+value);
+                                                                            console.log(item["property"]+" E' "+value);
                                                                         }
                                                                         let unit="";
                                                                         if ("unit" in item) unit=item["unit"];
