@@ -429,7 +429,7 @@
             } else {
                 table.append('<tr class="legenda">' +
                     '<td width="32%" colspan="2">Forecast</td>' +
-                    '<td width="9%" class="press">Press (HPa)</td>' +
+                    '<td width="9%" class="press">Press (hPa)</td>' +
                     '<td width="9%" class="temp">Temp &deg;C</td>' +
                     '<td width="21%" colspan="2">Wind (kn)</td>' +
                     '<td width="28%">Rain (mm)</td>' +
@@ -620,9 +620,9 @@
                     title="Pressure and Temperature";
 
                     axisY = {
-                        title: "Sea Level Pressure (HPa)",
+                        title: "Sea Level Pressure (hPa)",
                         includeZero: false,
-                        suffix: " HPa"
+                        suffix: " hPa"
                     };
                     axisY2 = {
                         title: "Temperature (°C)",
@@ -639,7 +639,7 @@
                     data.push({
                         name: "slp",
                         type: "line",
-                        yValueFormatString: "##.# HPa",
+                        yValueFormatString: "##.# hPa",
                         dataPoints: dataPoints2
                     });
                 } else if (output==="wn1") {
@@ -1370,6 +1370,7 @@
                                                             onEachFeature: function (feature, layer) {
 
                                                                 if (feature.properties) {
+                                                                    console.log(feature.properties);
                                                                     let popupString =
                                                                         "<div class='popup'>" +
                                                                             "<table class='tg' style='undefined;table-layout: fixed; width: 230px'>" +
@@ -1389,11 +1390,21 @@
                                                                         let unit="";
                                                                         if ("unit" in item) unit=item["unit"];
 
-                                                                        popupString+=
-                                                                            "<tr>" +
-                                                                                "<td class='tg-j0tj'>"+item["name"]["en"]+"</td>" +
-                                                                                "<td class='tg-j0tj'>" + value + unit+"</td>" +
-                                                                            "</tr>";
+                                                                        if ("link" in item) {
+                                                                            let link=item["link"];
+                                                                            popupString +=
+                                                                                "<tr>" +
+                                                                                "<td class='tg-j0tj'></td>" +
+                                                                                "<td class='tg-j0tj'><a href='" + link + value + "'>"+item["name"]["en"]+"</a></td>" +
+                                                                                "</tr>";
+                                                                        }
+                                                                        else {
+                                                                            popupString +=
+                                                                                "<tr>" +
+                                                                                "<td class='tg-j0tj'>" + item["name"]["en"] + "</td>" +
+                                                                                "<td class='tg-j0tj'>" + value + " " + unit + "</td>" +
+                                                                                "</tr>";
+                                                                        }
                                                                     });
 
                                                                     popupString +=
