@@ -128,12 +128,13 @@
     var _place=getURLParameter("place","com63049");
     var _output=getURLParameter("output","gen");
     var _hours=parseInt(getURLParameter("hours","0"));
+    var _date=getURLParameter("date","");
     var _step=parseInt(getURLParameter("step","1"));
 
 
     $( document ).ready(function() {
         console.log("ready!");
-        chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step);
+        chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,_date);
     });
 
 </script>
