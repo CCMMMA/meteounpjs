@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/ol.css"/>
     <link rel="stylesheet" href="css/webapi.min.css"/>
 
+    <script src="js/js.cookie.js"></script>
     <script src="js/jquery-1.12.4.js"></script>
     <script src="js/jquery-ui-1.12.1.js"></script>
     <script src="js/jquery-ui-sliderAccess.js"></script>
@@ -155,10 +156,16 @@
     var _output=getURLParameter("output","gen");
     var _ncepDate=getURLParameter("date",null);
     var _mapName=getURLParameter("mapName","muggles");
+    let _prefix=getURLParameter("prefix",null);
 
     jQueryProtect( document ).ready(function() {
+        console.log("PREFIX INITIALLY: "+_prefix);
 
-        map=jQueryProtect("#map").MeteoUniparthenopeMap(_place,_prod,_output,_ncepDate,_mapName);
+        if(_mapName === "universiade2019") {
+            _prefix = "UNI19";
+
+        }
+        map=jQueryProtect("#map").MeteoUniparthenopeMap(_place,_prod,_output,_ncepDate,_mapName,_prefix);
     });
 
 </script>
