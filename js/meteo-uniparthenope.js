@@ -1020,9 +1020,6 @@
 
 
 
-        let api_url_maps = 'http://127.0.0.1:5000/maps';
-        let api_url_basemaps = 'http://127.0.0.1:5000/basemaps';
-        let api_url_layers   = 'http://127.0.0.1:5000/layers';
 
         let _prod=prod;
         let _place=place;
@@ -1075,7 +1072,7 @@
             let overlayMaps = {};
             let baseMaps = {};
 
-            let urlMap = api_url_maps + "/" + mapName;
+            let urlMap = apiBaseUrl+'/v2/maps/' + mapName;
             //console.log("urlMap:" + urlMap);
 
             $.ajax({
@@ -1089,7 +1086,7 @@
 
                         //console.log(baseMapName + ":" + isActive);
 
-                        let urlBaseMap = api_url_basemaps + "/" + baseMapName;
+                        let urlBaseMap = apiBaseUrl+'/v2/basemaps/' + baseMapName;
                         //console.log("urlBaseMap:" + urlBaseMap);
 
                         $.ajax({
@@ -1115,7 +1112,7 @@
 
                                 switch (type) {
                                     case 'tiled':
-                                        url = dataBaseMap["url"];
+                                        let url = dataBaseMap["url"];
                                         baseMaps[name] = L.tileLayer(url, extras);
                                         break;
 
@@ -1233,7 +1230,7 @@
                     _domain = new_domain;
 
 
-                    let urlMap = api_url_maps + "/" + mapName;
+                    let urlMap = apiBaseUrl+'/v2/maps/' + mapName;
                     //console.log("url:" + urlMap);
 
 
@@ -1249,7 +1246,7 @@
 
                                 //console.log(layerName + ":" + isActive);
 
-                                let urlLayer = api_url_layers + "/" + layerName;
+                                let urlLayer = apiBaseUrl+'/v2/layers/' + layerName;
                                 //console.log("url:" + urlLayer);
 
                                 $.ajax({
