@@ -1193,8 +1193,9 @@
 
 
             function change_domain(mapName, bounds) {
-                if (prefix==null) {
-                    //console.log("prefix:" + _prefix);
+
+                if (prefix == null) {
+                    console.log("prefix:" + _prefix);
                     let new_prefix = "reg";
                     if (_zoom >= 0 && _zoom <= 6) {
                         new_prefix = 'reg';
@@ -1203,15 +1204,14 @@
                     } else {
                         new_prefix = 'com';
                     }
-                    console.log("new_prefix:" + new_prefix);
-
+                    console.log("new_prefix: " + new_prefix+" "+" _prefix: "+_prefix);
+                    console.log("mapName: "+mapName);
                     if (new_prefix != _prefix) {
-                        _prefix = new_prefix;
+                            _prefix = new_prefix;
                     }
                 } else {
                     _prefix = prefix;
                 }
-
                 console.log("domain:" + _domain);
                 let new_domain = "d01";
                 let boundsD01 = L.latLngBounds(L.latLng(27.64, -19.68), L.latLng(63.48, 34.80));
@@ -1365,7 +1365,8 @@
                                                                 return get_type == _prefix;
 
                                                                  */
-                                                                console.log("filter:"+features.properties.id.startsWith(_prefix));
+                                                                console.log("filter prefix:"+features.properties.id.startsWith(_prefix));
+                                                                console.log("filter:"+features.properties.id);
                                                                 return features.properties.id.startsWith(_prefix);
                                                             },
 

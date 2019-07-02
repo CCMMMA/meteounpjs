@@ -86,6 +86,12 @@
 
     jQueryProtect( document ).ready(function() {
 
+        console.log("PREFIX INITIALLY: "+_prefix);
+
+        if(_mapName === "universiade2019") {
+            _prefix = "UNI19";
+
+        }
         map=jQueryProtect("#map").MeteoUniparthenopeMap(_place,_prod,_output,_ncepDate,_mapName,_prefix);
     });
 
