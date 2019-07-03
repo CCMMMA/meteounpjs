@@ -1,4 +1,33 @@
+/*
+//
+// da Alberto Greco il 03 luglio 2019
+// modifiche apportate:
+//
+*****************************************************************
+function box(container,type="minibox",place="com63049",prod="wrf5", hours=0, titolo="#nope");
+    titolo  parametro opzionale aggiunto
+            se specificato il titolo sarà usato l'oggetto il cui ID è riportato in "titolo"
+                come area titolo
+    la funzione è stata resa sincrona (entrambe le chiamate ajax) per consentire di calcolare
+      le corrette dimensioni in tempo per poterle utilizzare in seguito.
 
+function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, step=1, titolo="#nope", riferimento="#nope");
+    titolo  parametro opzionale aggiunto (vedi function box())
+
+    riferimento
+            parametro opzionale aggiunto
+            se specificato fornirà l'altezza all'oggetto chart.
+            Dovrà essere stata già calcolata al momento della creazione.
+
+    sono state adeguate anche le seguenti funzioni:
+    $.fn.MeteoUniparthenopeBox = function( place = "com63049", prod = "wrf5", hours=0, title="#nope" );
+    $.fn.MeteoUniparthenopeDayBox = function( place = "com63049", prod = "wrf5", title="#nope" );
+    $.fn.MeteoUniparthenopeCompactBox = function( place = "com63049", prod = "wrf5", title="#nope" );
+    $.fn.MeteoUniparthenopeMiniBox = function(place = "com63049", prod = "wrf5", title="#nope" );
+    $.fn.MeteoUniparthenopeChart = function( place = "com63049", prod = "wrf5", output="gen", hours=0, step=1, title="#nope", rif="#nope" );
+
+*****************************************************************
+*/
 
 (function( $ ) {
 
@@ -361,7 +390,7 @@
         return  date.getDate()+ "/" + (date.getMonth()+1)+ "/" + date.getFullYear() + "  " + strTime;
     }
 
-    function box(container,type="minibox",place="com63049",prod="wrf5", hours=0)  {
+    function box(container,type="minibox",place="com63049",prod="wrf5", hours=0, titolo="#nope")  {
         console.log( "box:"+container );
 
         //$("#"+container).empty();
@@ -383,16 +412,27 @@
         let divBox=null;
 
         // Get the place data
-        $.getJSON( placeUrl, function( placeData ) {
+        mio={"titolo": titolo};
+        //$.getJSON( placeUrl, mio, function( placeData ) {
+        $.ajax({
+            url: placeUrl,
+            async: false,
+            success: function (placeData) {
             console.log(placeData);
 
             // Create the main container
             divBox=$('<div>');
-            divBox.attr('id','box');
+            divBox.attr('id','_box');
             divBox.attr('class','box');
 
             // Append the title
-            divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
+            //divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
+            if (titolo=="#nope"){
+              divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
+            } else {
+              $(titolo).empty();
+              $(titolo).append('<div class="title">'+placeData['long_name']['it']+'</div>');
+            }
 
             // Append the loading div
             divBox.append('<div id="loading"><img src="'+loadingUrl+'" width="100%"/></div>');
@@ -452,7 +492,11 @@
             container.append(divBox);
 
             console.log("-----------------------------------");
-            $.getJSON( timeseriesUrl, function( data ) {
+            //$.getJSON( timeseriesUrl, function( data ) {
+            $.ajax({
+                url: timeseriesUrl,
+                async: false,
+                success: function (data) {
                 let timeseriesData=data['timeseries'];
                 console.log("-------------> "+timeseriesData);
 
@@ -555,13 +599,14 @@
                 });
                 $('#loading').hide();
                 $('#table').show();
-            });
-        });
+            }});
+        }});
         return divBox;
     };
 
-    function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, step=1)  {
+    function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, step=1, titolo="#nope", riferimento="#nope")  {
         console.log( "chart:"+container );
+        console.log( "titolo:"+titolo);
 
         //$("#"+container).empty();
         container.empty();
@@ -577,20 +622,33 @@
         let divBox=null;
 
         // Get the place data
-        $.getJSON( placeUrl, function( placeData ) {
+        mio={"titolo": titolo, "riferimento": riferimento};
+        $.getJSON( placeUrl, mio, function( placeData ) {
             console.log(placeData);
 
             // Create the main container
             divBox=$('<div>');
-            divBox.attr('id','box');
+            divBox.attr('id','_box');
             divBox.attr('class','box');
 
             // Append the title
-            divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
+            //divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
+            if (titolo=="#nope"){
+              divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
+            } else {
+              $(titolo).empty();
+              $(titolo).append('<div class="title">'+placeData['long_name']['it']+'</div>');
+            }
+
+            if (riferimento=="#nope"){
+              altezza="inherit";
+            } else {
+              altezza=$(riferimento).css("height");
+            }
 
             // Append the loading div
             divBox.append('<div id="chart-loadingDiv"><img src="'+loadingUrl+'" width="100%"/></div>');
-            divBox.append('<div id="chart-container-canvasDiv" style="height: inherit; width: inherit; display:none"></div>');
+            divBox.append('<div id="chart-container-canvasDiv" style="height: '+altezza+'; width: inherit; display:none"></div>');
 
             // Create the ink container
             /*
@@ -1370,7 +1428,6 @@
                                                             onEachFeature: function (feature, layer) {
 
                                                                 if (feature.properties) {
-                                                                    console.log(feature.properties);
                                                                     let popupString =
                                                                         "<div class='popup'>" +
                                                                             "<table class='tg' style='undefined;table-layout: fixed; width: 230px'>" +
@@ -1390,21 +1447,11 @@
                                                                         let unit="";
                                                                         if ("unit" in item) unit=item["unit"];
 
-                                                                        if ("link" in item) {
-                                                                            let link=item["link"];
-                                                                            popupString +=
-                                                                                "<tr>" +
-                                                                                "<td class='tg-j0tj'></td>" +
-                                                                                "<td class='tg-j0tj'><a href='" + link + value + "'>"+item["name"]["en"]+"</a></td>" +
-                                                                                "</tr>";
-                                                                        }
-                                                                        else {
-                                                                            popupString +=
-                                                                                "<tr>" +
-                                                                                "<td class='tg-j0tj'>" + item["name"]["en"] + "</td>" +
-                                                                                "<td class='tg-j0tj'>" + value + " " + unit + "</td>" +
-                                                                                "</tr>";
-                                                                        }
+                                                                        popupString+=
+                                                                            "<tr>" +
+                                                                                "<td class='tg-j0tj'>"+item["name"]["en"]+"</td>" +
+                                                                                "<td class='tg-j0tj'>" + value + unit+"</td>" +
+                                                                            "</tr>";
                                                                     });
 
                                                                     popupString +=
@@ -1464,7 +1511,7 @@
         function update() {
 
             console.log("UPDATE: place:"+_place+" prod:"+_prod+" output:"+_output+" ncepDate:"+_ncepDate);
-            divControl.trigger( "update", [ _place, _prod, _output, _ncepDate ] );
+            divControl.trigger( "update", [ _place, _prod, _output, _ncepDate, "#box" ] );
         }
 
         //$("#"+container).empty();
@@ -1482,13 +1529,21 @@
             '</div>'+
 
             //'<div id="control-container-datetimepicker"></div>'+
-            '<input type="text" id="control-container-datetimepicker">'+
+            '<div class="ui-widget">'+
+            '<div style="display: inline-block">'+
+            '<label for="control-container-datetimepicker">Date & time:</label><input type="text" id="control-container-datetimepicker"> '+
+            '</div>'+
 
+            '<div style="display: inline-block">'+
             '<label for="control-container-product">Product:</label>'+
-            '<select name="control-container-product" id="control-container-product"></select>'+
+            '<select name="control-container-product" id="control-container-product"></select> '+
+            '</div>'+
 
+            '<div style="display: inline-block">'+
             '<label for="control-container-output">Output:</label>'+
             '<select name="control-container-output" id="control-container-output"></select>'+
+            '</div>'+
+            '</div>'+
             '</fieldset>'
         );
 
@@ -1613,34 +1668,33 @@
         return divControl;
     };
 
-    $.fn.MeteoUniparthenopeBox = function( place = "com63049", prod = "wrf5", hours=0 ) {
+    $.fn.MeteoUniparthenopeBox = function( place = "com63049", prod = "wrf5", hours=0, title="#nope" ) {
 
-        return box(this, "", place, prod, hours);
+        return box(this, "", place, prod, hours, title);
+
+    };
+
+    $.fn.MeteoUniparthenopeDayBox = function( place = "com63049", prod = "wrf5", title="#nope" ) {
+
+        return box(this, "daybox", place, prod, 0, title);
+
+    };
+
+    $.fn.MeteoUniparthenopeCompactBox = function( place = "com63049", prod = "wrf5", title="#nope" ) {
+
+        return box(this, "compactbox", place, prod,0, title);
+
+    };
+    $.fn.MeteoUniparthenopeMiniBox = function(place = "com63049", prod = "wrf5", title="#nope" ) {
+
+        return box(this, "minibox", place, prod, 0, title);
 
     };
 
 
-    $.fn.MeteoUniparthenopeDayBox = function( place = "com63049", prod = "wrf5" ) {
+    $.fn.MeteoUniparthenopeChart = function( place = "com63049", prod = "wrf5", output="gen", hours=0, step=1, title="#nope", rif="#nope" ) {
 
-        return box(this, "daybox", place, prod);
-
-    };
-
-    $.fn.MeteoUniparthenopeCompactBox = function( place = "com63049", prod = "wrf5" ) {
-
-        return box(this, "compactbox", place, prod);
-
-    };
-
-    $.fn.MeteoUniparthenopeMiniBox = function(place = "com63049", prod = "wrf5" ) {
-
-        return box(this, "minibox", place, prod);
-
-    };
-
-    $.fn.MeteoUniparthenopeChart = function( place = "com63049", prod = "wrf5", output="gen", hours=0, step=1 ) {
-
-        return chart(this, place, prod, output, hours, step);
+        return chart(this, place, prod, output, hours, step, title, rif);
 
     };
 
@@ -1664,10 +1718,3 @@
 
 
 })( jQueryProtect); // Use jQuery protected.
-
-
-
-
-
-
-
