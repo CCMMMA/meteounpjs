@@ -29,18 +29,20 @@ https://github.com/trentrichardson/jQuery-Timepicker-Addon
 <body>
 
 
+  <div id="control"></div>
 
     <table>
         <tr>
-            <td valign="top">
-                <div id="box"  ></div>
+            <td valign="top" width="60%">
+                <div id="titolo1"></div>
+                <div id="chart"></div>
             </td>
-            <td valign="top" width="100%">
-                <div id="chart" ></div>
+            <td valign="top" width="40%">
+                <div id="titolo2"></div>
+                <div id="box"  ></div>
             </td>
         </tr>
     </table>
-    <div id="control"></div>
     <table>
         <!--
         <tr>
@@ -84,8 +86,8 @@ https://github.com/trentrichardson/jQuery-Timepicker-Addon
         $( document ).ready(function() {
             console.log("ready!");
 
-            chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step);
-            box=$("#box").MeteoUniparthenopeDayBox(_place);
+            box=$("#box").MeteoUniparthenopeDayBox(_place,_prod,"#titolo1");
+            chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,"#titolo2","#box");
             plot=$("#plot").MeteoUniparthenopePlot(_place,_prod,_output,_ncepDate,
                 "topBarImage",
                 "leftBarImage",
@@ -100,11 +102,11 @@ https://github.com/trentrichardson/jQuery-Timepicker-Addon
 
                 plot.update(place,prod,output,ncepDate);
                 if (place !== _place) {
-                    chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step);
-                    box=$("#box").MeteoUniparthenopeDayBox(place);
+                    box=$("#box").MeteoUniparthenopeDayBox(place,prod,"#titolo1");
+                    chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,"#titolo2","#box");
                 }
                 else if (prod!==_prod || output !== _output) {
-                    chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step);
+                    chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,"#titolo2","#box");
                 }
 
                 _prod=prod;
