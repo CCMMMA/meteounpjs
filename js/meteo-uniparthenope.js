@@ -1053,7 +1053,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         return divPlot;
     };
 
-    function map(container,place="com63049",prod="wrf5",output="gen",ncepDate=null,options=null)  {
+    function map(container,place="com63049",ncepDate=null,options=null)  {
         let userLang = navigator.language || navigator.userLanguage;
         console.log( "map:"+options);
         console.log( "userLang:"+userLang);
@@ -1064,7 +1064,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         let _customPrefix=null;
         let _noPopup=false;
 
-        if (options!=null) {
+        if (options!==null) {
             if ("language" in options) {
                 _language=options["language"];
             }
@@ -1086,10 +1086,10 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         }
 
         if (ncepDate==null) {
-            if (prod !== "rdr1" && prod !== "rdr2") {
-                let dateTime = new Date();
-                ncepDate = dateTime.getFullYear() + pad(dateTime.getMonth() + 1, 2) + pad(dateTime.getDate(), 2) + "Z" + pad(dateTime.getHours(), 2) + "00";
-            }
+
+            let dateTime = new Date();
+            ncepDate = dateTime.getFullYear() + pad(dateTime.getMonth() + 1, 2) + pad(dateTime.getDate(), 2) + "Z" + pad(dateTime.getHours(), 2) + "00";
+
         }
 
 
@@ -1103,12 +1103,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
 
 
-/*
-        let _prod=prod;
-        let _place=place;
-        let _output=output;
-        let _ncepdate=ncepDate;
-*/
+
 
         //$("#"+container).empty();
         container.empty();
@@ -1259,12 +1254,12 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                     /*****************************************/
 
-                    divMap.update = function (place, prod, output, ncepDate) {
+                    divMap.update = function (place, ncepDate) {
 
                         change_domain(_mapName,_map.getBounds());
                     };
 
-                    divMap.update(place, prod, output, ncepDate);
+                    divMap.update(place, ncepDate);
 
 
                     return divMap;
@@ -1698,30 +1693,38 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         divControl.attr('id','control-container');
 
         // Append the title
-        divControl.append('<fieldset>'+
-            '<div class="ui-widget">'+
-            '  <label for="control-container-places">Places: </label>'+
-            '  <input id="control-container-places">'+
-            '</div>'+
+        let controlsHtml='<fieldset>';
+        if (place!=null) {
+            controlsHtml+='<div class="ui-widget">'+
+                '  <label for="control-container-places">Places: </label>'+
+                '  <input id="control-container-places">'+
+                '</div>';
+        }
+        controlsHtml+='<div class="ui-widget">';
 
-            //'<div id="control-container-datetimepicker"></div>'+
-            '<div class="ui-widget">'+
-            '<div style="display: inline-block">'+
+        controlsHtml+='<div style="display: inline-block">'+
             '<label for="control-container-datetimepicker">Date & time:</label><input type="text" id="control-container-datetimepicker"> '+
-            '</div>'+
+            '</div>';
 
-            '<div style="display: inline-block">'+
-            '<label for="control-container-product">Product:</label>'+
-            '<select name="control-container-product" id="control-container-product"></select> '+
-            '</div>'+
+        if (prod!=null) {
+            controlsHtml+='<div style="display: inline-block">'+
+                '<label for="control-container-product">Product:</label>'+
+                '<select name="control-container-product" id="control-container-product"></select> '+
+                '</div>';
+        }
 
-            '<div style="display: inline-block">'+
-            '<label for="control-container-output">Output:</label>'+
-            '<select name="control-container-output" id="control-container-output"></select>'+
-            '</div>'+
-            '</div>'+
-            '</fieldset>'
-        );
+        if (output!=null) {
+            controlsHtml+='<div style="display: inline-block">'+
+                '<label for="control-container-output">Output:</label>'+
+                '<select name="control-container-output" id="control-container-output"></select>'+
+                '</div>';
+        }
+
+        controlsHtml+='</div>';
+        controlsHtml+='</fieldset>';
+
+        divControl.append(controlsHtml);
+
 
         container.append(divControl);
 
@@ -1880,9 +1883,9 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
     };
 
-    $.fn.MeteoUniparthenopeMap = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,options=null) {
+    $.fn.MeteoUniparthenopeMap = function(place = "com63049",  dateTime=null,options=null) {
 
-        return map(this, place, prod, output, dateTime,options);
+        return map(this, place, dateTime,options);
 
     };
 
