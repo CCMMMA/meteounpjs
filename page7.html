@@ -82,17 +82,11 @@
     let _output=getURLParameter("output","gen");
     let _ncepDate=getURLParameter("date",null);
     let _mapName=getURLParameter("mapName","muggles");
-    let _prefix=getURLParameter("prefix",null);
+
 
     jQueryProtect( document ).ready(function() {
 
-        console.log("PREFIX INITIALLY: "+_prefix);
-
-        if(_mapName === "universiade2019") {
-            _prefix = "UNI19";
-
-        }
-        map=jQueryProtect("#map").MeteoUniparthenopeMap(_place,_prod,_output,_ncepDate,_mapName,_prefix);
+        map=jQueryProtect("#map").MeteoUniparthenopeMap(_place,_prod,_output,_ncepDate,{ "mapName":_mapName,"baseLink":"https://meteo.uniparthenope.it/product_dashboard/dashboard?"});
     });
 
 </script>
