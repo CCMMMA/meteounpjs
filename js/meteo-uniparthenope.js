@@ -1080,13 +1080,13 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                 _customPrefix=options["customPrefix"];
             }
 
-            if ("noPopup" in options && options["noPopup"]==true) {
+            if ("noPopup" in options && options["noPopup"]===true) {
                 _noPopup=true;
             }
         }
 
         if (ncepDate==null) {
-            if (prod != "rdr1" && prod != "rdr2") {
+            if (prod !== "rdr1" && prod !== "rdr2") {
                 let dateTime = new Date();
                 ncepDate = dateTime.getFullYear() + pad(dateTime.getMonth() + 1, 2) + pad(dateTime.getDate(), 2) + "Z" + pad(dateTime.getHours(), 2) + "00";
             }
@@ -1231,17 +1231,17 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     });
 
                     _map.on('baselayerchange', function (e) {
-                        console.log("baselayerchange:"+e.name);
+                        //console.log("baselayerchange:"+e.name);
                         Cookies.set("baseMap",e.name);
                     });
 
                     _map.on('overlayadd', function (e) {
-                        console.log("overlayadd:"+e.name);
+                        //console.log("overlayadd:"+e.name);
                         Cookies.set(e.name,true);
                     });
 
                     _map.on('overlayremove', function (e) {
-                        console.log("overlayremove:"+e.name);
+                        //console.log("overlayremove:"+e.name);
                         Cookies.set(e.name,false);
                     });
 
@@ -1273,10 +1273,14 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
 
             function change_domain(mapName, bounds) {
+                console.log("mapName: "+mapName);
+                console.log("_zoom:" + _zoom);
 
-                if (_customPrefix == null) {
-                    console.log("prefix:" + _prefix);
-                    let new_prefix = "reg";
+                let new_prefix=null;
+
+                if (_customPrefix!=null) {
+                    new_prefix=_customPrefix;
+                } else {
                     if (_zoom >= 0 && _zoom <= 6) {
                         new_prefix = 'reg';
                     } else if (_zoom >= 7 && _zoom <= 10) {
@@ -1284,16 +1288,12 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     } else {
                         new_prefix = 'com';
                     }
-                    console.log("new_prefix: " + new_prefix+" "+" _prefix: "+_prefix);
-                    console.log("mapName: "+mapName);
-                    if (new_prefix != _prefix) {
-                            _prefix = new_prefix;
-                    }
-                } else {
-                    _prefix = _customPrefix;
                 }
-                console.log("domain:" + _domain);
-                let new_domain = "d01";
+
+
+
+
+                let new_domain = null;
                 let boundsD01 = L.latLngBounds(L.latLng(27.64, -19.68), L.latLng(63.48, 34.80));
                 let boundsD02 = L.latLngBounds(L.latLng(34.40, 3.58), L.latLng(47.83, 22.26));
                 let boundsD03 = L.latLngBounds(L.latLng(39.15, 13.56), L.latLng(41.62, 16.31));
@@ -1306,16 +1306,14 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                 } else {
                     new_domain = "d01";
                 }
-                //console.log("new_domain:" + new_domain);
 
-                if (new_domain != _domain) {
-
+                console.log("_domain: " + _domain+" "+" new_domain: "+new_domain);
+                if (new_domain !== _domain) {
                     _domain = new_domain;
-
+                    console.log("Domain change! "+_domain);
 
                     let urlMap = apiBaseUrl+'/v2/maps/' + mapName;
                     //console.log("url:" + urlMap);
-
 
                     $.ajax({
                         url: urlMap,
@@ -1374,19 +1372,27 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                             //console.log("url dataLayer dopo la modifica:" + url);
                                         }
 
-                                        if (name in overlayMaps && overlayMaps[name] != null) {
-                                            //console.log("Removing:"+name);
-                                            _controlLayers.removeLayer(overlayMaps[name]);
-                                            _map.removeLayer(overlayMaps[name]);
-                                        }
+
                                         let layerInstance=null;
                                         switch (type) {
                                             case 'wms':
+                                                if (name in overlayMaps && overlayMaps[name] != null) {
+                                                    //console.log("Removing:"+name);
+                                                    _controlLayers.removeLayer(overlayMaps[name]);
+                                                    _map.removeLayer(overlayMaps[name]);
+                                                }
+
                                                 //console.log("WMS: " + url);
                                                 layerInstance = L.tileLayer.wms(url, extras);
                                                 break;
 
                                             case 'velocity':
+                                                if (name in overlayMaps && overlayMaps[name] != null) {
+                                                    //console.log("Removing:"+name);
+                                                    _controlLayers.removeLayer(overlayMaps[name]);
+                                                    _map.removeLayer(overlayMaps[name]);
+                                                }
+
                                                 //console.log("VELOCITY:"+urlLayer);
 
 
@@ -1409,19 +1415,110 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                 });
                                                 break;
 
-                                            case 'icon':
-                                                console.log("ICON TYPE");
-                                                //effettuo la chiamata all'API con ajax
+                                        }
+                                        if (layerInstance != null) {
+                                            console.log("RICHIAMO IL LAYER: "+name);
+                                            overlayMaps[name]=layerInstance;
+                                            if (isActive) {
+                                                console.log("ATTIVO IL LAYER: "+name);
+                                                _map.addLayer(overlayMaps[name]);
+                                            }
+                                            console.log("AGGIUNGO IN OVERLAY IL LAYER: "+name);
+                                            _controlLayers.addOverlay(overlayMaps[name], name);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
 
-                                                console.log("RICHIAMO IL LAYER DI NOME: "+urlLayer);
+                //++++++
+                console.log("_prefix: " + _prefix+" "+" new_prefix: "+new_prefix);
+                if (new_prefix !== _prefix) {
+                    _prefix = new_prefix;
+                    console.log("Prefix change! "+_prefix);
+
+                    let urlMap = apiBaseUrl+'/v2/maps/' + mapName;
+                    //console.log("url:" + urlMap);
+
+                    $.ajax({
+                        url: urlMap,
+                        async: true,
+                        success: function (dataMaps) {
+                            //console.log("BEGIN");
+
+
+                            $.each(dataMaps["layers"], function (index, value) {
+                                let layerName = Object.keys(value)[0];
+
+                                //console.log(layerName + ":" + isActive);
+
+                                let urlLayer = apiBaseUrl+'/v2/layers/' + layerName;
+                                //console.log("url:" + urlLayer);
+
+                                $.ajax({
+                                    url: urlLayer,
+                                    async: false,
+                                    success: function (dataLayer) {
+                                        let isActive = false;
+                                        let name = dataLayer["name"][_language];
+                                        let type = dataLayer["type"]
+                                        let extras = dataLayer["extras"];
+
+                                        let year = ncepDate.substring(0, 4);
+                                        let month = ncepDate.substring(4, 6);
+                                        let day = ncepDate.substring(6, 8);
+
+
+
+                                        if (Cookies.get(name)) {
+                                            isActive=eval(Cookies.get(name))
+                                            console.log(name +" is "+isActive)
+                                        } else {
+                                            console.log(name + ": not defined;")
+                                            isActive=eval(value[layerName]);
+                                            console.log("From API:"+isActive);
+                                        }
+                                        Cookies.set(name,isActive);
+
+
+                                        let url = null;
+
+                                        if ("url" in dataLayer) {
+                                            url = dataLayer["url"];
+                                            //console.log("url dataLayer:" + url);
+                                            let newUrl = url.replace("{domain}", _domain);
+                                            newUrl = newUrl.replace("{prefix}", _prefix);
+                                            newUrl = newUrl.replace("{year}", year);
+                                            newUrl = newUrl.replace("{month}", month);
+                                            newUrl = newUrl.replace("{day}", day);
+                                            newUrl = newUrl.replace("{domain}", _domain);
+                                            newUrl = newUrl.replace("{ncepDate}", ncepDate);
+                                            url = newUrl;
+                                            //console.log("url dataLayer dopo la modifica:" + url);
+                                        }
+
+
+                                        let layerInstance=null;
+                                        switch (type) {
+
+                                            case 'icon':
+                                                console.log("Icon Type url: "+urlLayer);
+
+                                                if (name in overlayMaps && overlayMaps[name] != null) {
+                                                    //console.log("Removing:"+name);
+                                                    _controlLayers.removeLayer(overlayMaps[name]);
+                                                    _map.removeLayer(overlayMaps[name]);
+                                                }
 
                                                 $.ajax({
                                                     url:urlLayer,
                                                     async:false,
                                                     success: function(data){
-                                                        option_geojsonTileLayer = { clipTiles: true, };
+                                                        let option_geojsonTileLayer = { clipTiles: true, };
 
-                                                        geojsonOptions_geojsonTileLayer = {
+                                                        let geojsonOptions_geojsonTileLayer = {
                                                             style: data["style"],
                                                             pointToLayer: function (features, latlng) {
 
@@ -1440,14 +1537,20 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                             },
                                                             filter: function (features, layer) {
                                                                 /*
+                                                                console.log("_prefix:"+_prefix);
+                                                                console.log("filter prefix:" + features.properties.id.startsWith(_prefix));
+                                                                console.log("filter:" + features.properties.id);
+                                                                */
+                                                                /*
                                                                 let index = features.properties.id.search(/[0-9]/);
                                                                 let get_type = features.properties.id.substring(0, index);
                                                                 return get_type == _prefix;
-
                                                                  */
-                                                                console.log("filter prefix:"+features.properties.id.startsWith(_prefix));
-                                                                console.log("filter:"+features.properties.id);
+                                                                /*
+
                                                                 return features.properties.id.startsWith(_prefix);
+                                                                */
+                                                                return true;
                                                             },
 
                                                             onEachFeature: function (feature, layer) {
@@ -1492,10 +1595,11 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                                             if ("eval" in item) {
                                                                                 let formula = item["eval"].replace(item["property"], "feature.properties." + item["property"]);
                                                                                 value = eval(formula);
-                                                                                console.log(item["property"] + " E' " + value);
                                                                             }
                                                                             let unit = "";
-                                                                            if ("unit" in item) unit = item["unit"];
+                                                                            if ("unit" in item) {
+                                                                                unit = item["unit"];
+                                                                            }
 
                                                                             if ("link" in item) {
                                                                                 let link = _baseLink;
