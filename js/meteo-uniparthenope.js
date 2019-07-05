@@ -1053,12 +1053,37 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         return divPlot;
     };
 
-    function map(container,place="com63049",prod="wrf5",output="gen",ncepDate=null,mapName="muggles",prefix=null)  {
-        console.log( "map");
+    function map(container,place="com63049",prod="wrf5",output="gen",ncepDate=null,options=null)  {
+        let userLang = navigator.language || navigator.userLanguage;
+        console.log( "map:"+options);
+        console.log( "userLang:"+userLang);
 
+        let _baseLink=window.location.href;
+        let _mapName="muggles";
         let _language="en";
+        let _customPrefix=null;
+        let _noPopup=false;
 
+        if (options!=null) {
+            if ("language" in options) {
+                _language=options["language"];
+            }
+            if ("mapName" in options) {
+                _mapName=options["mapName"];
+            }
 
+            if ("baseLink" in options) {
+                _baseLink=options["baseLink"];
+            }
+
+            if ("customPrefix" in options) {
+                _customPrefix=options["customPrefix"];
+            }
+
+            if ("noPopup" in options && options["noPopup"]==true) {
+                _noPopup=true;
+            }
+        }
 
         if (ncepDate==null) {
             if (prod != "rdr1" && prod != "rdr2") {
@@ -1078,12 +1103,12 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
 
 
-
+/*
         let _prod=prod;
         let _place=place;
         let _output=output;
         let _ncepdate=ncepDate;
-
+*/
 
         //$("#"+container).empty();
         container.empty();
@@ -1130,7 +1155,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             let overlayMaps = {};
             let baseMaps = {};
 
-            let urlMap = apiBaseUrl+'/v2/maps/' + mapName;
+            let urlMap = apiBaseUrl+'/v2/maps/' + _mapName;
             //console.log("urlMap:" + urlMap);
 
             $.ajax({
@@ -1197,12 +1222,12 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     // Evento sulla modifica dello zoom della mappa
                     _map.on('zoomend', function () {
                         _zoom = _map.getZoom();
-                        change_domain(mapName,_map.getBounds());
+                        change_domain(_mapName,_map.getBounds());
                     });
 
                     _map.on('moveend', function (e) {
                         _center = _map.getBounds().getCenter();
-                        change_domain(mapName,_map.getBounds());
+                        change_domain(_mapName,_map.getBounds());
                     });
 
                     _map.on('baselayerchange', function (e) {
@@ -1236,7 +1261,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                     divMap.update = function (place, prod, output, ncepDate) {
 
-                        change_domain(mapName,_map.getBounds());
+                        change_domain(_mapName,_map.getBounds());
                     };
 
                     divMap.update(place, prod, output, ncepDate);
@@ -1249,7 +1274,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
             function change_domain(mapName, bounds) {
 
-                if (prefix == null) {
+                if (_customPrefix == null) {
                     console.log("prefix:" + _prefix);
                     let new_prefix = "reg";
                     if (_zoom >= 0 && _zoom <= 6) {
@@ -1265,7 +1290,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                             _prefix = new_prefix;
                     }
                 } else {
-                    _prefix = prefix;
+                    _prefix = _customPrefix;
                 }
                 console.log("domain:" + _domain);
                 let new_domain = "d01";
@@ -1447,11 +1472,34 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                                         let unit="";
                                                                         if ("unit" in item) unit=item["unit"];
 
-                                                                        popupString+=
-                                                                            "<tr>" +
-                                                                                "<td class='tg-j0tj'>"+item["name"]["en"]+"</td>" +
-                                                                                "<td class='tg-j0tj'>" + value + unit+"</td>" +
+                                                                        if ("link" in item) {
+                                                                            let link=_baseLink;
+                                                                            if (link.endsWith("?")) {
+                                                                                link = link + value;
+                                                                            } else {
+                                                                                var arr = link.split('?');
+                                                                                if (link.length > 1 && arr[1] !== '') {
+                                                                                    link = link + "&" + value;
+                                                                                } else {
+                                                                                    link = link + "?" + value;
+                                                                                }
+
+                                                                            }
+
+                                                                            popupString+=
+                                                                            "<tr>"+
+                                                                                "<td class='tg-j0tj'></td>" +
+                                                                                "<td class='tg-j0tj'><a href='" + link + "'>"+item["name"][_language]+"</a></td>" +
                                                                             "</tr>";
+                                                                        }
+                                                                        else {
+
+                                                                            popupString +=
+                                                                                "<tr>" +
+                                                                                "<td class='tg-j0tj'>" + item["name"][_language] + "</td>" +
+                                                                                "<td class='tg-j0tj'>" + value + unit + "</td>" +
+                                                                                "</tr>";
+                                                                        }
                                                                     });
 
                                                                     popupString +=
@@ -1704,9 +1752,9 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
     };
 
-    $.fn.MeteoUniparthenopeMap = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,mapName="muggles",prefix=null) {
+    $.fn.MeteoUniparthenopeMap = function(place = "com63049", prod = "wrf5", output="gen", dateTime=null,options=null) {
 
-        return map(this, place, prod, output, dateTime,mapName,prefix);
+        return map(this, place, prod, output, dateTime,options);
 
     };
 
