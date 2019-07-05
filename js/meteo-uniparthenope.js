@@ -1453,61 +1453,85 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                             onEachFeature: function (feature, layer) {
 
                                                                 if (feature.properties) {
-                                                                    let popupString =
-                                                                        "<div class='popup'>" +
-                                                                            "<table class='tg' style='undefined;table-layout: fixed; width: 230px'>" +
-                                                                                "<colgroup>" +
-                                                                                    "<col style='width: 85px'>" +
-                                                                                    "<col style='width: 60px'>" +
-                                                                                "</colgroup>";
-
-                                                                    $.each(data["extras"]["popup"],function (index, item) {
-
-                                                                        let value=feature.properties[item["property"]];
-                                                                        if ( "eval" in item) {
-                                                                            let formula=item["eval"].replace(item["property"],"feature.properties."+item["property"]);
-                                                                            value=eval(formula);
-                                                                            console.log(item["property"]+" E' "+value);
-                                                                        }
-                                                                        let unit="";
-                                                                        if ("unit" in item) unit=item["unit"];
-
-                                                                        if ("link" in item) {
-                                                                            let link=_baseLink;
-                                                                            if (link.endsWith("?")) {
-                                                                                link = link + value;
-                                                                            } else {
-                                                                                var arr = link.split('?');
-                                                                                if (link.length > 1 && arr[1] !== '') {
-                                                                                    link = link + "&" + value;
+                                                                    if (_noPopup==true) {
+                                                                        let link = _baseLink;
+                                                                        $.each(data["extras"]["popup"], function (index, item) {
+                                                                            if ("link" in item) {
+                                                                                let value = feature.properties[item["property"]];
+                                                                                if (link.endsWith("?")) {
+                                                                                    link = link + value;
                                                                                 } else {
-                                                                                    link = link + "?" + value;
-                                                                                }
+                                                                                    var arr = link.split('?');
+                                                                                    if (link.length > 1 && arr[1] !== '') {
+                                                                                        link = link + "&" + value;
+                                                                                    } else {
+                                                                                        link = link + "?" + value;
+                                                                                    }
 
+                                                                                }
                                                                             }
 
-                                                                            popupString+=
-                                                                            "<tr>"+
-                                                                                "<td class='tg-j0tj'></td>" +
-                                                                                "<td class='tg-j0tj'><a href='" + link + "'>"+item["name"][_language]+"</a></td>" +
-                                                                            "</tr>";
-                                                                        }
-                                                                        else {
+                                                                        });
 
-                                                                            popupString +=
-                                                                                "<tr>" +
-                                                                                "<td class='tg-j0tj'>" + item["name"][_language] + "</td>" +
-                                                                                "<td class='tg-j0tj'>" + value + unit + "</td>" +
-                                                                                "</tr>";
-                                                                        }
-                                                                    });
+                                                                        layer.on('click', function (e) {
+                                                                            window.open(link);
+                                                                        });
 
-                                                                    popupString +=
+                                                                    } else {
+                                                                        let popupString =
+                                                                            "<div class='popup'>" +
+                                                                            "<table class='tg' style='undefined;table-layout: fixed; width: 230px'>" +
+                                                                            "<colgroup>" +
+                                                                            "<col style='width: 85px'>" +
+                                                                            "<col style='width: 60px'>" +
+                                                                            "</colgroup>";
+
+                                                                        $.each(data["extras"]["popup"], function (index, item) {
+
+                                                                            let value = feature.properties[item["property"]];
+                                                                            if ("eval" in item) {
+                                                                                let formula = item["eval"].replace(item["property"], "feature.properties." + item["property"]);
+                                                                                value = eval(formula);
+                                                                                console.log(item["property"] + " E' " + value);
+                                                                            }
+                                                                            let unit = "";
+                                                                            if ("unit" in item) unit = item["unit"];
+
+                                                                            if ("link" in item) {
+                                                                                let link = _baseLink;
+                                                                                if (link.endsWith("?")) {
+                                                                                    link = link + value;
+                                                                                } else {
+                                                                                    var arr = link.split('?');
+                                                                                    if (link.length > 1 && arr[1] !== '') {
+                                                                                        link = link + "&" + value;
+                                                                                    } else {
+                                                                                        link = link + "?" + value;
+                                                                                    }
+
+                                                                                }
+
+                                                                                popupString +=
+                                                                                    "<tr>" +
+                                                                                    "<td class='tg-j0tj'></td>" +
+                                                                                    "<td class='tg-j0tj'><a href='" + link + "'>" + item["name"][_language] + "</a></td>" +
+                                                                                    "</tr>";
+                                                                            } else {
+
+                                                                                popupString +=
+                                                                                    "<tr>" +
+                                                                                    "<td class='tg-j0tj'>" + item["name"][_language] + "</td>" +
+                                                                                    "<td class='tg-j0tj'>" + value + unit + "</td>" +
+                                                                                    "</tr>";
+                                                                            }
+                                                                        });
+
+                                                                        popupString +=
                                                                             "</table>" +
-                                                                        "</div>";
+                                                                            "</div>";
 
-                                                                    layer.bindPopup(popupString);
-
+                                                                        layer.bindPopup(popupString);
+                                                                    }
 
                                                                 }
 
