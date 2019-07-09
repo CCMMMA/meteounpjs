@@ -65,6 +65,7 @@
 
     <div class="very-specific-design" id="very-specific-design">
 
+        <div id="title"></div>
         <div id="chart" style="width: 1024px; height: 512px"></div>
 
     </div>
@@ -108,9 +109,9 @@
 
     function getURLParameter(sParam, defaultValue) {
 
-        var sPageURL = window.location.search.substring(1);
+        let sPageURL = window.location.search.substring(1);
 
-        var sURLVariables = sPageURL.split('&');
+        let sURLVariables = sPageURL.split('&');
 
         for (var i = 0; i < sURLVariables.length; i++) {
             var sParameterName = sURLVariables[i].split('=');
@@ -122,19 +123,20 @@
         return defaultValue;
     }
 
-    var chart=null;
+    let chart=null;
 
-    var _prod=getURLParameter("prod","wrf5");
-    var _place=getURLParameter("place","com63049");
-    var _output=getURLParameter("output","gen");
-    var _hours=parseInt(getURLParameter("hours","0"));
-    var _date=getURLParameter("date","");
-    var _step=parseInt(getURLParameter("step","1"));
+    let _prod=getURLParameter("prod","wrf5");
+    let _place=getURLParameter("place","com63049");
+    let _output=getURLParameter("output","gen");
+    let _hours=parseInt(getURLParameter("hours","0"));
+    let _ncepDate=getURLParameter("date",null);
+    let _step=parseInt(getURLParameter("step","1"));
+
 
 
     $( document ).ready(function() {
         console.log("ready!");
-        chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,_date);
+        chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,_ncepDate,$('#title'));
     });
 
 </script>

@@ -87,7 +87,7 @@ https://github.com/trentrichardson/jQuery-Timepicker-Addon
             console.log("ready!");
 
             box=$("#box").MeteoUniparthenopeDayBox(_place,_prod,"#titolo1");
-            chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,"#titolo2","#box");
+            chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,null,$("#titolo2"));
             plot=$("#plot").MeteoUniparthenopePlot(_place,_prod,_output,_ncepDate,
                 "topBarImage",
                 "leftBarImage",
@@ -103,10 +103,10 @@ https://github.com/trentrichardson/jQuery-Timepicker-Addon
                 plot.update(place,prod,output,ncepDate);
                 if (place !== _place) {
                     box=$("#box").MeteoUniparthenopeDayBox(place,prod,"#titolo1");
-                    chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,"#titolo2","#box");
+                    chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,null,$("#titolo2"));
                 }
                 else if (prod!==_prod || output !== _output) {
-                    chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,"#titolo2","#box");
+                    chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,null,$("#titolo2"));
                 }
 
                 _prod=prod;
