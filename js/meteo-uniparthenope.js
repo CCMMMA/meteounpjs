@@ -604,9 +604,21 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         return divBox;
     };
 
-    function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, step=1, titolo="#nope", riferimento="#nope")  {
-        console.log( "chart:"+container );
-        console.log( "titolo:"+titolo);
+    function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, step=1,  ncepDate=null, titleContainer=null)  {
+        console.log( "chart:"+container);
+        if (titleContainer!=null) {
+            console.log("title:" + titleContainer["selector"]);
+        }
+
+        if (ncepDate==null) {
+
+            let dateTime = new Date();
+            ncepDate = dateTime.getFullYear() + pad(dateTime.getMonth() + 1, 2) + pad(dateTime.getDate(), 2) + "Z" + "00" + "00";
+
+        }
+
+        let baseName=container["selector"].replace("#","");
+
 
         //$("#"+container).empty();
         container.empty();
@@ -615,40 +627,40 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         let placeUrl=apiBaseUrl+"/places/"+place;
 
 
-        let timeseriesUrl=apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?hours="+hours+"&step="+step;
+        let timeseriesUrl=apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?hours="+hours+"&step="+step+"&date="+ncepDate;
         console.log("placeUrl: "+placeUrl);
         console.log("timeseriesUrl: "+timeseriesUrl);
 
         let divBox=null;
 
         // Get the place data
-        mio={"titolo": titolo, "riferimento": riferimento};
-        $.getJSON( placeUrl, mio, function( placeData ) {
+        $.getJSON( placeUrl, function( placeData ) {
             console.log(placeData);
 
             // Create the main container
             divBox=$('<div>');
-            divBox.attr('id','_box');
+            divBox.attr('id',baseName+'-box');
             divBox.attr('class','box');
 
             // Append the title
-            //divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
-            if (titolo=="#nope"){
+            /*
+            if (titleContainer==null){
               divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
             } else {
-              $(titolo).empty();
-              $(titolo).append('<div class="title">'+placeData['long_name']['it']+'</div>');
+                titleContainer.empty();
+                titleContainer.append('<div class="title">'+placeData['long_name']['it']+'</div>');
             }
 
-            if (riferimento=="#nope"){
-              altezza="inherit";
-            } else {
-              altezza=$(riferimento).css("height");
+             */
+            if (titleContainer!=null) {
+                titleContainer.empty();
+                titleContainer.append('<div class="title">'+placeData['long_name']['it']+'</div>');
             }
 
+            let height=$("#"+baseName).css("height");
             // Append the loading div
-            divBox.append('<div id="chart-loadingDiv"><img src="'+loadingUrl+'" width="100%"/></div>');
-            divBox.append('<div id="chart-container-canvasDiv" style="height: '+altezza+'; width: inherit; display:none"></div>');
+            divBox.append('<div id="'+baseName+'-chart-loadingDiv"><img src="'+loadingUrl+'" width="100%"/></div>');
+            divBox.append('<div id="'+baseName+'-chart-container-canvasDiv" style="height: '+height+'; width: inherit; display:none"></div>');
 
             // Create the ink container
             /*
@@ -873,7 +885,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             };
 
 
-            let chart = new CanvasJS.Chart("chart-container-canvasDiv", options);
+            let chart = new CanvasJS.Chart(baseName+"-chart-container-canvasDiv", options);
 
 
 
@@ -980,8 +992,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     }
                 });
 
-                $('#chart-loadingDiv').hide();
-                $('#chart-container-canvasDiv').show();
+                $('#'+baseName+'-chart-loadingDiv').hide();
+                $('#'+baseName+'-chart-container-canvasDiv').show();
                 chart.render();
             });
         });
@@ -1007,19 +1019,21 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         let _rightBarImageId=rightBarImageId;
         let _bottomBarImageId=bottomBarImageId;
 
+        let baseName=container["selector"].replace("#","");
+
         //$("#"+container).empty();
         container.empty();
 
         // Create the main container
         let divPlot=$('<div>');
-        divPlot.attr('id','plot-container');
+        divPlot.attr('id',baseName+'-plot-container');
 
 
         // Append the title
         divPlot.append(
-            '<div id="plot-container-loadingDiv" class="plot-container-loadingDiv"><img src="'+loadingUrl+'"/></div>'+
-            '<div id="plot-container-mapDiv" class="plot-container-mapDiv">'+
-            '  <img id="plot-container-mapImage" style="width: 100%; height: 100%; display:none"/>'+
+            '<div id="'+baseName+'-plot-container-loadingDiv" class="plot-container-loadingDiv"><img src="'+loadingUrl+'"/></div>'+
+            '<div id="'+baseName+'-plot-container-mapDiv" class="plot-container-mapDiv">'+
+            '  <img id="'+baseName+'-plot-container-mapImage" style="width: 100%; height: 100%; display:none"/>'+
             '</div>'
         );
 
@@ -1034,20 +1048,24 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             let baseBarImageUrl=apiBaseUrl+"/products/"+prod+"/forecast/legend";
             console.log("Plot:"+mapImageUrl);
 
-            $('#plot-container-mapImage').hide();
-            $('#plot-container-loadingDiv').show();
+            $('#'+baseName+'-plot-container-mapImage').hide();
+            $('#'+baseName+'-plot-container-loadingDiv').show();
+
 
 
             $("#"+_topBarImageId).attr('src',baseBarImageUrl+"/top/"+output);
             $("#"+_leftBarImageId).attr('src',baseBarImageUrl+"/left/"+output);
 
-            $("#plot-container-mapImage").attr('src',mapImageUrl);
+            console.log("update:"+"#"+_leftBarImageId + " --------- "+baseBarImageUrl+"/left/"+output);
+            $('#'+baseName+'-plot-container-mapImage').attr('src',mapImageUrl);
+
+
 
             $("#"+_rightBarImageId).attr('src',baseBarImageUrl+"/right/"+output);
             $("#"+_bottomBarImageId).attr('src',baseBarImageUrl+"/bottom/"+output);
 
-            $('#plot-container-loadingDiv').hide();
-            $('#plot-container-mapImage').show();
+            $('#'+baseName+'-plot-container-loadingDiv').hide();
+            $('#'+baseName+'-plot-container-mapImage').show();
         };
         divPlot.update(place,prod,output,ncepDate);
         return divPlot;
@@ -1871,9 +1889,9 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     };
 
 
-    $.fn.MeteoUniparthenopeChart = function( place = "com63049", prod = "wrf5", output="gen", hours=0, step=1, title="#nope", rif="#nope" ) {
+    $.fn.MeteoUniparthenopeChart = function( place = "com63049", prod = "wrf5", output="gen", hours=0, step=1, ncepDate=null, titleContainer=null ) {
 
-        return chart(this, place, prod, output, hours, step, title, rif);
+        return chart(this, place, prod, output, hours, step, ncepDate, titleContainer);
 
     };
 
