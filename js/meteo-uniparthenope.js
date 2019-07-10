@@ -29,7 +29,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 *****************************************************************
 */
 
-(function( $ ) {
+(function( $) {
 
     let apiBaseUrl="https://api.meteo.uniparthenope.it"
 
@@ -393,6 +393,10 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     function box(container,type="minibox",place="com63049",prod="wrf5", hours=0, titolo="#nope")  {
         console.log( "box:"+container );
 
+
+        let baseName = container['selector'].replace("#","");
+
+
         //$("#"+container).empty();
         container.empty();
 
@@ -422,28 +426,39 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
             // Create the main container
             divBox=$('<div>');
-            divBox.attr('id','_box');
+            divBox.attr('id',baseName+'_box');
             divBox.attr('class','box');
 
             // Append the title
             //divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
-            if (titolo=="#nope"){
-              divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
-            } else {
-              $(titolo).empty();
-              $(titolo).append('<div class="title">'+placeData['long_name']['it']+'</div>');
+                /*
+                    if (titolo=="#nope"){
+                        divBox.append('<div class="title">'+placeData['long_name']['it']+'</div>');
+                    } else {
+                        $(titolo).empty();
+                        $(titolo).append('<div class="title">'+placeData['long_name']['it']+'</div>');
+                    }
+                */
+
+            if (titolo !="#nope"){
+                $(titolo).empty();
+                $(titolo).append('<div class="title">'+placeData['long_name']['it']+'</div>');
             }
 
             // Append the loading div
-            divBox.append('<div id="loading"><img src="'+loadingUrl+'" width="100%"/></div>');
+            divBox.append('<div id="'+baseName+'loading"><img src="'+loadingUrl+'" width="100%"/></div>');
+
+            let display = $("#"+baseName).css("display");
 
             let table = $('<table>');
-            table.attr('id','table');
+            table.attr('id',baseName+'table');
             table.attr( 'width',"100%");
             table.attr( 'cellspacing','0');
             table.attr( 'cellpadding','0');
             table.attr( 'border','0');
-            table.attr( 'style','display:none');
+            table.attr( 'style','display:'+display);
+
+            //table.attr( 'style','display: none');
 
             if (type=="minibox") {
                 table.append('<tr class="legenda">' +
@@ -597,8 +612,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     row+='</tr>';
                     table.append(row);
                 });
-                $('#loading').hide();
-                $('#table').show();
+                $('#'+baseName+'loading').hide();
+                $('#'+baseName+'table').show();
             }});
         }});
         return divBox;
@@ -1120,19 +1135,19 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         let _prefix="";
 
 
-
-
+        let baseName =container['selector'].replace("#","");
 
         //$("#"+container).empty();
         container.empty();
 
         // Create the main container
         let divMap=$('<div>');
-        divMap.attr('id','map-container');
+        divMap.attr('id',baseName+'map-container');
 
+        let height = $("#"+baseName).css("height");
 
         // Append the title
-        divMap.append('<div id="map-container-mapid" style="height: 512px;position: inherit !important;"></div>');
+        divMap.append('<div id="'+baseName+'map-container-mapid" style="height: '+height+';position: inherit !important;"></div>');
 
         container.append(divMap);
 
@@ -1154,7 +1169,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
 
             //Inizializzo la mappa
-            _map = new L.Map('map-container-mapid');
+            _map = new L.Map(baseName+'map-container-mapid');
             _center = new L.LatLng(placeData['cLat'], placeData['cLon']);
 
             console.log(_center);
@@ -1258,7 +1273,6 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         Cookies.set(e.name,false);
                     });
 
-
                     let loadingControl = L.Control.loading({
                         spinjs: true
                     });
@@ -1280,10 +1294,10 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     divMap.update(place, ncepDate);
 
 
+
                     return divMap;
                 }
             });
-
 
             function change_domain(mapName, bounds) {
                 console.log("mapName: "+mapName);
@@ -1697,44 +1711,59 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         let _place=place;
         let _ncepDate=dateTime;
 
+        let baseName=container['selector'].replace("#","");
+
+
+
+
         function update() {
 
             console.log("UPDATE: place:"+_place+" prod:"+_prod+" output:"+_output+" ncepDate:"+_ncepDate);
             divControl.trigger( "update", [ _place, _prod, _output, _ncepDate, "#box" ] );
-        }
 
+            /* ADD METHOD THAT UPDATE PLACE AND NCEPDATE OF MAP */
+
+
+
+            console.log("UPDATE MAP IN CONTROL: place:"+_place+" ncepDate:"+_ncepDate);
+        }
+        function prova(){
+            console.log("QUESTA è UNA PROVA");
+        }
         //$("#"+container).empty();
         container.empty();
 
         // Create the main container
         let divControl=$('<div>');
-        divControl.attr('id','control-container');
+        divControl.attr('id',baseName+'control-container');
 
         // Append the title
         let controlsHtml='<fieldset>';
         if (place!=null) {
             controlsHtml+='<div class="ui-widget">'+
                 '  <label for="control-container-places">Places: </label>'+
-                '  <input id="control-container-places">'+
+                '  <input id="'+baseName+'control-container-places">'+
                 '</div>';
         }
         controlsHtml+='<div class="ui-widget">';
 
+
+
         controlsHtml+='<div style="display: inline-block">'+
-            '<label for="control-container-datetimepicker">Date & time:</label><input type="text" id="control-container-datetimepicker"> '+
+            '<label for="control-container-datetimepicker">Date & time:</label><input type="text" id="'+baseName+'control-container-datetimepicker"> '+
             '</div>';
 
         if (prod!=null) {
             controlsHtml+='<div style="display: inline-block">'+
                 '<label for="control-container-product">Product:</label>'+
-                '<select name="control-container-product" id="control-container-product"></select> '+
+                '<select name="control-container-product" id="'+baseName+'control-container-product"></select> '+
                 '</div>';
         }
 
         if (output!=null) {
             controlsHtml+='<div style="display: inline-block">'+
                 '<label for="control-container-output">Output:</label>'+
-                '<select name="control-container-output" id="control-container-output"></select>'+
+                '<select name="control-container-output" id="'+baseName+'control-container-output"></select>'+
                 '</div>';
         }
 
@@ -1746,35 +1775,35 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
         container.append(divControl);
 
-        $( "#control-container-product" ).selectmenu({
+        $( "#"+baseName+"control-container-product" ).selectmenu({
             change: function( event, ui ) {
                 _prod=ui.item.value;
                 $.getJSON( apiBaseUrl+"/products/"+_prod, function( data ) {
                     let outputs=data['outputs']['outputs'];
 
-                    $("#control-container-output").empty();
+                    $("#"+baseName+"control-container-output").empty();
 
                     $.each( outputs, function( key, val ) {
-                        $("#control-container-output").append('<option value="'+key+'">'+val['en']+'</option>');
+                        $("#"+baseName+"control-container-output").append('<option value="'+key+'">'+val['en']+'</option>');
                     });
 
                     _output="gen";
-                    $('#control-container-output').val(_output);
-                    $("#control-container-output").selectmenu("refresh");
+                    $('#'+baseName+'control-container-output').val(_output);
+                    $("#"+baseName+"control-container-output").selectmenu("refresh");
 
                     update();
                 });
             }
         });
 
-        $( "#control-container-output" ).selectmenu({
+        $( "#"+baseName+"control-container-output" ).selectmenu({
             change: function( event, ui ) {
                 _output=ui.item.value;
                 update();
             }
         });
 
-        $( "#control-container-places" ).autocomplete({
+        $( "#"+baseName+"control-container-places" ).autocomplete({
             source: function( request, response ) {
                 $.ajax( {
                     url: apiBaseUrl+"/places/search/byname/autocomplete",
@@ -1800,7 +1829,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         } );
 
 
-        $( "#control-container-datetimepicker" ).datetimepicker({
+        $( "#"+baseName+"control-container-datetimepicker" ).datetimepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
             format: "yyyy-mm-dd",
@@ -1811,10 +1840,11 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             sliderAccessArgs: { touchonly: false },
 
             onSelect: function(dateText) {
-                let dateTime=$('#control-container-datetimepicker').datetimepicker('getDate');
+                let dateTime=$('#'+baseName+'control-container-datetimepicker').datetimepicker('getDate');
                 _ncepDate=dateTime.getFullYear()+pad(dateTime.getMonth()+1,2)+pad(dateTime.getDate(),2)+"Z"+pad(dateTime.getHours(),2)+pad(dateTime.getMinutes(),2);
 
                 update();
+
             }
         });
 
@@ -1826,37 +1856,37 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
             console.log("products:"+products);
 
-            $("#control-container-product").empty();
+            $("#"+baseName+"control-container-product").empty();
 
             $.each( products, function( key, val ) {
-                $("#control-container-product").append('<option value="'+key+'">'+val['desc']['en']+'</option>');
+                $("#"+baseName+"control-container-product").append('<option value="'+key+'">'+val['desc']['en']+'</option>');
             });
 
             _prod=prod;
-            $('#control-container-product').val(_prod);
-            $("#control-container-product").selectmenu("refresh");
+            $('#'+baseName+'control-container-product').val(_prod);
+            $("#"+baseName+"control-container-product").selectmenu("refresh");
 
             $.getJSON( apiBaseUrl+"/products/"+_prod, function( data ) {
                 let outputs=data['outputs']['outputs'];
 
-                $("#control-container-output").empty();
+                $("#"+baseName+"control-container-output").empty();
 
                 $.each( outputs, function( key, val ) {
-                    $("#control-container-output").append('<option value="'+key+'">'+val['en']+'</option>');
+                    $("#"+baseName+"control-container-output").append('<option value="'+key+'">'+val['en']+'</option>');
                 });
 
                 _output=output;
-                $('#control-container-output').val(_output);
-                $("#control-container-output").selectmenu("refresh");
+                $('#'+baseName+'control-container-output').val(_output);
+                $("#"+baseName+"control-container-output").selectmenu("refresh");
             });
 
-            $('#control-container-datetimepicker').datetimepicker('setDate', (new Date()) );
-            let dateTime=$('#control-container-datetimepicker').datetimepicker('getDate');
+            $('#'+baseName+'control-container-datetimepicker').datetimepicker('setDate', (new Date()) );
+            let dateTime=$('#'+baseName+'control-container-datetimepicker').datetimepicker('getDate');
             _ncepDate=dateTime.getFullYear()+pad(dateTime.getMonth()+1,2)+pad(dateTime.getDate(),2)+"Z"+pad(dateTime.getHours(),2)+pad(dateTime.getMinutes(),2);
 
             _place=place;
             $.getJSON(apiBaseUrl+"/places/"+_place, function( data ) {
-                $( "#control-container-places" ).val(data['long_name']['it']);
+                $( "#"+baseName+"control-container-places" ).val(data['long_name']['it']);
             });
 
             update();
