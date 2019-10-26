@@ -46,18 +46,12 @@
 
 <div id="title"></div>
 <div>
-    <div id="control" style="height: 10cm"></div>
+    <div id="control"></div>
 </div>
 <hr/>
-<div>
-    <div id="map" style="height: 10cm"></div>
-</div>
-
+<div id="map" style="width: 1024px; height: 512px"></div>
 <script>
-function updateMap(localPlace,localDate)
-{
-    map=jQueryProtect("#map").MeteoUniparthenopeMap(localPlace,localDate,{ "noPopup":false, "mapName":_mapName,"baseLink":"https://meteo.uniparthenope.it/product_dashboard/dashboard?"});
-}
+
 
 
     function getURLParameter(sParam, defaultValue) {
@@ -83,14 +77,10 @@ function updateMap(localPlace,localDate)
     let _ncepDate=getURLParameter("date",null);
     let _mapName=getURLParameter("mapName","weather");
 
-    //paramerter for control
-    let _place2=getURLParameter("place","it000");
-    let _prod=getURLParameter("prod","wrf5");
-    let _output=getURLParameter("output","gen");
 
     jQueryProtect( document ).ready(function() {
-        control=jQueryProtect("#control").MeteoUniparthenopeControl(_place2,null,null,dateTime=null,jQueryProtect("title"));
-        map=jQueryProtect("#map").MeteoUniparthenopeMap(_place2,_ncepDate,{ "noPopup":false, "mapName":_mapName,"baseLink":"https://meteo.uniparthenope.it/product_dashboard/dashboard?"});
+        control=jQueryProtect("#control").MeteoUniparthenopeControl(_place,null,null,dateTime=null);
+        map=jQueryProtect("#map").MeteoUniparthenopeMap(_place,_ncepDate,{ "noPopup":false, "mapName":_mapName,"baseLink":"https://meteo.uniparthenope.it/product_dashboard/dashboard?"});
 
         control.on( "update", function( event, place, prod, output, ncepDate ) {
             console.log("PLACE MODIFICATO: "+place );
@@ -98,7 +88,7 @@ function updateMap(localPlace,localDate)
             _place=place;
             _ncepDate=ncepDate;
 
-            updateMap(_place,_ncepDate);
+            jQueryProtect("#map").update(_place,_ncepDate);
 
         });
 
