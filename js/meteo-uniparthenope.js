@@ -1086,7 +1086,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         return divPlot;
     };
 
-    function map(container,place="com63049",ncepDate=null,options=null)  {
+    function Map(container,place="com63049",ncepDate=null,options=null)  {
         let userLang = navigator.language || navigator.userLanguage;
         console.log( "map:"+options);
         console.log( "userLang:"+userLang);
@@ -1135,6 +1135,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         let _prefix="";
 
 
+
+
         let baseName =container['selector'].replace("#","");
 
         //$("#"+container).empty();
@@ -1150,6 +1152,9 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         divMap.append('<div id="'+baseName+'map-container-mapid" style="height: '+height+';position: inherit !important;"></div>');
 
         container.append(divMap);
+
+        //Inizializzo la mappa
+        _map = new L.Map(baseName+'map-container-mapid');
 
         let placeUrl=apiBaseUrl+"/places/"+place;
         console.log("placeUrl:"+placeUrl);
@@ -1168,8 +1173,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             let group = new L.featureGroup([marker0, marker1, marker2]);
 
 
-            //Inizializzo la mappa
-            _map = new L.Map(baseName+'map-container-mapid');
+
             _center = new L.LatLng(placeData['cLat'], placeData['cLon']);
 
             console.log(_center);
@@ -1678,13 +1682,10 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                                         }
                                         if (layerInstance != null) {
-                                            console.log("RICHIAMO IL LAYER: "+name);
                                             overlayMaps[name]=layerInstance;
                                             if (isActive) {
-                                                console.log("ATTIVO IL LAYER: "+name);
                                                 _map.addLayer(overlayMaps[name]);
                                             }
-                                            console.log("AGGIUNGO IN OVERLAY IL LAYER: "+name);
                                             _controlLayers.addOverlay(overlayMaps[name], name);
                                         }
                                     }
@@ -1695,6 +1696,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                 }
             }
         });
+        this.map=_map;
     }
 
     function control(container,place="com63049",prod="wrf5",output="gen",dateTime=null)  {
@@ -1933,7 +1935,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
     $.fn.MeteoUniparthenopeMap = function(place = "com63049",  dateTime=null,options=null) {
 
-        return map(this, place, dateTime,options);
+        return new Map(this, place, dateTime,options);
 
     };
 
