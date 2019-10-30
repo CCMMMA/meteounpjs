@@ -121,31 +121,35 @@
 </div>
 
 <div id="container_products" class="container-fluid" style="display: none">
-    <div id="control"></div>
+    <div class="row">
+        <div class="col">
+            <div id="control"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <img id="topBarImage"/>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col"><img id="leftBarImage" width="1em"/></div>
+        <div class="col"><div id="plot"></div>
+        <div class="col"><img id="rightBarImage" width="1em"/><</div>
+    </div>
+    <div class="row"></div>
+        <div class="col"></div>
+        <div class="col">
+            <img id="bottomBarImage"/>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
 
-
-    <table>
-        <tr>
-            <td></td>
-            <td>
-                <img id="topBarImage"/>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td width="64px" align="right"><img id="leftBarImage" width="64px"/></td>
-            <td><div id="plot"></div></td>
-            <td width="64px" align="left"><img id="rightBarImage" width="64px"/></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <img id="bottomBarImage"/></td>
-            <td>
-
-            </td>
-        </tr>
-    </table>
+<div id="container_pages" class="container-fluid" style="display: none">
+    <div id="page_title"></div>
+    <div id="page_body"></div>
 </div>
 
 
@@ -260,6 +264,7 @@
 
         console.log("PAGE:"+_page)
         if (_page=="home") {
+            console.log("HOME")
             oMap = jQueryProtect("#map").MeteoUniparthenopeMap(_place, _ncepDate, {
                 "noPopup": false,
                 "mapName": _mapName,
@@ -267,13 +272,13 @@
             });
 
 
-            $("#container_carousel").css("display","block")
+            //$("#container_carousel").css("display","block")
             $("#container_map").css("display","block")
             $("#container_cards").css("display","block")
 
 
-        } else if (_page="products") {
-
+        } else if (_page=="products") {
+            console.log("PRODUCTS")
             plot=$("#plot").MeteoUniparthenopePlot(_place,_prod,_output,_ncepDate,
                 "topBarImage",
                 "leftBarImage",
@@ -296,7 +301,13 @@
             });
             $("#container_products").css("display","block")
         } else {
+            console.log("PAGES")
+            $.getJSON( "http://193.205.230.6:5000/v2/pages/"+_page, function( data ) {
+                $("#page_title").text(data["title"])
+                $("#page_body").html(data["body"])
+            });
 
+            $("#container_pages").css("display","block")
         }
         console.log("FINISH")
     });
