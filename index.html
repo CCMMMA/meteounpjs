@@ -155,8 +155,16 @@
 </div>
 
 <div id="container_pages" class="container-fluid" style="display: none">
-    <div id="page_title"></div>
-    <div id="page_body"></div>
+    <div class="card">
+        <div class="card-body">
+            <img id="page_image" class="card-img-top" src="" alt="">
+            <h5 id="page_title" class="card-title"></h5>
+            <h6 id="page_subtitle" class="card-subtitle mb-2 text-muted"></h6>
+            <p id="page_abstract" class="card-text"></p>
+            <div id="page_body"></div>
+            <div id="page_links"></div>
+        </div>
+    </div>
 </div>
 
 
@@ -310,8 +318,21 @@
         } else {
             console.log("PAGES")
             $.getJSON( "http://193.205.230.6:5000/v2/pages/"+_page, function( data ) {
+                if ("image" in data) {
+                    $("#page_image").attr("src",data["image"]["src"])
+                    $("#page_image").attr("alt",data["image"]["alt"])
+                }
                 $("#page_title").text(data["title"])
+                if ("subtitle" in data) {
+                    $("#page_subtitle").text(data["subtitle"])
+                }
                 $("#page_body").html(data["body"])
+
+                if ("links" in data) {
+                    data["links"].forEach(function(link, index) {
+                        $("#page_links").append("<a href=\""+link["href"]+"\" class=\"card-link\">"+link["text"]+"</a>")
+                    })
+                }
             });
 
             $("#container_pages").css("display","block")
