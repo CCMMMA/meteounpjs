@@ -1673,7 +1673,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                             }
                                                         };
 
-                                                        console.log("url:"+url);
+                                                        console.log("geoJSONTileLayer url:"+url+","+option_geojsonTileLayer+","+geojsonOptions_geojsonTileLayer);
                                                         layerInstance= new L.geoJSONTileLayer(url, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
                                                     }
                                                 });
