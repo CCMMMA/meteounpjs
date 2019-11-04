@@ -289,9 +289,13 @@
             oMap = $("#map").MeteoUniparthenopeMap(_place, _ncepDate, {
                 "noPopup": false,
                 "mapName": _mapName,
-                "baseLink": "https://meteo.uniparthenope.it/product_dashboard/dashboard?"
+                "baseLink": "index.html?page=products"
             });
 
+            $(window).on('resize', function() {
+                console.log("RESIZE")
+                $("#map").css('height', "50vh");
+            });
 
             //$("#container_carousel").css("display","block")
             $("#container_map").css("display","block")
