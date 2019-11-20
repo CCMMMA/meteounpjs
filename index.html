@@ -85,48 +85,6 @@
 </div>
 
 <div id="container_cards" class="container-fluid" style="display: none">
-    <div class="row">
-        <div class="col">
-            <div class="card" >
-                <img class="card-img-top" src="https://api.meteo.uniparthenope.it/products/wrf5/forecast/reg15/plot/image?width=320&height=240" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Clouds, Rain and Wind Field</h5>
-                    <p class="card-text">7 days, 25km, 5km, 1km</p>
-                    <a href="index.html?page=products&prod=wrf5&place=reg15&output=gen" class="btn btn-primary">WRF</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" >
-                <img class="card-img-top" src="https://api.meteo.uniparthenope.it/products/wrf5/forecast/reg15/plot/image?width=320&height=240&output=wn1" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Wind Field at 10m</h5>
-                    <p class="card-text">7 days, 25km, 5km, 1km</p>
-                    <a href="index.html?page=products&prod=wrf5&place=reg15&output=wn1" class="btn btn-primary">WRF</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" >
-                <img class="card-img-top" src="https://api.meteo.uniparthenope.it/products/wrf5/forecast/reg15/plot/image?width=320&height=240&output=tsp" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Temperature and Sea level pressure</h5>
-                    <p class="card-text">7 days, 25km, 5km, 1km</p>
-                    <a href="index.html?page=products&prod=wrf5&place=reg15&output=tap" class="btn btn-primary">WRF</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" >
-                <img class="card-img-top" src="https://api.meteo.uniparthenope.it/products/rms3/forecast/reg15/plot/image?width=320&height=240&output=gen" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Surface sea current</h5>
-                    <p class="card-text">6 days, 160m</p>
-                    <a href="index.html?page=products&prod=rms3&place=reg15&output=gen" class="btn btn-primary">ROMS</a>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div id="container_products" class="container-fluid" style="display: none">
@@ -217,7 +175,7 @@
 <script src="js/meteo-uniparthenope.js"></script>
 
 <script>
-    let apiBaseUrl="https://api-devel.meteo.uniparthenope.it"
+    let apiBaseUrl="https://api.meteo.uniparthenope.it"
 
     function getURLParameter(sParam, defaultValue) {
 
@@ -291,6 +249,32 @@
         console.log("PAGE:"+_page)
         if (_page=="home") {
             console.log("HOME")
+
+
+            let cardsUrl=apiBaseUrl+"/v2/cards"
+            console.log("cardsUrl:"+cardsUrl)
+            $.getJSON( cardsUrl, function( data ) {
+                html="<div class=\"row\">"
+                
+                $.each( data, function( key, values ) {
+                    values.forEach(function(item, index) {
+                        html+="<div class=\"col\">"
+                        html+="  <div class=\"card\">"
+                        html+="    <img class=\"card-img-top\" src=\""+item["image"]["src"]+"\" alt=\""+item["image"]["alt"]+"\">"
+                        html+="    <div class=\"card-body\">"
+                        html+="      <h5 class=\"card-title\">"+item["title"]+"</h5>"
+                        html+="      <p class=\"card-text\">"+item["text"]+"</p>"
+                        html+="      <a href=\""+item["button"]["href"]+"\" class=\"btn btn-primary\">"+item["button"]["text"]+"</a>"
+                        html+="    </div>"
+                        html+="  </div>"
+                        html+="</div>"
+
+                    });
+                });
+                html+="</div>"
+                $("#container_cards").append(html);
+            });
+
             oMap = $("#map").MeteoUniparthenopeMap(_place, _ncepDate, {
                 "noPopup": false,
                 "mapName": _mapName,
