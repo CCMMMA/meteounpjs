@@ -217,6 +217,8 @@
 <script src="js/meteo-uniparthenope.js"></script>
 
 <script>
+    let apiBaseUrl="https://api-devel.meteo.uniparthenope.it"
+
     function getURLParameter(sParam, defaultValue) {
 
         let sPageURL = window.location.search.substring(1);
@@ -252,7 +254,10 @@
     $( document ).ready(function() {
 
         console.log("READY")
-        $.getJSON( "http://193.205.230.6:5000/v2/navbar", function( data ) {
+        let navBarUrl=apiBaseUrl+"/v2/navbar"
+        console.log("navBarUrl:"+navBarUrl)
+        $.getJSON( navBarUrl, function( data ) {
+            console.log("menu")
             let items = [];
             $.each( data, function( key, values ) {
                 values.forEach(function(item, index) {
@@ -327,7 +332,7 @@
             $("#container_products").css("display","block")
         } else {
             console.log("PAGES")
-            $.getJSON( "http://193.205.230.6:5000/v2/pages/"+_page, function( data ) {
+            $.getJSON( apiBaseUrl+"/v2/pages/"+_page, function( data ) {
                 if ("image" in data) {
                     $("#page_image").attr("src",data["image"]["src"])
                     $("#page_image").attr("alt",data["image"]["alt"])
