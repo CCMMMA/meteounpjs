@@ -90,11 +90,14 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto" id="navbar_items">
         </ul>
+        <!--
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        -->
     </div>
+
 </nav>
 
 <div id="container_map" class="container-fluid" style="display: none">
@@ -105,35 +108,53 @@
     </div>
 </div>
 
-<div id="container_cards" class="container-fluid" style="display: none">
+<div id="container_box" class="container-fluid" style="display: none">
+    <div class="row">
+        <div class="col">
+            <div id="box_title"></div>
+            <div id="box"></div>
+        </div>
+    </div>
 </div>
 
-<div id="container_products" class="container-fluid" style="display: none">
+<div id="container_control" class="container-fluid" style="display: none">
     <div class="row">
         <div class="col">
             <div id="control"></div>
         </div>
     </div>
+</div>
+
+<div id="container_plot" class="container-fluid" style="display: none">
     <div class="row">
-        <div class="col"></div>
-        <div class="col">
-            <img id="topBarImage" height="64px"/>
+        <div class="col>">
+            <table>
+                <tr>
+                    <td colspan="3"><img id="topBarImage" height="64px"/></td>
+                </tr>
+                <tr>
+                    <td><img id="leftBarImage" width="64px"/></td>
+                    <td><div id="plot"/></td>
+                    <td><img id="rightBarImage" width="64px"/></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><img id="bottomBarImage" height="64px"/></td>
+                </tr>
+            </table>
         </div>
-        <div class="col"></div>
-    </div>
-    <div class="row">
-        <div class="col"><img id="leftBarImage" width="64px"/></div>
-        <div class="col"><div id="plot"></div>
-        <div class="col"><img id="rightBarImage" width="64px"/></div>
-    </div>
-    <div class="row"></div>
-        <div class="col"></div>
-        <div class="col">
-            <img id="bottomBarImage" height="64px"/>
-        </div>
-        <div class="col"></div>
     </div>
 </div>
+
+<div id="container_chart" class="container-fluid" style="display: none">
+    <div class="row">
+        <div class="col">
+            <div id="chart_title" style="display: none"></div>
+            <div id="chart"></div>
+        </div>
+    </div>
+</div>
+
+
 
 <div id="container_pages" class="container-fluid" style="display: none">
     <div class="card">
@@ -146,6 +167,9 @@
             <div id="page_links"></div>
         </div>
     </div>
+</div>
+
+<div id="container_cards" class="container-fluid" style="display: none">
 </div>
 
 <!-- Optional JavaScript -->
@@ -177,7 +201,7 @@
 <script src="js/backbone-min.js"></script>
 <script src="js/ol.js"></script>
 -->
-
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script type="text/javascript" src="https://webapiv2.navionics.com/dist/webapi/webapi.min.no-dep.js"></script>
 
 <!-- Protect jQuery variable. -->
