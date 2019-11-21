@@ -32,6 +32,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 (function( $) {
 
     let apiBaseUrl="https://api.meteo.uniparthenope.it"
+    let _language = (navigator.language || navigator.userLanguage).split("-")[0]
 
     let weatherIconUrl="images/";
     let loadingUrl="images/animated_progress_bar.gif";
@@ -1087,13 +1088,12 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     };
 
     function Map(container,place="com63049",ncepDate=null,options=null)  {
-        let userLang = navigator.language || navigator.userLanguage;
         console.log( "map:"+options);
-        console.log( "userLang:"+userLang);
+
 
         let _baseLink=window.location.href;
         let _mapName="muggles";
-        let _language="en";
+        //let _language = (navigator.language || navigator.userLanguage).split("-")[0]
         let _customPrefix=null;
         let _noPopup=false;
 
@@ -1547,14 +1547,18 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                     url:urlLayer,
                                                     async:false,
                                                     success: function(data){
+
                                                         let option_geojsonTileLayer = { clipTiles: true, };
 
                                                         let geojsonOptions_geojsonTileLayer = {
                                                             style: data["style"],
                                                             pointToLayer: function (features, latlng) {
 
+                                                                console.log(data)
 
                                                                 let icon = features.properties.icon;
+                                                                console.log(icon)
+                                                                console.log(data["extras"]["icons"])
 
                                                                 let iconObject = L.icon({
                                                                     iconUrl: data["extras"]["icons"][icon]["url"],
@@ -1673,8 +1677,11 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                             }
                                                         };
 
-                                                        console.log("geoJSONTileLayer url:"+url+","+option_geojsonTileLayer+","+geojsonOptions_geojsonTileLayer);
-                                                        layerInstance= new L.geoJSONTileLayer(url, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
+                                                        console.log("geoJSONTileLayer url:"+url)
+                                                        console.log(option_geojsonTileLayer)
+                                                        console.log(geojsonOptions_geojsonTileLayer);
+                                                        layerInstance= new L.geoJSONTileLayer(url, geojsonOptions_geojsonTileLayer)
+                                                        //layerInstance= new L.geoJSONTileLayer(url, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
                                                     }
                                                 });
 
@@ -1786,7 +1793,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     $("#"+baseName+"control-container-output").empty();
 
                     $.each( outputs, function( key, val ) {
-                        $("#"+baseName+"control-container-output").append('<option value="'+key+'">'+val['en']+'</option>');
+                        $("#"+baseName+"control-container-output").append('<option value="'+key+'">'+val[_language]+'</option>');
                     });
 
                     _output="gen";
@@ -1861,7 +1868,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             $("#"+baseName+"control-container-product").empty();
 
             $.each( products, function( key, val ) {
-                $("#"+baseName+"control-container-product").append('<option value="'+key+'">'+val['desc']['en']+'</option>');
+                $("#"+baseName+"control-container-product").append('<option value="'+key+'">'+val['desc'][_language]+'</option>');
             });
 
             _prod=prod;
@@ -1874,7 +1881,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                 $("#"+baseName+"control-container-output").empty();
 
                 $.each( outputs, function( key, val ) {
-                    $("#"+baseName+"control-container-output").append('<option value="'+key+'">'+val['en']+'</option>');
+                    $("#"+baseName+"control-container-output").append('<option value="'+key+'">'+val[_language]+'</option>');
                 });
 
                 _output=output;
