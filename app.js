@@ -25,16 +25,16 @@ let _place=getURLParameter("place","it000");
 let _prod=getURLParameter("prod","wrf5");
 let _output=getURLParameter("output","gen");
 let _ncepDate=getURLParameter("date",null);
+let _hours=getURLParameter("hours",0);
+let _step=getURLParameter("step",1);
 let _mapName=getURLParameter("mapName","muggles");
 
-
-
+let box=null;
+let chart=null;
 let control=null;
 let plot=null;
 
-$( document ).ready(function() {
-
-    console.log("READY")
+function navBar() {
     let navBarUrl=apiBaseUrl+"/v2/navbar"
     console.log("navBarUrl:"+navBarUrl)
     $.getJSON( navBarUrl, function( data ) {
@@ -68,55 +68,82 @@ $( document ).ready(function() {
 
         $("#navbar_items").append(items.join("\n"));
     });
+}
+
+function cards() {
+    let cardsUrl=apiBaseUrl+"/v2/cards"
+    console.log("cardsUrl:"+cardsUrl)
+    $.getJSON( cardsUrl, function( data ) {
+        let html="<div class=\"row\">"
+
+        $.each( data, function( key, values ) {
+            values.forEach(function(item, index) {
+                html+="<div class=\"col\">"
+                html+="  <div class=\"card\">"
+                html+="    <a href=\""+item["button"]["href"]+"\">"
+                html+="      <img class=\"card-img-top\" src=\""+item["image"]["src"]+"\" alt=\""+item["image"]["alt"]+"\">"
+                html+="    </a>"
+                html+="    <div class=\"card-body\">"
+                html+="      <h5 class=\"card-title\">"+item["title"]+"</h5>"
+                html+="      <p class=\"card-text\">"+item["text"]+"</p>"
+                html+="      <a href=\""+item["button"]["href"]+"\" class=\"btn btn-primary\">"+item["button"]["text"]+"</a>"
+                html+="    </div>"
+                html+="  </div>"
+                html+="</div>"
+
+            });
+        });
+        html+="</div>"
+        $("#container_cards").append(html);
+        $("#container_cards").css("display","block")
+    });
+}
+
+function map() {
+    oMap = $("#map").MeteoUniparthenopeMap(_place, _ncepDate, {
+        "noPopup": false,
+        "mapName": _mapName,
+        "baseLink": "index.html?page=products"
+    });
+
+    $(window).on('resize', function() {
+        console.log("RESIZE")
+        $("#map").css('height', "50vh");
+    });
+
+    control=$("#control").MeteoUniparthenopeControl(_place,null,null,_ncepDate);
+    control.on( "update", function( event, place, prod, output, ncepDate ) {
+        console.log( place );
+        console.log( prod );
+        console.log( output );
+        console.log( ncepDate );
+
+        _prod=prod;
+        _place=place;
+        _output=output;
+        _ncepDate=ncepDate;
+    });
+
+    //$("#container_carousel").css("display","block")
+    $("#container_control").css("display","block")
+    $("#container_map").css("display","block")
+}
+
+$( document ).ready(function() {
+
+    console.log("READY")
+
+    navBar()
 
     console.log("PAGE:"+_page)
     if (_page=="home") {
         console.log("HOME")
-
-        let cardsUrl=apiBaseUrl+"/v2/cards"
-        console.log("cardsUrl:"+cardsUrl)
-        $.getJSON( cardsUrl, function( data ) {
-            html="<div class=\"row\">"
-
-            $.each( data, function( key, values ) {
-                values.forEach(function(item, index) {
-                    html+="<div class=\"col\">"
-                    html+="  <div class=\"card\">"
-                    html+="    <a href=\""+item["button"]["href"]+"\">"
-                    html+="      <img class=\"card-img-top\" src=\""+item["image"]["src"]+"\" alt=\""+item["image"]["alt"]+"\">"
-                    html+="    </a>"
-                    html+="    <div class=\"card-body\">"
-                    html+="      <h5 class=\"card-title\">"+item["title"]+"</h5>"
-                    html+="      <p class=\"card-text\">"+item["text"]+"</p>"
-                    html+="      <a href=\""+item["button"]["href"]+"\" class=\"btn btn-primary\">"+item["button"]["text"]+"</a>"
-                    html+="    </div>"
-                    html+="  </div>"
-                    html+="</div>"
-
-                });
-            });
-            html+="</div>"
-            $("#container_cards").append(html);
-        });
-
-        oMap = $("#map").MeteoUniparthenopeMap(_place, _ncepDate, {
-            "noPopup": false,
-            "mapName": _mapName,
-            "baseLink": "index.html?page=products"
-        });
-
-        $(window).on('resize', function() {
-            console.log("RESIZE")
-            $("#map").css('height', "50vh");
-        });
-
-        $("#container_carousel").css("display","block")
-        $("#container_map").css("display","block")
-        $("#container_cards").css("display","block")
-
-
+        map()
+        cards()
     } else if (_page=="products") {
         console.log("PRODUCTS")
+        //box=$("#box").MeteoUniparthenopeDayBox(_place,_prod,"#box_title");
+        chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,_ncepDate,$("#chart_title"));
         plot=$("#plot").MeteoUniparthenopePlot(_place,_prod,_output,_ncepDate,
             "topBarImage",
             "leftBarImage",
@@ -131,13 +158,23 @@ $( document ).ready(function() {
 
             plot.update(place,prod,output,ncepDate);
 
+            if (place !== _place) {
+                //box=$("#box").MeteoUniparthenopeDayBox(place,prod,"#titolo1");
+                chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,_ncepDate,null);
+            }
+            else if (prod!==_prod || output !== _output) {
+                chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,_ncepDate,null);
+            }
 
             _prod=prod;
             _place=place;
             _output=output;
             _ncepDate=ncepDate;
         });
-        $("#container_products").css("display","block")
+        $("#container_control").css("display","block")
+        $("#container_plot").css("display","block")
+        $("#container_chart").css("display","block")
+        //$("#container_box").css("display","block")
     } else {
         console.log("PAGES")
         $.getJSON( apiBaseUrl+"/v2/pages/"+_page, function( data ) {
@@ -156,9 +193,11 @@ $( document ).ready(function() {
                     $("#page_links").append("<a href=\""+link["href"]+"\" class=\"card-link\">"+link["text"]+"</a>")
                 })
             }
+
+            $("#container_pages").css("display","block")
         });
 
-        $("#container_pages").css("display","block")
+
     }
     console.log("FINISH")
 });
