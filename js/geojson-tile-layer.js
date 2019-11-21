@@ -22,15 +22,18 @@
             L.GridLayer.prototype.initialize.call(this, options);
         },
 
+
         createTile(coords, done) {
-            var tile = L.DomUtil.create('div', 'leaflet-tile');
-            tile.style['box-shadow'] = 'inset 0 0 2px #f00';
-            var url = this._expandUrl(this.url, coords);
+            let tile = L.DomUtil.create('div', 'leaflet-tile');
+            //tile.style['box-shadow'] = 'inset 0 0 2px #f00';
+            let url = this._expandUrl(this.url, coords);
+
             if (this.cache[coords]) {
                 done.call(this);
             } else {
                 this._ajaxRequest('GET', url, false, this._updateCache.bind(this, done, coords));
             }
+
             return tile;
         },
 
@@ -72,16 +75,16 @@
         },
 
         _drawTile(coords) {
-            var geoData = this.cache[coords];
+            let geoData = this.cache[coords];
             if (geoData.type == 'FeatureCollection'){
                 geoData = geoData.features;
             }
-            for (var i=0;i<geoData.length;i++) {
-                var id = geoData[i].id;
-                if (!this.features[id]) {
+            for (let i=0;i<geoData.length;i++) {
+                //let id = geoData[i].id;
+                //if (!this.features[id]) {
                     this.layer.addData(geoData[i]);
-                    this.features[id] = true;
-                }
+                //    this.features[id] = true;
+                //}
             }
             if (!this.cache[coords]) {
                 this.cache[coords] = geoData;
