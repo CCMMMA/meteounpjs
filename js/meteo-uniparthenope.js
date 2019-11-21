@@ -1560,9 +1560,14 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                                 console.log(icon)
                                                                 console.log(data["extras"]["icons"])
 
+                                                                function getResourceName(url) {
+                                                                    return url.substring(url.lastIndexOf('/')+1)
+                                                                }
+
+
                                                                 let iconObject = L.icon({
-                                                                    iconUrl: data["extras"]["icons"][icon]["url"],
-                                                                    iconRetinaUrl: data["extras"]["icons"][icon]["url"],
+                                                                    iconUrl: weatherIconUrl+getResourceName(data["extras"]["icons"][icon]["url"]),
+                                                                    iconRetinaUrl: weatherIconUrl+getResourceName(data["extras"]["icons"][icon]["url"]),
                                                                     iconSize: data["extras"]["icons"][icon]["iconSize"],
                                                                     iconAnchor: data["extras"]["icons"][icon]["iconAnchor"],
                                                                     popupAnchor: data["extras"]["icons"][icon]["popupAnchor"]
