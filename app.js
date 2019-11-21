@@ -1,4 +1,6 @@
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
+let _language = (navigator.language || navigator.userLanguage).split("-")[0]
+
 
 function getURLParameter(sParam, defaultValue) {
 
@@ -33,6 +35,17 @@ let box=null;
 let chart=null;
 let control=null;
 let plot=null;
+
+function footer() {
+    let legalDisclaimerUrl=apiBaseUrl+"/legal/disclaimer"
+    console.log("legalDisclaimerUrl:"+legalDisclaimerUrl)
+    $.getJSON( legalDisclaimerUrl, function( data ) {
+        console.log("legalDisclaimer")
+        $("#container_footer").append(data["disclaimer"][_language]);
+        $("#container_footer").css("display","block")
+    });
+
+}
 
 function navBar() {
     let navBarUrl=apiBaseUrl+"/v2/navbar"
@@ -94,7 +107,7 @@ function cards() {
             });
         });
         html+="</div>"
-        $("#container_cards").append(html);
+        $("#container_cards").html(html);
         $("#container_cards").css("display","block")
     });
 }
@@ -142,7 +155,7 @@ $( document ).ready(function() {
         cards()
     } else if (_page=="products") {
         console.log("PRODUCTS")
-        //box=$("#box").MeteoUniparthenopeDayBox(_place,_prod,"#box_title");
+        box=$("#box").MeteoUniparthenopeDayBox(_place,_prod,"#box_title");
         chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,_ncepDate,$("#chart_title"));
         plot=$("#plot").MeteoUniparthenopePlot(_place,_prod,_output,_ncepDate,
             "topBarImage",
@@ -159,7 +172,7 @@ $( document ).ready(function() {
             plot.update(place,prod,output,ncepDate);
 
             if (place !== _place) {
-                //box=$("#box").MeteoUniparthenopeDayBox(place,prod,"#titolo1");
+                box=$("#box").MeteoUniparthenopeDayBox(place,prod,"#box_title");
                 chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,_ncepDate,null);
             }
             else if (prod!==_prod || output !== _output) {
@@ -174,7 +187,7 @@ $( document ).ready(function() {
         $("#container_control").css("display","block")
         $("#container_plot").css("display","block")
         $("#container_chart").css("display","block")
-        //$("#container_box").css("display","block")
+        $("#container_box").css("display","block")
     } else {
         console.log("PAGES")
         $.getJSON( apiBaseUrl+"/v2/pages/"+_page, function( data ) {
@@ -199,5 +212,6 @@ $( document ).ready(function() {
 
 
     }
+    footer()
     console.log("FINISH")
 });
