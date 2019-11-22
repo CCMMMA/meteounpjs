@@ -379,7 +379,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
     function monthOfYear(date) {
         let month = parseInt(date.substring(4, 6)) - 1;
-        console.log(month);
+        //console.log(month);
         return isNaN(month) ? null : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month];
     };
 
@@ -392,7 +392,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     }
 
     function box(container,type="minibox",place="com63049",prod="wrf5", hours=0, titolo="#nope")  {
-        console.log( "box:"+container );
+        //console.log( "box:"+container );
 
 
         let baseName = container['selector'].replace("#","");
@@ -411,8 +411,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         }
 
         let timeseriesUrl = apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?hours="+hours+"&step="+step;
-        console.log("placeUrl: "+placeUrl);
-        console.log("timeseriesUrl: "+timeseriesUrl);
+        //console.log("placeUrl: "+placeUrl);
+        //console.log("timeseriesUrl: "+timeseriesUrl);
 
         let divBox=null;
 
@@ -423,7 +423,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             url: placeUrl,
             async: false,
             success: function (placeData) {
-            console.log(placeData);
+            //console.log(placeData);
 
             // Create the main container
             divBox=$('<div>');
@@ -507,14 +507,14 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             */
             container.append(divBox);
 
-            console.log("-----------------------------------");
+            //console.log("-----------------------------------");
             //$.getJSON( timeseriesUrl, function( data ) {
             $.ajax({
                 url: timeseriesUrl,
                 async: false,
                 success: function (data) {
                 let timeseriesData=data['timeseries'];
-                console.log("-------------> "+timeseriesData);
+                //console.log("-------------> "+timeseriesData);
 
                 $.each( timeseriesData, function( key, val ) {
 
@@ -621,7 +621,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     };
 
     function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, step=1,  ncepDate=null, titleContainer=null)  {
-        console.log( "chart:"+container);
+        //console.log( "chart:"+container);
         if (titleContainer!=null) {
             console.log("title:" + titleContainer["selector"]);
         }
@@ -644,14 +644,14 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
 
         let timeseriesUrl=apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?hours="+hours+"&step="+step+"&date="+ncepDate;
-        console.log("placeUrl: "+placeUrl);
-        console.log("timeseriesUrl: "+timeseriesUrl);
+        //console.log("placeUrl: "+placeUrl);
+        //console.log("timeseriesUrl: "+timeseriesUrl);
 
         let divBox=null;
 
         // Get the place data
         $.getJSON( placeUrl, function( placeData ) {
-            console.log(placeData);
+            //console.log(placeData);
 
             // Create the main container
             divBox=$('<div>');
@@ -692,7 +692,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             */
             container.append(divBox);
 
-            console.log("-----------------------------------");
+            //console.log("-----------------------------------");
 
             let title = "Forecast";
             let dataPoints = [];
@@ -908,7 +908,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
             $.getJSON( timeseriesUrl, function( data ) {
                 let timeseriesData=data['timeseries'];
-                console.log("-------------> "+timeseriesData);
+                //console.log("-------------> "+timeseriesData);
 
                 $.each( timeseriesData, function( key, val ) {
 
@@ -1021,7 +1021,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                   leftBarImageId,
                   rightBarImageId,
                   bottomBarImageId)  {
-        console.log( "plot");
+        //console.log( "plot");
 
         if (ncepDate==null) {
             if (prod != "rdr1" && prod != "rdr2") {
@@ -1062,7 +1062,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             //$("#plot").empty();
             let mapImageUrl=apiBaseUrl+"/products/"+prod+"/forecast/"+place+"/plot/image?date="+ncepDate+"&output="+output;
             let baseBarImageUrl=apiBaseUrl+"/products/"+prod+"/forecast/legend";
-            console.log("Plot:"+mapImageUrl);
+            //console.log("Plot:"+mapImageUrl);
 
             $('#'+baseName+'-plot-container-mapImage').hide();
             $('#'+baseName+'-plot-container-loadingDiv').show();
@@ -1072,7 +1072,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             $("#"+_topBarImageId).attr('src',baseBarImageUrl+"/top/"+output);
             $("#"+_leftBarImageId).attr('src',baseBarImageUrl+"/left/"+output);
 
-            console.log("update:"+"#"+_leftBarImageId + " --------- "+baseBarImageUrl+"/left/"+output);
+            //console.log("update:"+"#"+_leftBarImageId + " --------- "+baseBarImageUrl+"/left/"+output);
             $('#'+baseName+'-plot-container-mapImage').attr('src',mapImageUrl);
 
 
@@ -1088,7 +1088,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     };
 
     function Map(container,place="com63049",ncepDate=null,options=null)  {
-        console.log( "map:"+options);
+        //console.log( "map:"+options);
 
 
         let _baseLink=window.location.href;
@@ -1157,14 +1157,14 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         _map = new L.Map(baseName+'map-container-mapid');
 
         let placeUrl=apiBaseUrl+"/places/"+place;
-        console.log("placeUrl:"+placeUrl);
+        //console.log("placeUrl:"+placeUrl);
 
         // Get the place data
         $.getJSON( placeUrl, function( placeData ) {
 
 
-            console.log(placeData['bbox']['coordinates']);
-            console.log("----------------");
+            //console.log(placeData['bbox']['coordinates']);
+            //console.log("----------------");
 
             let marker0 = L.marker([placeData['bbox']['coordinates'][0][1], placeData['bbox']['coordinates'][0][0]]);
             let marker1 = L.marker([placeData['bbox']['coordinates'][1][1], placeData['bbox']['coordinates'][1][0]]);
@@ -1176,7 +1176,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
             _center = new L.LatLng(placeData['cLat'], placeData['cLon']);
 
-            console.log(_center);
+            //console.log(_center);
             _map.setView(_center, _zoom);
 
             _map.fitBounds(group.getBounds());
@@ -1214,11 +1214,11 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                 let extras = dataBaseMap["extras"];
 
 
-                                console.log(name+":"+Cookies.get('baseMap'));
+                                //console.log(name+":"+Cookies.get('baseMap'));
                                 if (Cookies.get('baseMap')) {
 
                                     if ( name == Cookies.get('baseMap')) {
-                                        console.log(name + " is active!");
+                                        //console.log(name + " is active!");
                                         isActive=true;
                                     }
                                 } else {
@@ -1304,8 +1304,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             });
 
             function change_domain(mapName, bounds) {
-                console.log("mapName: "+mapName);
-                console.log("_zoom:" + _zoom);
+                //console.log("mapName: "+mapName);
+                //console.log("_zoom:" + _zoom);
 
                 let new_prefix=null;
 
@@ -1338,10 +1338,10 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     new_domain = "d01";
                 }
 
-                console.log("_domain: " + _domain+" "+" new_domain: "+new_domain);
+                //console.log("_domain: " + _domain+" "+" new_domain: "+new_domain);
                 if (new_domain !== _domain) {
                     _domain = new_domain;
-                    console.log("Domain change! "+_domain);
+                    //console.log("Domain change! "+_domain);
 
                     let urlMap = apiBaseUrl+'/v2/maps/' + mapName;
                     //console.log("url:" + urlMap);
@@ -1378,11 +1378,11 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                                         if (Cookies.get(name)) {
                                             isActive=eval(Cookies.get(name))
-                                            console.log(name +" is "+isActive)
+                                            //console.log(name +" is "+isActive)
                                         } else {
-                                            console.log(name + ": not defined;")
+                                            //console.log(name + ": not defined;")
                                             isActive=eval(value[layerName]);
-                                            console.log("From API:"+isActive);
+                                            //console.log("From API:"+isActive);
                                         }
                                         Cookies.set(name,isActive);
 
@@ -1448,13 +1448,13 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                                         }
                                         if (layerInstance != null) {
-                                            console.log("RICHIAMO IL LAYER: "+name);
+                                            //console.log("RICHIAMO IL LAYER: "+name);
                                             overlayMaps[name]=layerInstance;
                                             if (isActive) {
-                                                console.log("ATTIVO IL LAYER: "+name);
+                                                //console.log("ATTIVO IL LAYER: "+name);
                                                 _map.addLayer(overlayMaps[name]);
                                             }
-                                            console.log("AGGIUNGO IN OVERLAY IL LAYER: "+name);
+                                            //console.log("AGGIUNGO IN OVERLAY IL LAYER: "+name);
                                             _controlLayers.addOverlay(overlayMaps[name], name);
                                         }
                                     }
@@ -1465,10 +1465,10 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                 }
 
                 //++++++
-                console.log("_prefix: " + _prefix+" "+" new_prefix: "+new_prefix);
+                //console.log("_prefix: " + _prefix+" "+" new_prefix: "+new_prefix);
                 if (new_prefix !== _prefix) {
                     _prefix = new_prefix;
-                    console.log("Prefix change! "+_prefix);
+                    //console.log("Prefix change! "+_prefix);
 
                     let urlMap = apiBaseUrl+'/v2/maps/' + mapName;
                     //console.log("url:" + urlMap);
@@ -1505,11 +1505,11 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                                         if (Cookies.get(name)) {
                                             isActive=eval(Cookies.get(name))
-                                            console.log(name +" is "+isActive)
+                                            //console.log(name +" is "+isActive)
                                         } else {
-                                            console.log(name + ": not defined;")
+                                            //console.log(name + ": not defined;")
                                             isActive=eval(value[layerName]);
-                                            console.log("From API:"+isActive);
+                                            //console.log("From API:"+isActive);
                                         }
                                         Cookies.set(name,isActive);
 
@@ -1535,7 +1535,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                         switch (type) {
 
                                             case 'icon':
-                                                console.log("Icon Type url: "+urlLayer);
+                                                //console.log("Icon Type url: "+urlLayer);
 
                                                 if (name in overlayMaps && overlayMaps[name] != null) {
                                                     //console.log("Removing:"+name);
@@ -1554,11 +1554,11 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                             style: data["style"],
                                                             pointToLayer: function (features, latlng) {
 
-                                                                console.log(data)
+                                                                //console.log(data)
 
                                                                 let icon = features.properties.icon;
-                                                                console.log(icon)
-                                                                console.log(data["extras"]["icons"])
+                                                                //console.log(icon)
+                                                                //console.log(data["extras"]["icons"])
 
                                                                 function getResourceName(url) {
                                                                     return url.substring(url.lastIndexOf('/')+1)
@@ -1682,9 +1682,9 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                                             }
                                                         };
 
-                                                        console.log("geoJSONTileLayer url:"+url)
-                                                        console.log(option_geojsonTileLayer)
-                                                        console.log(geojsonOptions_geojsonTileLayer);
+                                                        //console.log("geoJSONTileLayer url:"+url)
+                                                        //console.log(option_geojsonTileLayer)
+                                                        //console.log(geojsonOptions_geojsonTileLayer);
                                                         layerInstance= new L.geoJSONTileLayer(url, geojsonOptions_geojsonTileLayer)
                                                         //layerInstance= new L.geoJSONTileLayer(url, option_geojsonTileLayer, geojsonOptions_geojsonTileLayer);
                                                     }
@@ -1712,7 +1712,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     }
 
     function control(container,place="com63049",prod="wrf5",output="gen",dateTime=null)  {
-        console.log( "control:"+container );
+        //console.log( "control:"+container );
 
         /*
         let _prod="wrf5";
@@ -1732,14 +1732,14 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
         function update() {
 
-            console.log("UPDATE: place:"+_place+" prod:"+_prod+" output:"+_output+" ncepDate:"+_ncepDate);
+            //console.log("UPDATE: place:"+_place+" prod:"+_prod+" output:"+_output+" ncepDate:"+_ncepDate);
             divControl.trigger( "update", [ _place, _prod, _output, _ncepDate, "#box" ] );
 
             /* ADD METHOD THAT UPDATE PLACE AND NCEPDATE OF MAP */
 
 
 
-            console.log("UPDATE MAP IN CONTROL: place:"+_place+" ncepDate:"+_ncepDate);
+            //console.log("UPDATE MAP IN CONTROL: place:"+_place+" ncepDate:"+_ncepDate);
         }
         function prova(){
             console.log("QUESTA è UNA PROVA");
@@ -1826,7 +1826,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         term: request.term
                     },
                     success: function( data ) {
-                        console.log("data:"+data);
+                        //console.log("data:"+data);
                         response( data );
                     },
                     error: function (  jqXHR,  textStatus,  errorThrown) {
@@ -1868,7 +1868,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         $.getJSON( apiBaseUrl+"/products", function( data ) {
             let products=data['products'];
 
-            console.log("products:"+products);
+            //console.log("products:"+products);
 
             $("#"+baseName+"control-container-product").empty();
 
