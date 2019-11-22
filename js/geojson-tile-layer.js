@@ -80,11 +80,11 @@
                 geoData = geoData.features;
             }
             for (let i=0;i<geoData.length;i++) {
-                //let id = geoData[i].id;
-                //if (!this.features[id]) {
+                let id = geoData[i].properties.id;
+                if (!this.features[id]) {
                     this.layer.addData(geoData[i]);
-                //    this.features[id] = true;
-                //}
+                    this.features[id] = true;
+                }
             }
             if (!this.cache[coords]) {
                 this.cache[coords] = geoData;
@@ -101,6 +101,7 @@
             request.open(method, url, true);
             request.onreadystatechange = function() {
                 if (request.readyState === 4 && request.status === 200) {
+                    //console.log(request.responseText)
                     callback(JSON.parse(request.responseText));
                 }
             };
