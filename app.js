@@ -83,6 +83,31 @@ function navBar() {
     });
 }
 
+function weatherReports() {
+    let weatherReportsUrl=apiBaseUrl+"/v2/weatherreports/latest/json"
+    console.log("weatherReportsUrl:"+weatherReportsUrl)
+    $.getJSON( weatherReportsUrl, function( data ) {
+        let html=""
+        html+="<div class=\"row\">"
+        html+="  <div class=\"col\">"
+
+        html+="    <div class=\"card\">"
+        html+="      <div class=\"card-body\">"
+        html+="        <h5 class=\"card-title\">"+data["title"]+"</h5>"
+        html+=data["summary"]
+        html+="      </div>"
+        html+="    </div>"
+        html+="  </div>"
+        html+="</div>"
+
+        console.log("weatherReports:"+html)
+
+        $("#container_weatherreports").html(html);
+        $("#container_weatherreports").css("display","block")
+    });
+
+}
+
 function cards() {
     let cardsUrl=apiBaseUrl+"/v2/cards"
     console.log("cardsUrl:"+cardsUrl)
@@ -153,6 +178,8 @@ $( document ).ready(function() {
         console.log("HOME")
         map()
         cards()
+        weatherReports()
+
     } else if (_page=="products") {
         console.log("PRODUCTS")
         box=$("#box").MeteoUniparthenopeDayBox(_place,_prod,"#box_title");
