@@ -44,6 +44,11 @@
 
     <link rel="stylesheet" href="https://webapiv2.navionics.com/dist/webapi/webapi.min.css" >
 
+
+    <!-- cookiealert styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
+
+
     <title>meteo@uniparthenope</title>
 </head>
 <body>
@@ -172,9 +177,23 @@
 <div id="container_cards" class="container-fluid" style="display: none">
 </div>
 
+<div id="container_weatherreports" class="container-fluid" style="display: none">
+</div>
+
 <div id="container_footer" class="container-fluid" style="display: none">
 </div>
 
+<div class="alert alert-dismissible text-center cookiealert" role="alert">
+    <div class="cookiealert-container">
+        By using our site, you acknowledge that you have read and understand our
+        Cookie Policy,
+        Privacy Policy, and our
+        Terms of Service
+        <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
+            I agree
+        </button>
+    </div>
+</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -207,14 +226,18 @@
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script type="text/javascript" src="https://webapiv2.navionics.com/dist/webapi/webapi.min.no-dep.js"></script>
 
+<!-- Include cookiealert script -->
+<script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
+
+
+
 <!-- Protect jQuery variable. -->
 
 <script>
     let jQueryProtect = jQuery;
 </script>
 
-<!--<script src="js/webapi.min.js"></script>-->
-<!--<script src="js/webapi.min.no-dep.js"></script>-->
+
 <script src="js/meteo-uniparthenope.js"></script>
 <script src="app.js"></script>
 
