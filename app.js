@@ -100,7 +100,7 @@ function weatherReports() {
         html+="  </div>"
         html+="</div>"
 
-        console.log("weatherReports:"+html)
+        //console.log("weatherReports:"+html)
 
         $("#container_weatherreports").html(html);
         $("#container_weatherreports").css("display","block")
@@ -145,20 +145,22 @@ function map() {
     });
 
     $(window).on('resize', function() {
-        console.log("RESIZE")
+        //console.log("RESIZE")
         $("#map").css('height', "50vh");
     });
 
     control=$("#control").MeteoUniparthenopeControl(_place,null,null,_ncepDate);
     control.on( "update", function( event, place, prod, output, ncepDate ) {
         console.log( place );
-        console.log( prod );
-        console.log( output );
         console.log( ncepDate );
 
-        _prod=prod;
+        oMap = $("#map").MeteoUniparthenopeMap(place, ncepDate, {
+            "noPopup": false,
+            "mapName": _mapName,
+            "baseLink": "index.html?page=products"
+        });
+
         _place=place;
-        _output=output;
         _ncepDate=ncepDate;
     });
 
