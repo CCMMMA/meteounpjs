@@ -1214,7 +1214,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                                 let extras = dataBaseMap["extras"];
 
 
-                                //console.log(name+":"+Cookies.get('baseMap'));
+                                console.log(name+":"+Cookies.get('baseMap'));
                                 if (Cookies.get('baseMap')) {
 
                                     if ( name == Cookies.get('baseMap')) {
@@ -1297,7 +1297,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                     divMap.update(place, ncepDate);
 
-
+                    console.log("divMap")
+                    console.log(divMap)
 
                     return divMap;
                 }
@@ -1844,6 +1845,11 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
 
         $( "#"+baseName+"control-container-datetimepicker" ).datetimepicker({
+            beforeShow: function() {
+                setTimeout(function(){
+                    $('.ui-datepicker').css('z-index', 99999999999999);
+                }, 0);
+            },
             showOtherMonths: true,
             selectOtherMonths: true,
             format: "yyyy-mm-dd",
