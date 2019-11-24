@@ -262,6 +262,9 @@ $( document ).ready(function() {
             _place=place;
             _output=output;
             _ncepDate=ncepDate;
+
+            let navBarBrandUrl="index.html?place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}"
+            $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
         });
         $("#container_control").css("display","block")
         $("#container_plot").css("display","block")
