@@ -1731,6 +1731,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
 
 
+
         function update() {
 
             //console.log("UPDATE: place:"+_place+" prod:"+_prod+" output:"+_output+" ncepDate:"+_ncepDate);
@@ -1763,9 +1764,15 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         controlsHtml+='<div class="ui-widget">';
 
 
+        let sNcepDate=
+            _ncepDate.substring(6,8)+"/"+
+            _ncepDate.substring(4,6)+"/"+
+            _ncepDate.substring(0,4)+" "+
+            _ncepDate.substring(9,11)+":"+
+            _ncepDate.substring(11,13)
 
         controlsHtml+='<div style="display: inline-block">'+
-            '<label for="control-container-datetimepicker">Date & time:</label><input type="text" id="'+baseName+'control-container-datetimepicker"> '+
+            '<label for="control-container-datetimepicker">UTC:</label><input type="text" value="'+sNcepDate+'" id="'+baseName+'control-container-datetimepicker"/> '+
             '</div>';
 
         if (prod!=null) {
@@ -1790,33 +1797,37 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
         container.append(divControl);
 
-        $( "#"+baseName+"control-container-product" ).selectmenu({
-            change: function( event, ui ) {
-                _prod=ui.item.value;
-                $.getJSON( apiBaseUrl+"/products/"+_prod, function( data ) {
-                    let outputs=data['outputs']['outputs'];
 
-                    $("#"+baseName+"control-container-output").empty();
+        $("#" + baseName + "control-container-product").selectmenu({
+            change: function (event, ui) {
+                _prod = ui.item.value;
+                $.getJSON(apiBaseUrl + "/products/" + _prod, function (data) {
+                    let outputs = data['outputs']['outputs'];
 
-                    $.each( outputs, function( key, val ) {
-                        $("#"+baseName+"control-container-output").append('<option value="'+key+'">'+val[_language]+'</option>');
+                    $("#" + baseName + "control-container-output").empty();
+
+                    $.each(outputs, function (key, val) {
+                        $("#" + baseName + "control-container-output").append('<option value="' + key + '">' + val[_language] + '</option>');
                     });
 
-                    _output="gen";
-                    $('#'+baseName+'control-container-output').val(_output);
-                    $("#"+baseName+"control-container-output").selectmenu("refresh");
+                    _output = "gen";
+                    $('#' + baseName + 'control-container-output').val(_output);
+                    $("#" + baseName + "control-container-output").selectmenu("refresh");
 
                     update();
                 });
             }
         });
 
-        $( "#"+baseName+"control-container-output" ).selectmenu({
-            change: function( event, ui ) {
-                _output=ui.item.value;
+
+        $("#" + baseName + "control-container-output").selectmenu({
+            change: function (event, ui) {
+                _output = ui.item.value;
                 update();
             }
         });
+
+
 
         $( "#"+baseName+"control-container-places" ).autocomplete({
             source: function( request, response ) {
@@ -1843,30 +1854,38 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             }
         } );
 
+        console.log("control: _ncepDate:"+_ncepDate)
+        $( "#"+baseName+"control-container-datetimepicker" )
+            .datetimepicker({
+                beforeShow: function() {
+                    setTimeout(function(){
+                        $('.ui-datepicker').css('z-index', 99999999999999);
+                    }, 0);
+                },
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                dateFormat: "dd/mm/yy",
+                timeFormat: 'HH:mm',
+                stepHour: 1,
+                stepMinute: 60,
+                addSliderAccess: true,
+                sliderAccessArgs: { touchonly: false },
 
-        $( "#"+baseName+"control-container-datetimepicker" ).datetimepicker({
-            beforeShow: function() {
-                setTimeout(function(){
-                    $('.ui-datepicker').css('z-index', 99999999999999);
-                }, 0);
-            },
-            showOtherMonths: true,
-            selectOtherMonths: true,
-            format: "yyyy-mm-dd",
-            timeFormat: 'HH:mm',
-            stepHour: 1,
-            stepMinute: 60,
-            addSliderAccess: true,
-            sliderAccessArgs: { touchonly: false },
+                onSelect: function(dateText) {
+                    let dateTime=$('#'+baseName+'control-container-datetimepicker').datetimepicker('getDate');
+                    _ncepDate=dateTime.getFullYear()+pad(dateTime.getMonth()+1,2)+pad(dateTime.getDate(),2)+"Z"+pad(dateTime.getHours(),2)+pad(dateTime.getMinutes(),2);
 
-            onSelect: function(dateText) {
-                let dateTime=$('#'+baseName+'control-container-datetimepicker').datetimepicker('getDate');
-                _ncepDate=dateTime.getFullYear()+pad(dateTime.getMonth()+1,2)+pad(dateTime.getDate(),2)+"Z"+pad(dateTime.getHours(),2)+pad(dateTime.getMinutes(),2);
+                    update();
+                },
 
-                update();
-
-            }
-        });
+                setDate: new Date(
+                    parseInt(_ncepDate.substring(0,4)),
+                    parseInt(_ncepDate.substring(4,6))-1,
+                    parseInt(_ncepDate.substring(6,8)),
+                    parseInt(_ncepDate.substring(9,11)),
+                    parseInt(_ncepDate.substring(11,12))
+                )
+            });
 
 
 
@@ -1900,9 +1919,9 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                 $("#"+baseName+"control-container-output").selectmenu("refresh");
             });
 
-            $('#'+baseName+'control-container-datetimepicker').datetimepicker('setDate', (new Date()) );
-            let dateTime=$('#'+baseName+'control-container-datetimepicker').datetimepicker('getDate');
-            _ncepDate=dateTime.getFullYear()+pad(dateTime.getMonth()+1,2)+pad(dateTime.getDate(),2)+"Z"+pad(dateTime.getHours(),2)+pad(dateTime.getMinutes(),2);
+            //$('#'+baseName+'control-container-datetimepicker').datetimepicker('setDate', (new Date()) );
+            //let dateTime=$('#'+baseName+'control-container-datetimepicker').datetimepicker('getDate');
+            //_ncepDate=dateTime.getFullYear()+pad(dateTime.getMonth()+1,2)+pad(dateTime.getDate(),2)+"Z"+pad(dateTime.getHours(),2)+pad(dateTime.getMinutes(),2);
 
             _place=place;
             $.getJSON(apiBaseUrl+"/places/"+_place, function( data ) {
