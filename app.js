@@ -96,13 +96,13 @@ function navBar() {
                     }
 
                     html += "<li class='nav-item dropdown'>"
-                    html += "    <a class='nav-link dropdown-toggle' href='"+expandUrl(item["href"])+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false\'>"+item["text"]+"</a>"
+                    html += "    <a class='nav-link dropdown-toggle' href='"+expandUrl(item["href"])+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false\'>"+item["text"][_language]+"</a>"
                     html += "    <div class='dropdown-menu' aria-labelledby='navbarDropdown'>"
                     item["items"].forEach(function(item1, index1) {
-                        if (item1["text"]=="-") {
+                        if (item1["text"][_language]=="-") {
                             html += "        <div class='dropdown-divider'></div>"
                         } else {
-                            html += "        <a class='dropdown-item' href='" + expandUrl(item1["href"]) + "'>" + item1["text"] + "</a>"
+                            html += "        <a class='dropdown-item' href='" + expandUrl(item1["href"]) + "'>" + item1["text"][_language] + "</a>"
                         }
 
                         if ("isHome" in item1 && item1["isHome"]) {
@@ -113,7 +113,7 @@ function navBar() {
                     html += "</li>"
                 } else {
                     html += "<li class='nav-item active'>"
-                    html += "    <a class='nav-link' href='"+expandUrl(item["href"])+"'>"+item["text"]+"</a>"
+                    html += "    <a class='nav-link' href='"+expandUrl(item["href"])+"'>"+item["text"][_language]+"</a>"
                     html += "</li>"
 
                     if ("isHome" in item && item["isHome"]) {
@@ -138,8 +138,8 @@ function weatherReports() {
 
         html+="    <div class=\"card\">"
         html+="      <div class=\"card-body\">"
-        html+="        <h5 class=\"card-title\">"+data["title"]+"</h5>"
-        html+=data["summary"]
+        html+="        <h5 class=\"card-title\">"+data["title"][_language]+"</h5>"
+        html+=data["summary"][_language]
         html+="      </div>"
         html+="    </div>"
         html+="  </div>"
@@ -156,28 +156,67 @@ function weatherReports() {
 function cards() {
     let cardsUrl=apiBaseUrl+"/v2/cards"
     console.log("cardsUrl:"+cardsUrl)
+
     $.getJSON( cardsUrl, function( data ) {
-        let html="<div class=\"row\">"
+
+        $("#container_cards_row").empty()
 
         $.each( data, function( key, values ) {
             values.forEach(function(item, index) {
-                html+="<div class=\"col\">"
-                html+="  <div class=\"card\">"
-                html+="    <a href=\""+expandUrl(item["button"]["href"])+"\">"
-                html+="      <img class=\"card-img-top\" src=\""+expandUrl(item["image"]["src"])+"\" alt=\""+item["image"]["alt"]+"\">"
-                html+="    </a>"
-                html+="    <div class=\"card-body\">"
-                html+="      <h5 class=\"card-title\">"+item["title"]+"</h5>"
-                html+="      <p class=\"card-text\">"+item["text"]+"</p>"
-                html+="      <a href=\""+expandUrl(item["button"]["href"])+"\" class=\"btn btn-primary\">"+item["button"]["text"]+"</a>"
-                html+="    </div>"
-                html+="  </div>"
-                html+="</div>"
+
+
+                let title=item["title"]
+                let text=item["text"]
+                let count=0
+                if ( "url" in title) {
+                    count=count+1
+                    $.getJSON( apiBaseUrl+"/v2/weatherreports/latest/title/json", function( data ) {
+                        title=data["title"]
+                        count=count-1
+                    })
+
+                }
+                if ( "url" in text) {
+                    count=count+1
+                    $.getJSON( apiBaseUrl+"/v2/weatherreports/latest/summary/json", function( data ) {
+                        title=data["summary"]
+                        count=count-1
+                    })
+
+                }
+
+                let handle=null
+                check=function() {
+                    if (count===0) {
+                        let html=""
+                        html+="<div class=\"col\">"
+                        html+="  <div class=\"card\">"
+                        html+="    <a href=\""+expandUrl(item["button"]["href"])+"\">"
+                        html+="      <img class=\"card-img-top\" src=\""+expandUrl(item["image"]["src"])+"\" alt=\""+item["image"]["alt"][_language]+"\">"
+                        html+="    </a>"
+                        html+="    <div class=\"card-body\">"
+                        html+= "      <h5 class=\"card-title\">" + title[_language] + "</h5>"
+                        html+= "      <p class=\"card-text\">" + text[_language] + "</p>"
+                        html+="      <a href=\""+expandUrl(item["button"]["href"])+"\" class=\"btn btn-primary\">"+item["button"]["text"][_language]+"</a>"
+                        html+="    </div>"
+                        html+="  </div>"
+                        html+="</div>"
+
+
+                        $("#container_cards_row").append(html)
+                        clearTimeout(handle)
+                        handle=null
+                    } else {
+                        handle=setTimeout(check,5000)
+                    }
+                }
+
+                check()
+
 
             });
         });
-        html+="</div>"
-        $("#container_cards").html(html);
+
         $("#container_cards").css("display","block")
     });
 }
@@ -219,6 +258,68 @@ function map() {
     $("#container_map").css("display","block")
 }
 
+function products() {
+    box=$("#box").MeteoUniparthenopeDayBox(_place,_prod,"#box_title");
+    chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,_ncepDate,$("#chart_title"));
+    plot=$("#plot").MeteoUniparthenopePlot(_place,_prod,_output,_ncepDate,
+        "topBarImage",
+        "leftBarImage",
+        "rightBarImage",
+        "bottomBarImage");
+    control=$("#control").MeteoUniparthenopeControl(_place,_prod,_output,_ncepDate);
+    control.on( "update", function( event, place, prod, output, ncepDate ) {
+        console.log( place );
+        console.log( prod );
+        console.log( output );
+        console.log( ncepDate );
+
+        plot.update(place,prod,output,ncepDate);
+
+        if (place !== _place) {
+            box=$("#box").MeteoUniparthenopeDayBox(place,prod,"#box_title");
+            chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,_ncepDate,null);
+        }
+        else if (prod!==_prod || output !== _output) {
+            chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,_ncepDate,null);
+        }
+
+        _prod=prod;
+        _place=place;
+        _output=output;
+        _ncepDate=ncepDate;
+
+        let navBarBrandUrl="index.html?place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}"
+        $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
+    });
+    $("#container_control").css("display","block")
+    $("#container_plot").css("display","block")
+    $("#container_chart").css("display","block")
+    $("#container_box").css("display","block")
+}
+
+function pages() {
+    $.getJSON( apiBaseUrl+"/v2/pages/"+_page, function( data ) {
+        if ("image" in data) {
+            $("#page_image").attr("src",data["image"]["src"])
+            $("#page_image").attr("alt",data["image"]["alt"])
+        }
+        $("#page_title").text(data["title"])
+        if ("subtitle" in data) {
+            $("#page_subtitle").text(data["subtitle"])
+        }
+        $("#page_body").html(data["body"])
+
+        if ("links" in data) {
+            data["links"].forEach(function(link, index) {
+                $("#page_links").append("<a href=\""+link["href"]+"\" class=\"card-link\">"+link["text"]+"</a>")
+            })
+        }
+
+        $("#container_pages").css("display","block")
+    });
+}
+
+
 $( document ).ready(function() {
 
     console.log("READY _ncepDate:"+_ncepDate)
@@ -230,69 +331,15 @@ $( document ).ready(function() {
         console.log("HOME")
         map()
         cards()
-        weatherReports()
-
     } else if (_page=="products") {
         console.log("PRODUCTS")
-        box=$("#box").MeteoUniparthenopeDayBox(_place,_prod,"#box_title");
-        chart=$("#chart").MeteoUniparthenopeChart(_place,_prod,_output,_hours,_step,_ncepDate,$("#chart_title"));
-        plot=$("#plot").MeteoUniparthenopePlot(_place,_prod,_output,_ncepDate,
-            "topBarImage",
-            "leftBarImage",
-            "rightBarImage",
-            "bottomBarImage");
-        control=$("#control").MeteoUniparthenopeControl(_place,_prod,_output,_ncepDate);
-        control.on( "update", function( event, place, prod, output, ncepDate ) {
-            console.log( place );
-            console.log( prod );
-            console.log( output );
-            console.log( ncepDate );
-
-            plot.update(place,prod,output,ncepDate);
-
-            if (place !== _place) {
-                box=$("#box").MeteoUniparthenopeDayBox(place,prod,"#box_title");
-                chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,_ncepDate,null);
-            }
-            else if (prod!==_prod || output !== _output) {
-                chart=$("#chart").MeteoUniparthenopeChart(place,prod,output,_hours,_step,_ncepDate,null);
-            }
-
-            _prod=prod;
-            _place=place;
-            _output=output;
-            _ncepDate=ncepDate;
-
-            let navBarBrandUrl="index.html?place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}"
-            $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
-        });
-        $("#container_control").css("display","block")
-        $("#container_plot").css("display","block")
-        $("#container_chart").css("display","block")
-        $("#container_box").css("display","block")
+        products()
+    } else if (_page="weatherreports") {
+        console.log("weatherreports")
+        weatherReports()
     } else {
         console.log("PAGES")
-        $.getJSON( apiBaseUrl+"/v2/pages/"+_page, function( data ) {
-            if ("image" in data) {
-                $("#page_image").attr("src",data["image"]["src"])
-                $("#page_image").attr("alt",data["image"]["alt"])
-            }
-            $("#page_title").text(data["title"])
-            if ("subtitle" in data) {
-                $("#page_subtitle").text(data["subtitle"])
-            }
-            $("#page_body").html(data["body"])
-
-            if ("links" in data) {
-                data["links"].forEach(function(link, index) {
-                    $("#page_links").append("<a href=\""+link["href"]+"\" class=\"card-link\">"+link["text"]+"</a>")
-                })
-            }
-
-            $("#container_pages").css("display","block")
-        });
-
-
+        pages()
     }
     footer()
     console.log("FINISH")
