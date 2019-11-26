@@ -160,58 +160,67 @@ function cards() {
     $.getJSON( cardsUrl, function( data ) {
 
         $("#container_cards_row").empty()
+        let count=0
 
         $.each( data, function( key, values ) {
             values.forEach(function(item, index) {
 
+                let cardId="card"+pad(count,2)
+
+
+
+                let html=""
+                html+="<div class=\"col\">"
+                html+="  <div class=\"card\" id=\""+cardId+"\">"
+                html+="    <a href=\""+expandUrl(item["button"]["href"])+"\">"
+                html+="      <img id=\""+cardId+"_image\" class=\"card-img-top\" src=\""+expandUrl(item["image"]["src"])+"\" alt=\""+item["image"]["alt"][_language]+"\">"
+                html+="    </a>"
+                html+="    <div class=\"card-body\">"
+                html+= "      <h5 id=\""+cardId+"_title\" class=\"card-title\"></h5>"
+                html+= "      <p id=\""+cardId+"_text\" class=\"card-text\"></p>"
+                html+="      <a href=\""+expandUrl(item["button"]["href"])+"\" class=\"btn btn-primary\">"+item["button"]["text"][_language]+"</a>"
+                html+="    </div>"
+                html+="  </div>"
+                html+="</div>"
+
+
+                $("#container_cards_row").append(html)
+
+                if ("timeout" in item) {
+                    (function(){
+                        let imageUrl=expandUrl(item["image"]["src"])
+                        console.log("Update:"+imageUrl)
+                        $("#"+cardId+"_image").attr("src",imageUrl)
+                        setTimeout(arguments.callee, parseInt(item["timeout"])*1000);
+                    })();
+
+                }
 
                 let title=item["title"]
                 let text=item["text"]
-                let count=0
+
                 if ( "url" in title) {
-                    count=count+1
                     $.getJSON( apiBaseUrl+"/v2/weatherreports/latest/title/json", function( data ) {
                         title=data["title"]
-                        count=count-1
+                        $("#"+cardId+"_title").html(title[_language])
                     })
 
+                } else {
+                    $("#"+cardId+"_title").html(title[_language])
                 }
+
                 if ( "url" in text) {
-                    count=count+1
-                    $.getJSON( apiBaseUrl+"/v2/weatherreports/latest/summary/json", function( data ) {
-                        title=data["summary"]
-                        count=count-1
+                    $.getJSON( apiBaseUrl+"/v2/weatherreports/latest/text/json", function( data ) {
+                        text=data["summary"]
+                        $("#"+cardId+"_text").html(text[_language])
                     })
 
+                } else {
+                    $("#"+cardId+"_text").html(text[_language])
                 }
 
-                let handle=null
-                check=function() {
-                    if (count===0) {
-                        let html=""
-                        html+="<div class=\"col\">"
-                        html+="  <div class=\"card\">"
-                        html+="    <a href=\""+expandUrl(item["button"]["href"])+"\">"
-                        html+="      <img class=\"card-img-top\" src=\""+expandUrl(item["image"]["src"])+"\" alt=\""+item["image"]["alt"][_language]+"\">"
-                        html+="    </a>"
-                        html+="    <div class=\"card-body\">"
-                        html+= "      <h5 class=\"card-title\">" + title[_language] + "</h5>"
-                        html+= "      <p class=\"card-text\">" + text[_language] + "</p>"
-                        html+="      <a href=\""+expandUrl(item["button"]["href"])+"\" class=\"btn btn-primary\">"+item["button"]["text"][_language]+"</a>"
-                        html+="    </div>"
-                        html+="  </div>"
-                        html+="</div>"
 
-
-                        $("#container_cards_row").append(html)
-                        clearTimeout(handle)
-                        handle=null
-                    } else {
-                        handle=setTimeout(check,5000)
-                    }
-                }
-
-                check()
+                count=count+1
 
 
             });
