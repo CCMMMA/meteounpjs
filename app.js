@@ -1,6 +1,7 @@
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
 let _language = (navigator.language || navigator.userLanguage).split("-")[0]
 
+
 function pad(n, width, z) {
     z = z || '0';
     n = n + '';
@@ -22,6 +23,8 @@ function getURLParameter(sParam, defaultValue) {
     }
     return defaultValue;
 }
+
+let _lang=getURLParameter("lang",(navigator.language || navigator.userLanguage));
 
 let _page=getURLParameter("page","home");
 
@@ -54,6 +57,7 @@ function expandUrl( baseUrl ) {
         baseUrl=""
     }
     return baseUrl
+        .replace("{lang}",_lang)
         .replace("{place}",_place)
         .replace("{prod}",_prod)
         .replace("{output}",_output)
@@ -77,32 +81,35 @@ function footer() {
 }
 
 function navBar() {
-    let navBarUrl=apiBaseUrl+"/v2/navbar"
+    let navBarUrl=apiBaseUrl+"/v2/navbar?lang="+_lang
     console.log("navBarUrl:"+navBarUrl)
 
 
 
     $.getJSON( navBarUrl, function( data ) {
         console.log("menu")
+
         let navBarBrandUrl="index.html"
         let items = [];
+
         $.each( data, function( key, values ) {
             values.forEach(function(item, index) {
                 let html="";
+                let localizedItem=item["i18n"][_lang]
 
-                if ("items" in item) {
+                if ("items" in localizedItem) {
                     if ("isHome" in item && item["isHome"]) {
-                        navBarBrandUrl=item["href"]
+                        navBarBrandUrl=localizedItem["href"]
                     }
 
                     html += "<li class='nav-item dropdown'>"
-                    html += "    <a class='nav-link dropdown-toggle' href='"+expandUrl(item["href"])+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false\'>"+item["text"][_language]+"</a>"
+                    html += "    <a class='nav-link dropdown-toggle' href='"+expandUrl(localizedItem["href"])+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false\'>"+localizedItem["text"]+"</a>"
                     html += "    <div class='dropdown-menu' aria-labelledby='navbarDropdown'>"
-                    item["items"].forEach(function(item1, index1) {
-                        if (item1["text"][_language]=="-") {
+                    localizedItem["items"].forEach(function(item1, index1) {
+                        if (item1["text"]=="-") {
                             html += "        <div class='dropdown-divider'></div>"
                         } else {
-                            html += "        <a class='dropdown-item' href='" + expandUrl(item1["href"]) + "'>" + item1["text"][_language] + "</a>"
+                            html += "        <a class='dropdown-item' href='" + expandUrl(item1["href"]) + "'>" + item1["text"]+ "</a>"
                         }
 
                         if ("isHome" in item1 && item1["isHome"]) {
@@ -113,11 +120,11 @@ function navBar() {
                     html += "</li>"
                 } else {
                     html += "<li class='nav-item active'>"
-                    html += "    <a class='nav-link' href='"+expandUrl(item["href"])+"'>"+item["text"][_language]+"</a>"
+                    html += "    <a class='nav-link' href='"+expandUrl(localizedItem["href"])+"'>"+localizedItem["text"]+"</a>"
                     html += "</li>"
 
                     if ("isHome" in item && item["isHome"]) {
-                        navBarBrandUrl=item["href"]
+                        navBarBrandUrl=localizedItem["href"]
                     }
                 }
                 items.push(  html );
@@ -307,19 +314,23 @@ function products() {
 }
 
 function pages() {
-    $.getJSON( apiBaseUrl+"/v2/pages/"+_page, function( data ) {
-        if ("image" in data) {
-            $("#page_image").attr("src",data["image"]["src"])
-            $("#page_image").attr("alt",data["image"]["alt"])
-        }
-        $("#page_title").text(data["title"])
-        if ("subtitle" in data) {
-            $("#page_subtitle").text(data["subtitle"])
-        }
-        $("#page_body").html(data["body"])
+    let pageUrl=apiBaseUrl+"/v2/pages/"+_page+"?lang="+_lang
+    console.log("pageUrl:"+pageUrl)
 
-        if ("links" in data) {
-            data["links"].forEach(function(link, index) {
+    $.getJSON( pageUrl, function( data ) {
+        let localizedData=data["i18n"][_lang]
+        if ("image" in localizedData) {
+            $("#page_image").attr("src",localizedData["image"]["src"])
+            $("#page_image").attr("alt",localizedData["image"]["alt"])
+        }
+        $("#page_title").text(localizedData["title"])
+        if ("subtitle" in localizedData) {
+            $("#page_subtitle").text(localizedData["subtitle"])
+        }
+        $("#page_body").html(localizedData["body"])
+
+        if ("links" in localizedData) {
+            localizedData["links"].forEach(function(link, index) {
                 $("#page_links").append("<a href=\""+link["href"]+"\" class=\"card-link\">"+link["text"]+"</a>")
             })
         }
@@ -336,14 +347,14 @@ $( document ).ready(function() {
     navBar()
 
     console.log("PAGE:"+_page)
-    if (_page=="home") {
+    if (_page==="home") {
         console.log("HOME")
         map()
         cards()
-    } else if (_page=="products") {
+    } else if (_page==="products") {
         console.log("PRODUCTS")
         products()
-    } else if (_page="weatherreports") {
+    } else if (_page==="weatherreports") {
         console.log("weatherreports")
         weatherReports()
     } else {
