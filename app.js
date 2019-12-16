@@ -107,7 +107,8 @@ function navBar() {
                     html += "    <a class='nav-link dropdown-toggle' href='"+expandUrl(localizedItem["href"])+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false\'>"+localizedItem["text"]+"</a>"
                     html += "    <div class='dropdown-menu' aria-labelledby='navbarDropdown'>"
                     localizedItem["items"].forEach(function(item1, index1) {
-                        if (item1["text"]=="-") {
+                        console.log("item1.text="+item1["text"])
+                        if (item1["text"]==="-") {
                             html += "        <div class='dropdown-divider'></div>"
                         } else {
                             html += "        <a class='dropdown-item' href='" + expandUrl(item1["href"]) + "'>" + item1["text"]+ "</a>"
