@@ -487,20 +487,7 @@
 ],
   "cards": [
     {
-      "_id": "weatherreports",,
-      "active":true,
-      "order": 10,
-      "i18n": {
-        "en-US": {
-
-        },
-        "it-IT": {
-
-        }
-      }
-    },
-    {
-      "_id": "a",
+      "_id": "weatherreports",
       "active":true,
       "order": 10,
       "i18n": {
@@ -529,129 +516,261 @@
           }
         }
       }
-    }
-  ],
-  "cards":[
-    {
-
-
-
     },
     {
+      "_id": "wrf_crh",
       "active":true,
       "order": 20,
-      "image": {
-        "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=gen&date={date}",
-        "alt":{ "en":"Clouds, Rain and Wind Field", "it":"Nuvolosit&agrave;, Precipitazioni e Vento"}
-      },
-      "title": { "en":"Clouds, Rain and Wind Field", "it":"Nuvolosit&agrave;, Precipitazioni e Vento"},
-      "text": { "en":"7 days, 25km, 5km, 1km", "it":"7 giorni, 25km, 5km, 1km"},
-      "button": {
-        "text": { "en":"WRF", "it":"WRF"},
-        "href": "index.html?page=products&prod=wrf5&place={place}&output=gen&date={date}"
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=gen&date={date}",
+            "alt": "Clouds, Rain and Wind Field"
+          },
+          "title": "Clouds, Rain and Wind Field",
+          "text": "Forecast: 168 hours (7 days).<br/>Resolution: 25km (Europe), 5km (Italy), 1km (Eastern sectors of the Central and Southern Tyrrenian Sea)",
+          "button": {
+            "text": "WRF",
+            "href": "index.html?page=products&prod=wrf5&place={place}&output=gen&date={date}"
+          }
+        },
+        "it-IT": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=gen&date={date}",
+            "alt": "Copertura nuvolosa, Precipitazioni e Vento"
+          },
+          "title": "Copertura nuvolosa, Precipitazioni e Vento",
+          "text": "Previsione: 168 ore (7 giorni).<br/>Risoluzione: 25km (Europa), 5km (Italia), 1km (Settori Est del Mar Tirreno Centrale e Meridionale).",
+          "button": {
+            "text": "WRF",
+            "href": "index.html?page=products&prod=wrf5&place={place}&output=gen&date={date}"
+          }
+        }
       }
     },
     {
+      "_id": "wrf_wn1",
       "active":true,
       "order": 30,
-      "image": {
-        "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=wn1&date={date}",
-        "alt":{ "en":"Wind Field at 10m", "it":"Vento a 10m"}
-      },
-      "title": { "en":"Wind Field at 10m", "it":"Vento a 10m"},
-      "text": { "en":"7 days, 25km, 5km, 1km", "it":"7 giorni, 25km, 5km, 1km"},
-      "button": {
-        "text": { "en":"WRF", "it":"WRF"},
-        "href": "index.html?page=products&prod=wrf5&place={place}&output=wn1&date={date}"
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=wn1&date={date}",
+            "alt": "Wind Field at 10m"
+          },
+          "title": "Wind Field at 10m",
+          "text": "Forecast: 168 hours (7 days).<br/>Resolution: 25km (Europe), 5km (Italy), 1km (Eastern sectors of the Central and Southern Tyrrenian Sea)",
+          "button": {
+            "text": "WRF",
+            "href": "index.html?page=products&prod=wrf5&place={place}&output=wn1&date={date}"
+          }
+        },
+        "it-IT": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=wn1&date={date}",
+            "alt": "Campo di Vento a 10m sul livello del mare."
+          },
+          "title": "Campo di vento a 10m.",
+          "text": "Previsione: 168 ore (7 giorni).<br/>Risoluzione: 25km (Europa), 5km (Italia), 1km (Settori Est del Mar Tirreno Centrale e Meridionale).",
+          "button": {
+            "text": "WRF",
+            "href": "index.html?page=products&prod=wrf5&place={place}&output=wn1&date={date}"
+          }
+        }
       }
     },
     {
+      "_id": "wrf_tsp",
       "active":true,
       "order": 40,
-      "image": {
-        "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=tsp&date={date}",
-        "alt":{ "en":"Temperature at 2m and Sea level pressure", "it":"Temperatura a 2m e Presssione al livello del Mare"}
-      },
-      "title": { "en":"Temperature at 2m and Sea level pressure", "it":"Temperatura a 2m e Presssione al livello del Mare"},
-      "text": { "en":"7 days, 25km, 5km, 1km", "it":"7 days, 25km, 5km, 1km"},
-      "button": {
-        "text": { "en":"WRF", "it":"WRF"},
-        "href": "index.html?page=products&prod=wrf5&place={place}&output=tsp&date={date}"
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=tsp&date={date}",
+            "alt": "Temperature at 2m and Sea Level Pressure."
+          },
+          "title": "Temperature at 2m and Sea Level Pressure.",
+          "text": "Forecast: 168 hours (7 days).<br/>Resolution: 25km (Europe), 5km (Italy), 1km (Eastern sectors of the Central and Southern Tyrrenian Sea)",
+          "button": {
+            "text": "WRF",
+            "href": "index.html?page=products&prod=wrf5&place={place}&output=tsp&date={date}"
+          }
+        },
+        "it-IT": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/wrf5/forecast/{place}/plot/image?output=tsp&date={date}",
+            "alt": "Temperature at 2m and Sea level pressure"
+          },
+          "title": "Temperature at 2m and Sea level pressure",
+          "text": "Previsione: 168 ore (7 giorni).<br/>Risoluzione: 25km (Europa), 5km (Italia), 1km (Settori Est del Mar Tirreno Centrale e Meridionale).",
+          "button": {
+            "text": "WRF",
+            "href": "index.html?page=products&prod=wrf5&place={place}&output=tsp&date={date}"
+          }
+        }
       }
     },
     {
+      "_id": "rms3_gen",
       "active":true,
       "order": 50,
       "avail": "https://api.meteo.uniparthenope.it/products/rms3/{place}/avail?date={date}",
-      "image": {
-        "src":"https://api.meteo.uniparthenope.it/products/rms3/forecast/{place}/plot/image?output=gen&date={date}",
-        "alt":{ "en":"Surface sea current", "it":"Corrente Marina Superficiale"}
-      },
-      "title": { "en":"Surface sea current", "it":"Corrente Marina Superficiale"},
-      "text": { "en":"6 days, 160m", "it":"6 giorni, 160m"},
-      "button": {
-        "text": { "en":"ROMS", "it":"ROMS"},
-        "href": "index.html?page=products&prod=rms3&place={place}&output=gen&date={date}"
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/rms3/forecast/{place}/plot/image?output=gen&date={date}",
+            "alt": "Surface sea current"
+          },
+          "title": "Surface sea current",
+          "text": "Forecast: 144 hours (6 days).<br/>Resolution: 160m (Campania Region coasts and related boundaries)",
+          "button": {
+            "text": "ROMS",
+            "href": "index.html?page=products&prod=rms3&place={place}&output=gen&date={date}"
+          }
+        },
+        "it-IT": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/rms3/forecast/{place}/plot/image?output=gen&date={date}",
+            "alt": "Corrente marina superficiale."
+          },
+          "title": "Corrente marina superficiale.",
+          "text": "Previsione: 144 ore (6 giorni).<br/>Resolution: 160m (Area costiera della Regione Campania e zone adiacenti).",
+          "button": {
+            "text": "ROMS",
+            "href": "index.html?page=products&prod=rms3&place={place}&output=gen&date={date}"
+          }
+        }
       }
     },
     {
+      "_id": "wcm3_gen",
       "active":true,
       "order": 60,
       "avail": "https://api.meteo.uniparthenope.it/products/wcm3/{place}/avail?date={date}",
-      "image": {
-        "src":"https://api.meteo.uniparthenope.it/products/wcm3/forecast/{place}/plot/image?output=gen&date={date}",
-        "alt":{ "en":"Inert tracers transport and diffusion", "it":"Trasporto e diffusione di traccianti inerti"}
-      },
-      "title": { "en":"Inert tracer transport and diffusion", "it":"Trasporto e diffusione di traccianti inerti"},
-      "text": { "en":"6 days, 160m", "it":"6 giorni"},
-      "button": {
-        "text": { "en":"WaComM", "it":"WaComM"},
-        "href": "index.html?page=products&prod=wcm3&place={place}&output=gen&date={date}"
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/wcm3/forecast/{place}/plot/image?output=gen&date={date}",
+            "alt": "Inert tracers transport and diffusion"
+          },
+          "title": "Inert tracer transport and diffusion",
+          "text": "Forecast: 144 hours (6 days).<br/>Resolution: 160m (Campania Region coasts and related boundaries)",
+          "button": {
+            "text": "WaComM",
+            "href": "index.html?page=products&prod=wcm3&place={place}&output=gen&date={date}"
+          }
+        },
+        "it-IT": {
+          "image": {
+            "src":"https://api.meteo.uniparthenope.it/products/wcm3/forecast/{place}/plot/image?output=gen&date={date}",
+            "alt": "Trasporto e diffudsione di traccianti inerti."
+          },
+          "title": "Trasporto e diffudsione di traccianti inerti.",
+          "text": "Previsione: 144 ore (6 giorni).<br/>Risoluzione: 160m (Area costiera della Regione Campania e zone adiacenti).",
+          "button": {
+            "text": "WaComM",
+            "href": "index.html?page=products&prod=wcm3&place={place}&output=gen&date={date}"
+          }
+        }
       }
     },
     {
+      "_id": "vmi",
       "active":true,
       "order": 70,
-      "image": {
-        "src":"https://radar2mari.hostingerapp.com/prova.png?r=12345&{random}",
-        "alt":{ "en":"Vertical Maximum Intensity (VMI)", "it":"Intensit&agrave; verticale massima (VMI)"},
-        "timeout": 300
-      },
-      "title": { "en":"Weather Radar", "it":"Radar Meteo"},
-      "text": { "en":"Vertical Maximum Intensity (VMI)", "it":"Intensit&agrave; verticale massima (VMI)"},
-      "button": {
-        "text": { "en":"Go to website...", "it":"Vai al sito web..."},
-        "href": "https://radar2mari.hostingerapp.com"
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://www.radarmeteo.uniparthenope.it/data/prova.png?{random}",
+            "alt": "Vertical Maximum Intensity (VMI)",
+            "timeout": 300
+          },
+          "title": "Weather Radar",
+          "text": "Vertical Maximum Intensity (VMI)",
+          "button": {
+            "text": "Go to website...",
+            "href": "https://www.radarmeteo.uniparthenope.it/real-time-data.html"
+          }
+        },
+        "it-IT": {
+          "image": {
+            "src":"https://www.radarmeteo.uniparthenope.it/data/prova.png?{random}",
+            "alt": "Vertical Maximum Intensity (VMI)",
+            "timeout": 300
+          },
+          "title": "Radar Meteo",
+          "text": "Vertical Maximum Intensity (VMI)",
+          "button": {
+            "text": "Vai al portale...",
+            "href": "https://www.radarmeteo.uniparthenope.it/real-time-data.html"
+          }
+        }
       }
     },
     {
+      "_id": "poh",
       "active":true,
       "order": 80,
-      "image": {
-        "src":"https://radar2mari.hostingerapp.com/hail.png?r=12345&{random}",
-        "alt":{ "en":"Probability of Hail (POH)", "it":"Probabilit&agrave; di Grandine"},
-        "timeout": 300
-      },
-      "title": { "en":"Weather Radar", "it":"Radar Meteo"},
-      "text": { "en":"Probability of Hail (POH)", "it":"Probabilit&agrave; di Grandine"},
-      "button": {
-        "text": { "en":"Go to website...", "it":"Vai al sito web..."},
-        "href": "https://radar2mari.hostingerapp.com/Thunderstorm-monitoring/"
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://www.radarmeteo.uniparthenope.it/data/hail.png?{random}",
+            "alt": "Probability of Hail (POH)",
+            "timeout": 300
+          },
+          "title": "Weather Radar",
+          "text": "Probability of Hail (POH)",
+          "button": {
+            "text": "Vai al portale...",
+            "href": "https://www.radarmeteo.uniparthenope.it/thunderstorm-monitoring.html"
+          }
+        },
+        "it-IT": {
+          "image": {
+            "src":"https://www.radarmeteo.uniparthenope.it/data/hail.png?{random}",
+            "alt": "Probabilit&agrave; di Grandine (POH)",
+            "timeout": 300
+          },
+          "title": "Weather Radar",
+          "text": "robabilit&agrave; di Grandine (POH)",
+          "button": {
+            "text": "Vai al portale...",
+            "href": "https://www.radarmeteo.uniparthenope.it/thunderstorm-monitoring.html"
+          }
+        }
       }
     },
     {
+      "_id": "infrastructure",
       "active":true,
       "order": 90,
-      "image": {
-        "src":"http://blackjeans.uniparthenope.it/ganglia/stacked.php?m=load_one&c=Blackjeans-UniParthenope&r=hour",
-        "alt":{ "en":"HPC-GPU BlackJeans Stacked Computing Load Graph (last hour)", "it":"Grafico Carico Computazionale di HPC-GPU Blackjeans (ultima ora)"},
-        "timeout": 60
-      },
-      "title": { "en":"HPC-GPU BlackJeans Stacked Computing Load Graph", "it":"Grafico Carico Computazionale di HPC-GPU Blackjeans"},
-      "text": { "en":"The Centre for Monitoring and Modelling Marine and Atmosphere (CMMMA) meteo@uniparthenope leverages on a dedicated HPC infrastructure devoted to handle sampled data and the models&apos; workflow.", "it":"Il Centro per il Monitoraggio e la Modellistica Atmosferica (CMMMA) meteo@uniparthenope si avvale di un&apos;infrastruttura HPC dedicata destinata alla gestione dei dati acquisiti e dell&apos;esecuzione della catena modellistica."},
-      "button": {
-        "text": { "en":"Read more....", "it":"Maggiori informazioni..."},
-        "href": "index.html?page=about_hpc"
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"http://blackjeans.uniparthenope.it/ganglia/stacked.php?m=load_one&c=Blackjeans-UniParthenope&r=hour",
+            "alt": "HPC-GPU BlackJeans Stacked Computing Load Graph (last hour)",
+            "timeout": 60
+          },
+          "title": "HPC-GPU BlackJeans Stacked Computing Load Graph",
+          "text": "The Centre for Monitoring and Modelling Marine and Atmosphere (CMMMA) meteo@uniparthenope leverages on a dedicated HPC infrastructure devoted to handle sampled data and the models&apos; workflow.",
+          "button": {
+            "text": "Read more....",
+            "href": "index.html?page=infrastructure"
+          }
+        },
+        "it-IT": {
+          "image": {
+            "src":"http://blackjeans.uniparthenope.it/ganglia/stacked.php?m=load_one&c=Blackjeans-UniParthenope&r=hour",
+            "alt": "HPC-GPU BlackJeans Stacked Computing Load Graph (Ultima ora)",
+            "timeout": 60
+          },
+          "title": "HPC-GPU BlackJeans Stacked Computing Load Graph",
+          "text": "Il Centro per il Monitoraggio e la Modellistica Atmosferica (CMMMA) meteo@uniparthenope si avvale di un&apos;infrastruttura HPC dedicata destinata alla gestione dei dati acquisiti e dell&apos;esecuzione della catena modellistica.",
+          "button": {
+            "text": "Leggi....",
+            "href": "index.html?page=infrastructure"
+          }
+        }
       }
     }
   ],
@@ -659,42 +778,70 @@
     {
       "active":false,
       "order": 10,
-      "image": {
-        "src":"https://meteo.uniparthenope.it/sites/default/files/styles/style_sli/public/2016-03/napoli01.png",
-        "alt":{ "en":"", "it":""},
-        "timeout": 60
-      },
-      "href": ""
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://meteo.uniparthenope.it/sites/default/files/styles/style_sli/public/2016-03/napoli01.png",
+            "alt": "",
+            "timeout": 60
+          },
+          "href": ""
+        },
+        "it-IT": {
+
+        }
+      }
     },
     {
       "active":false,
       "order": 20,
-      "image": {
-        "src":"https://meteo.uniparthenope.it/sites/default/files/styles/style_sli/public/2016-03/Lorem-Ipsum_2-14-13.jpg",
-        "alt":{ "en":"", "it":""},
-        "timeout": 60
-      },
-      "href": ""
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://meteo.uniparthenope.it/sites/default/files/styles/style_sli/public/2016-03/Lorem-Ipsum_2-14-13.jpg",
+            "alt":{ "en":"", "it":""},
+            "timeout": 60
+          },
+          "href": ""
+        },
+        "it-IT": {
+
+        }
+      }
     },
     {
       "active":false,
       "order": 30,
-      "image": {
-        "src":"https://meteo.uniparthenope.it/sites/default/files/styles/style_sli/public/2016-03/Lorem-ipsum-portland-marketing.jpg",
-        "alt":{ "en":"", "it":""},
-        "timeout": 60
-      },
-      "href": ""
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://meteo.uniparthenope.it/sites/default/files/styles/style_sli/public/2016-03/Lorem-ipsum-portland-marketing.jpg",
+            "alt":{ "en":"", "it":""},
+            "timeout": 60
+          },
+          "href": ""
+        },
+        "it-IT": {
+
+        }
+      }
     },
     {
       "active":false,
       "order": 40,
-      "image": {
-        "src":"https://meteo.uniparthenope.it/sites/default/files/styles/style_sli/public/2016-03/loremipsumtext.jpg",
-        "alt":{ "en":"", "it":""},
-        "timeout": 60
-      },
-      "href": ""
+      "i18n": {
+        "en-US": {
+          "image": {
+            "src":"https://meteo.uniparthenope.it/sites/default/files/styles/style_sli/public/2016-03/loremipsumtext.jpg",
+            "alt":{ "en":"", "it":""},
+            "timeout": 60
+          },
+          "href": ""
+        },
+        "it-IT": {
+
+        }
+      }
     }
   ]
 }
