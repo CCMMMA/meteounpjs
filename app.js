@@ -70,11 +70,12 @@ function expandUrl( baseUrl ) {
 
 
 function footer() {
-    let legalDisclaimerUrl=apiBaseUrl+"/legal/disclaimer"
+    let legalDisclaimerUrl=apiBaseUrl+"/legal/disclaimer?lang="+_lang
     console.log("legalDisclaimerUrl:"+legalDisclaimerUrl)
     $.getJSON( legalDisclaimerUrl, function( data ) {
         console.log("legalDisclaimer")
-        $("#container_footer").append(data["disclaimer"][_language]);
+        let localizedData=data["i18n"][_lang]
+        $("#container_footer").append(localizedData["disclaimer"]);
         $("#container_footer").css("display","block")
     });
 
@@ -136,17 +137,18 @@ function navBar() {
 }
 
 function weatherReports() {
-    let weatherReportsUrl=apiBaseUrl+"/v2/weatherreports/latest/json"
+    let weatherReportsUrl=apiBaseUrl+"/v2/weatherreports/latest/json?lang="+_lang
     console.log("weatherReportsUrl:"+weatherReportsUrl)
     $.getJSON( weatherReportsUrl, function( data ) {
+        let localizedItem=data["i18n"][_lang]
         let html=""
         html+="<div class=\"row\">"
         html+="  <div class=\"col\">"
 
         html+="    <div class=\"card\">"
         html+="      <div class=\"card-body\">"
-        html+="        <h5 class=\"card-title\">"+data["title"][_language]+"</h5>"
-        html+=data["summary"][_language]
+        html+="        <h5 class=\"card-title\">"+localizedItem["title"]+"</h5>"
+        html+=localizedItem["summary"]
         html+="      </div>"
         html+="    </div>"
         html+="  </div>"
@@ -161,31 +163,33 @@ function weatherReports() {
 }
 
 function cards() {
-    let cardsUrl=apiBaseUrl+"/v2/cards"
+    let cardsUrl=apiBaseUrl+"/v2/cards?lang="+_lang
     console.log("cardsUrl:"+cardsUrl)
 
     $.getJSON( cardsUrl, function( data ) {
 
         $("#container_cards_row").empty()
-        let count=0
+
+        console.log("Cards:")
+        console.log(data)
 
         $.each( data, function( key, values ) {
             values.forEach(function(item, index) {
-
-                let cardId="card"+pad(count,2)
+                let localizedItem=item["i18n"][_lang]
+                let cardId="card_"+item["_id"]
 
 
 
                 let html=""
-                html+="<div class=\"col\">"
+                html+="<div id=\""+cardId+"_container\" class=\"col\" style=\"display: none\">"
                 html+="  <div class=\"card\" id=\""+cardId+"\">"
-                html+="    <a href=\""+expandUrl(item["button"]["href"])+"\">"
-                html+="      <img id=\""+cardId+"_image\" class=\"card-img-top\" src=\""+expandUrl(item["image"]["src"])+"\" alt=\""+item["image"]["alt"][_language]+"\">"
+                html+="    <a href=\""+expandUrl(localizedItem["button"]["href"])+"\">"
+                html+="      <img id=\""+cardId+"_image\" class=\"card-img-top\" src=\""+expandUrl(localizedItem["image"]["src"])+"\" alt=\""+localizedItem["image"]["alt"]+"\">"
                 html+="    </a>"
                 html+="    <div class=\"card-body\">"
                 html+= "      <h5 id=\""+cardId+"_title\" class=\"card-title\"></h5>"
                 html+= "      <p id=\""+cardId+"_text\" class=\"card-text\"></p>"
-                html+="      <a href=\""+expandUrl(item["button"]["href"])+"\" class=\"btn btn-primary\">"+item["button"]["text"][_language]+"</a>"
+                html+="      <a href=\""+expandUrl(localizedItem["button"]["href"])+"\" class=\"btn btn-primary\">"+localizedItem["button"]["text"]+"</a>"
                 html+="    </div>"
                 html+="  </div>"
                 html+="</div>"
@@ -195,7 +199,7 @@ function cards() {
 
                 if ("timeout" in item) {
                     (function(){
-                        let imageUrl=expandUrl(item["image"]["src"])
+                        let imageUrl=expandUrl(localizedItem["image"]["src"])
                         console.log("Update:"+imageUrl)
                         $("#"+cardId+"_image").attr("src",imageUrl)
                         setTimeout(arguments.callee, parseInt(item["timeout"])*1000);
@@ -203,33 +207,52 @@ function cards() {
 
                 }
 
-                let title=item["title"]
-                let text=item["text"]
+                let title=localizedItem["title"]
 
-                if ( "url" in title) {
-                    $.getJSON( apiBaseUrl+"/v2/weatherreports/latest/title/json", function( data ) {
-                        title=data["title"]
-                        $("#"+cardId+"_title").html(title[_language])
+
+
+                if (title instanceof Object) {
+
+                    if ( "url" in title) {
+                        let titleUrl=apiBaseUrl+"/v2/weatherreports/latest/title/json?lang="+_lang
+
+                        $.getJSON( titleUrl, function( data ) {
+                            title=data["title"]
+                            $("#"+cardId+"_title").html(title)
+                        })
+
+                    }
+                } else {
+                    $("#"+cardId+"_title").html(title)
+                }
+
+                let text=localizedItem["text"]
+                if (text instanceof Object) {
+                    if ( "url" in text) {
+                        let textUrl=apiBaseUrl+"/v2/weatherreports/latest/text/json?lang="+_lang
+
+                        $.getJSON(textUrl, function (data) {
+                            text = data["summary"]
+                            $("#" + cardId + "_text").html(text)
+                        })
+                    }
+                } else {
+                    $("#"+cardId+"_text").html(text)
+                }
+
+                if ("avail" in item && item["avail"]!=="") {
+                    let availUrl=expandUrl(item["avail"])
+                    console.log("availUrl:"+availUrl)
+                    $.getJSON(availUrl, function (data) {
+                        console.log(data)
+                        if (data["avail"].length > 0) {
+                            $("#"+cardId+"_container").css("display","block")
+                        }
                     })
 
                 } else {
-                    $("#"+cardId+"_title").html(title[_language])
+                    $("#"+cardId+"_container").css("display","block")
                 }
-
-                if ( "url" in text) {
-                    $.getJSON( apiBaseUrl+"/v2/weatherreports/latest/text/json", function( data ) {
-                        text=data["summary"]
-                        $("#"+cardId+"_text").html(text[_language])
-                    })
-
-                } else {
-                    $("#"+cardId+"_text").html(text[_language])
-                }
-
-
-                count=count+1
-
-
             });
         });
 
@@ -350,7 +373,8 @@ $( document ).ready(function() {
     if (_page==="home") {
         console.log("HOME")
         map()
-        cards()
+        // Cards is automatically isued by update
+        //cards()
     } else if (_page==="products") {
         console.log("PRODUCTS")
         products()
