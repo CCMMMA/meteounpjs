@@ -13,6 +13,8 @@
     <meta name="msapplication-TileColor" content="#00aba9">
     <meta name="theme-color" content="#ffffff">
 
+
+
     <link rel="manifest" href="manifest.json">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
@@ -48,6 +50,9 @@
     <!-- cookiealert styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
 
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href='css/social.css'>
 
     <title>meteo@uniparthenope</title>
 </head>
@@ -102,6 +107,30 @@
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
         -->
+
+    </div>
+
+    <div id="socialHolder" class="col-md-3">
+        <div id="socialShare" class="btn-group share-group">
+            <a data-toggle="dropdown" class="btn btn-info">
+                <i class="fa fa-share-alt fa-inverse"></i>
+            </a>
+            <button href="#" data-toggle="dropdown" class="btn btn-info dropdown-toggle share">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a id="urlShareTwitter" target="_new" data-original-title="Twitter" rel="tooltip"  href="https://twitter.com/share" class="btn btn-twitter" data-placement="left" data-url="http://example.com">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a id="urlShareFacebook" target="_new" data-original-title="Facebook" rel="tooltip"   class="btn btn-facebook" data-placement="left">
+                        <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 
 </nav>
@@ -229,7 +258,7 @@
 <!-- Include cookiealert script -->
 <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
 
-
+<script src="js/social.js"></script>
 
 <!-- Protect jQuery variable. -->
 

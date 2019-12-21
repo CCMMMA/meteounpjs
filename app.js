@@ -1,6 +1,7 @@
+let _appTitle="meteo@uniparthenope"
+let _appDescription=""
+let appUrl="https://app.meteo.uniparthenope.it"
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
-let _language = (navigator.language || navigator.userLanguage).split("-")[0]
-
 
 function pad(n, width, z) {
     z = z || '0';
@@ -40,7 +41,7 @@ defaultNcepDate=dateTime.getUTCFullYear()+pad(dateTime.getUTCMonth()+1,2)+pad(da
 
 let _ncepDate=getURLParameter("date",defaultNcepDate);
 
-console.log("--------> _ncepDate:"+_ncepDate);
+
 
 
 let _hours=getURLParameter("hours",0);
@@ -68,10 +69,37 @@ function expandUrl( baseUrl ) {
         .replace("{random}",Math.random())
 }
 
+function rewriteUrl(prepend, previewImage) {
+    console.log("Update urls")
+    let params=expandUrl("place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}")
+    let url="index.html?"+prepend+"&"+params
+    let fullUrl=appUrl+"/"+url
+    window.history.pushState("",_appTitle,url)
+    $("a.navbar-brand").attr("href",url)
+
+    $("#urlShareFacebook")
+        .attr("href","https://facebook.com/sharer.php?u="+encodeURIComponent(fullUrl))
+        .attr("data-url",fullUrl)
+    $("#urlShareTwitter").attr("data-url",fullUrl)
+
+
+    $('meta[property="og:url"]').remove();
+    $('meta[property="og:type"]').remove();
+    $('meta[property="og:title"]').remove();
+    $('meta[property="og:description"]').remove();
+    $('meta[property="og:image"]').remove();
+    $('head')
+        .append( '<meta property="og:url" content="'+fullUrl+'" />' )
+        .append( '<meta property="og:type" content="website" />' )
+        .append( '<meta property="og:title" content="'+_appTitle+'" />' )
+        .append( '<meta property="og:description" content="'+_appDescription+'" />' )
+        .append( '<meta property="og:image" content="'+previewImage+'" />' )
+}
+
 
 function footer() {
     let legalDisclaimerUrl=apiBaseUrl+"/legal/disclaimer?lang="+_lang
-    console.log("legalDisclaimerUrl:"+legalDisclaimerUrl)
+
     $.getJSON( legalDisclaimerUrl, function( data ) {
         console.log("legalDisclaimer")
         let localizedData=data["i18n"][_lang]
@@ -88,7 +116,6 @@ function navBar() {
 
 
     $.getJSON( navBarUrl, function( data ) {
-        console.log("menu")
 
         let navBarBrandUrl="index.html"
         let items = [];
@@ -107,7 +134,7 @@ function navBar() {
                     html += "    <a class='nav-link dropdown-toggle' href='"+expandUrl(localizedItem["href"])+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false\'>"+localizedItem["text"]+"</a>"
                     html += "    <div class='dropdown-menu' aria-labelledby='navbarDropdown'>"
                     localizedItem["items"].forEach(function(item1, index1) {
-                        console.log("item1.text="+item1["text"])
+
                         if (item1["text"]==="-") {
                             html += "        <div class='dropdown-divider'></div>"
                         } else {
@@ -139,7 +166,7 @@ function navBar() {
 
 function weatherReports() {
     let weatherReportsUrl=apiBaseUrl+"/v2/weatherreports/latest/json?lang="+_lang
-    console.log("weatherReportsUrl:"+weatherReportsUrl)
+
     $.getJSON( weatherReportsUrl, function( data ) {
         let localizedItem=data["i18n"][_lang]
         let html=""
@@ -155,10 +182,11 @@ function weatherReports() {
         html+="  </div>"
         html+="</div>"
 
-        //console.log("weatherReports:"+html)
 
-        $("#container_weatherreports").html(html);
-        $("#container_weatherreports").css("display","block")
+
+        $("#container_weatherreports")
+            .html(html)
+            .css("display","block")
     });
 
 }
@@ -171,8 +199,7 @@ function cards() {
 
         $("#container_cards_row").empty()
 
-        console.log("Cards:")
-        console.log(data)
+
 
         $.each( data, function( key, values ) {
             values.forEach(function(item, index) {
@@ -243,9 +270,9 @@ function cards() {
 
                 if ("avail" in item && item["avail"]!=="") {
                     let availUrl=expandUrl(item["avail"])
-                    console.log("availUrl:"+availUrl)
+
                     $.getJSON(availUrl, function (data) {
-                        console.log(data)
+
                         if (data["avail"].length > 0) {
                             $("#"+cardId+"_container").css("display","block")
                         }
@@ -276,8 +303,7 @@ function map() {
 
     control=$("#control").MeteoUniparthenopeControl(_place,null,null,_ncepDate);
     control.on( "update", function( event, place, prod, output, ncepDate ) {
-        console.log( place );
-        console.log( ncepDate );
+
 
         oMap = $("#map").MeteoUniparthenopeMap(place, ncepDate, {
             "noPopup": false,
@@ -289,8 +315,8 @@ function map() {
         _ncepDate=ncepDate;
 
         cards()
-        let navBarBrandUrl="index.html?place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}"
-        $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
+
+        rewriteUrl("",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/map/image"))
     });
 
     //$("#container_carousel").css("display","block")
@@ -308,10 +334,7 @@ function products() {
         "bottomBarImage");
     control=$("#control").MeteoUniparthenopeControl(_place,_prod,_output,_ncepDate);
     control.on( "update", function( event, place, prod, output, ncepDate ) {
-        console.log( place );
-        console.log( prod );
-        console.log( output );
-        console.log( ncepDate );
+
 
         plot.update(place,prod,output,ncepDate);
 
@@ -328,8 +351,8 @@ function products() {
         _output=output;
         _ncepDate=ncepDate;
 
-        let navBarBrandUrl="index.html?place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}"
-        $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
+
+        rewriteUrl("page=products",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
     });
     $("#container_control").css("display","block")
     $("#container_plot").css("display","block")
