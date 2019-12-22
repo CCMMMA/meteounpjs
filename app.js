@@ -74,11 +74,11 @@ function rewriteUrl(description, prepend, previewImage) {
     let params=expandUrl("place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}")
     let url="index.html?"+prepend+"&"+params
     let fullUrl=appUrl+"/"+url
-    let encodedShareUrl=encodeURIComponent(
+    let encodedShareUrl=
         apiBaseUrl+"/share?title="+_appTitle+
         "&description="+description+
         "&image="+previewImage+
-        "&url="+fullUrl)
+        "&url="+fullUrl
 
     window.history.pushState("",_appTitle,url)
     $("a.navbar-brand").attr("href",url)
