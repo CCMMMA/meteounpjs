@@ -69,16 +69,31 @@ function expandUrl( baseUrl ) {
         .replace("{random}",Math.random())
 }
 
+function pythonEncode(s) {
+    return s
+        .replace(":","__cl__")
+        .replace("/","__sl__")
+        .replace(" ","__sp__")
+        .replace( "&","__am__")
+        .replace("?","__qm__")
+        .replace("=","__eq__")
+        .replace("+","__pl__")
+        .replace("@","__at__")
+        .replace("#","__sh__")
+        .replace(",","__cm__")
+
+}
+
 function rewriteUrl(description, prepend, previewImage) {
     console.log("Update urls")
     let params=expandUrl("place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}")
     let url="index.html?"+prepend+"&"+params
     let fullUrl=appUrl+"/"+url
     let encodedShareUrl=
-        apiBaseUrl+"/share?title="+_appTitle+
-        "&description="+description+
-        "&image="+previewImage+
-        "&url="+fullUrl
+        apiBaseUrl+"/share/"+pythonEncode(_appTitle)+
+        "/"+pythonEncode(description)+
+        "/"+pythonEncode(previewImage)+
+        "/"+pythonEncode(fullUrl)
 
     window.history.pushState("",_appTitle,url)
     $("a.navbar-brand").attr("href",url)
