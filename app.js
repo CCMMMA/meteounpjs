@@ -81,7 +81,7 @@ function pythonEncode(s) {
         .replace(/@/g,"__at__")
         .replace(/#/g,"__sh__")
         .replace(/,/g,"__cm__")
-        .replace(/./g,"__pt__")
+        .replace(/[.]/g,"__pt__")
 }
 
 function rewriteUrl(description, prepend, previewImage) {
