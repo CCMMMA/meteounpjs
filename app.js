@@ -1,5 +1,5 @@
 let _appTitle="meteo@uniparthenope"
-let _appDescription=""
+let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere Applications @ University of Naples Parthenope."
 let appUrl="https://app.meteo.uniparthenope.it"
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
 
@@ -69,7 +69,7 @@ function expandUrl( baseUrl ) {
         .replace("{random}",Math.random())
 }
 
-function rewriteUrl(prepend, previewImage) {
+function rewriteUrl(description, prepend, previewImage) {
     console.log("Update urls")
     let params=expandUrl("place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}")
     let url="index.html?"+prepend+"&"+params
@@ -92,7 +92,7 @@ function rewriteUrl(prepend, previewImage) {
         .append( '<meta property="og:url" content="'+fullUrl+'" />' )
         .append( '<meta property="og:type" content="website" />' )
         .append( '<meta property="og:title" content="'+_appTitle+'" />' )
-        .append( '<meta property="og:description" content="'+_appDescription+'" />' )
+        .append( '<meta property="og:description" content="'+description+" "+_appDescription+'" />' )
         .append( '<meta property="og:image" content="'+previewImage+'" />' )
 }
 
@@ -316,7 +316,7 @@ function map() {
 
         cards()
 
-        rewriteUrl("",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/map/image"))
+        rewriteUrl("Map description. ","",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/map/image"))
     });
 
     //$("#container_carousel").css("display","block")
@@ -351,8 +351,7 @@ function products() {
         _output=output;
         _ncepDate=ncepDate;
 
-
-        rewriteUrl("page=products",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
+        rewriteUrl( "Product description","page=products",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
     });
     $("#container_control").css("display","block")
     $("#container_plot").css("display","block")
