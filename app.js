@@ -1,5 +1,5 @@
 let _appTitle="meteo@uniparthenope"
-let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere Applications @ University of Naples Parthenope."
+let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere Applications @ University of Naples Parthenope. https://app.metep.uniparthenope.it"
 let appUrl="https://app.meteo.uniparthenope.it"
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
 
