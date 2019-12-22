@@ -74,15 +74,21 @@ function rewriteUrl(description, prepend, previewImage) {
     let params=expandUrl("place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}")
     let url="index.html?"+prepend+"&"+params
     let fullUrl=appUrl+"/"+url
+    let encodedShareUrl=encodeURIComponent(
+        apiBaseUrl+"/share?title="+_appTitle+
+        "&description="+description+
+        "&image="+previewImage+
+        "&url="+fullUrl)
+
     window.history.pushState("",_appTitle,url)
     $("a.navbar-brand").attr("href",url)
 
     $("#urlShareFacebook")
-        .attr("href","https://facebook.com/sharer.php?u="+encodeURIComponent(fullUrl))
-        .attr("data-url",fullUrl)
-    $("#urlShareTwitter").attr("data-url",fullUrl)
+        .attr("href","https://facebook.com/sharer.php?u="+encodedShareUrl)
+        .attr("data-url",encodedShareUrl)
+    $("#urlShareTwitter").attr("data-url",encodedShareUrl)
 
-
+/*
     $('meta[property="og:url"]').remove();
     $('meta[property="og:type"]').remove();
     $('meta[property="og:title"]').remove();
@@ -94,6 +100,8 @@ function rewriteUrl(description, prepend, previewImage) {
         .append( '<meta property="og:title" content="'+_appTitle+'" />' )
         .append( '<meta property="og:description" content="'+description+" "+_appDescription+'" />' )
         .append( '<meta property="og:image" content="'+previewImage+'" />' )
+
+ */
 }
 
 
