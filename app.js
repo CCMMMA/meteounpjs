@@ -71,17 +71,17 @@ function expandUrl( baseUrl ) {
 
 function pythonEncode(s) {
     return s
-        .replace(":","__cl__")
-        .replace("/","__sl__")
-        .replace(" ","__sp__")
-        .replace( "&","__am__")
-        .replace("?","__qm__")
-        .replace("=","__eq__")
-        .replace("+","__pl__")
-        .replace("@","__at__")
-        .replace("#","__sh__")
-        .replace(",","__cm__")
-
+        .replace(/:/g,"__cl__")
+        .replace(/\//g,"__sl__")
+        .replace(/ /g,"__sp__")
+        .replace( /&/g,"__am__")
+        .replace(/\?/g,"__qm__")
+        .replace(/=/g,"__eq__")
+        .replace(/\+/g,"__pl__")
+        .replace(/@/g,"__at__")
+        .replace(/#/g,"__sh__")
+        .replace(/,/g,"__cm__")
+        .replace(/./g,"__pt__")
 }
 
 function rewriteUrl(description, prepend, previewImage) {
