@@ -1,7 +1,8 @@
 let _appTitle="meteo@uniparthenope"
-let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere Applications @ University of Naples Parthenope. https://app.metep.uniparthenope.it"
-let appUrl="https://app.meteo.uniparthenope.it"
+let _appLogo="/images/meteo_uniparthenope_logo.png"
+let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere Applications @ University of Naples Parthenope. https://app.meteo.uniparthenope.it"
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
+let dataBaseUrl="https://data.meteo.uniparthenope.it/opendap/opendap/"
 
 function pad(n, width, z) {
     z = z || '0';
@@ -9,6 +10,11 @@ function pad(n, width, z) {
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
+function getAppUrl() {
+    let getUrl = window.location;
+    let appUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+    return appUrl
+}
 function getURLParameter(sParam, defaultValue) {
 
     let sPageURL = window.location.search.substring(1);
@@ -88,7 +94,7 @@ function rewriteUrl(title, description, prepend, previewImage) {
     console.log("Update urls")
     let params=expandUrl("place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}")
     let url="index.html?"+prepend+"&"+params
-    let fullUrl=appUrl+"/"+url
+    let fullUrl=getAppUrl()+"/"+url
     let encodedShareUrl=
         apiBaseUrl+"/share/"+pythonEncode(_appTitle+". "+title)+
         "/"+pythonEncode(description)+
@@ -96,7 +102,7 @@ function rewriteUrl(title, description, prepend, previewImage) {
         "/"+pythonEncode(fullUrl)
 
     window.history.pushState("",_appTitle+". "+title,url)
-    $("a.navbar-brand").attr("href",url)
+    $("a.navbar-brand").attr("href","index.html?"+params)
 
     $("#urlShareFacebook")
         .attr("href","https://facebook.com/sharer.php?u="+encodedShareUrl)
@@ -343,6 +349,12 @@ function products() {
         "leftBarImage",
         "rightBarImage",
         "bottomBarImage");
+
+    $(window).on('resize', function() {
+        //console.log("RESIZE")
+        $("#chart").css('height', "50vh");
+    });
+
     control=$("#control").MeteoUniparthenopeControl(_place,_prod,_output,_ncepDate);
     control.on( "update", function( event, place, prod, output, ncepDate ) {
 
@@ -363,11 +375,18 @@ function products() {
         _ncepDate=ncepDate;
 
         rewriteUrl( "Products.", "Product dashboard","page=products",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
+        $("#place_link").attr("href",expandUrl(apiBaseUrl+"/places/{place}"))
+        $("#plot_link").attr("href",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
+        $("#json_link").attr("href",expandUrl(apiBaseUrl+"/products/{prod}/timeseries/{place}"))
+        $("#csv_link").attr("href",expandUrl(apiBaseUrl+"/products/{prod}/timeseries/{place}/csv"))
+        $("#opendap_link").attr("href",expandUrl(dataBaseUrl+"/{prod}/"))
+        $("#wms_link").attr("href",expandUrl(dataBaseUrl+"/{prod}/"))
     });
     $("#container_control").css("display","block")
     $("#container_plot").css("display","block")
     $("#container_chart").css("display","block")
     $("#container_box").css("display","block")
+    $("#container_opendata").css("display","block")
 }
 
 function pages() {
@@ -376,13 +395,18 @@ function pages() {
 
     $.getJSON( pageUrl, function( data ) {
         let localizedData=data["i18n"][_lang]
+        let imageUrl=_appLogo
         if ("image" in localizedData) {
             $("#page_image").attr("src",localizedData["image"]["src"])
             $("#page_image").attr("alt",localizedData["image"]["alt"])
+            imageUrl=localizedData["image"]["src"]
         }
         $("#page_title").text(localizedData["title"])
+
+        let subtitle=_appDescription
         if ("subtitle" in localizedData) {
             $("#page_subtitle").text(localizedData["subtitle"])
+            subtitle=localizedData["subtitle"]
         }
         $("#page_body").html(localizedData["body"])
 
@@ -394,7 +418,12 @@ function pages() {
 
         $("#container_pages").css("display","block")
 
-        rewriteUrl(localizedData["title"], localizedData["subtitle"],"page="+_page,appUrl+"/"+localizedData["image"]["src"])
+
+        if (!(imageUrl.startsWith("https://") || imageUrl.startsWith("http://"))) {
+            imageUrl=getAppUrl()+"/"+imageUrl
+        }
+
+        rewriteUrl(localizedData["title"], subtitle,"page="+_page,imageUrl)
     });
 }
 

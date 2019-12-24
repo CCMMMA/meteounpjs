@@ -148,11 +148,17 @@
     </div>
 </div>
 
+
+
 <div id="container_box" class="container-fluid" style="display: none">
     <div class="row">
         <div class="col">
-            <div id="box_title"></div>
-            <div id="box"></div>
+            <div class="card">
+                <div class="card-body">
+                    <div id="box_title"></div>
+                    <div id="box"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -160,7 +166,11 @@
 <div id="container_control" class="container-fluid" style="display: none">
     <div class="row">
         <div class="col">
-            <div id="control"></div>
+            <div class="card">
+                <div class="card-body">
+                    <div id="control"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -168,19 +178,23 @@
 <div id="container_plot" class="container-fluid" style="display: none">
     <div class="row">
         <div class="col>">
-            <table>
-                <tr>
-                    <td colspan="3"><img id="topBarImage" height="64px"/></td>
-                </tr>
-                <tr>
-                    <td><img id="leftBarImage" width="64px"/></td>
-                    <td><div id="plot"/></td>
-                    <td><img id="rightBarImage" width="64px"/></td>
-                </tr>
-                <tr>
-                    <td colspan="3"><img id="bottomBarImage" height="64px"/></td>
-                </tr>
-            </table>
+            <div class="card">
+                <div class="card-body">
+                    <table>
+                        <tr>
+                            <td colspan="3"><img id="topBarImage" height="64px"/></td>
+                        </tr>
+                        <tr>
+                            <td><img id="leftBarImage" width="64px"/></td>
+                            <td><div id="plot"/></td>
+                            <td><img id="rightBarImage" width="64px"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><img id="bottomBarImage" height="64px"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -188,11 +202,17 @@
 <div id="container_chart" class="container-fluid" style="display: none">
     <div class="row">
         <div class="col">
-            <div id="chart_title" style="display: none"></div>
-            <div id="chart"></div>
+            <div class="card">
+                <div class="card-body">
+                    <div id="chart_title" style="display: none"></div>
+                    <div id="chart" style="height: 50vh"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -214,6 +234,24 @@
 </div>
 
 <div id="container_weatherreports" class="container-fluid" style="display: none">
+</div>
+
+<div id="container_opendata" class="container-fluid" style="display: none">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Open Data</h6>
+                    <a id="place_link" target="_blank" class="btn btn-primary">Place</a>
+                    <a id="plot_link" target="_blank" class="btn btn-primary">Image</a>
+                    <a id="json_link" target="_blank" class="btn btn-primary">JSON</a>
+                    <a id="csv_link" target="_blank" class="btn btn-primary">csv</a>
+                    <a id="opendap_link" target="_blank" class="btn btn-primary">OPeNDAP</a>
+                    <a id="wms_link" target="_blank" class="btn btn-primary">WMS</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="container_footer" class="container-fluid" style="display: none">
