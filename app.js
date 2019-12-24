@@ -90,17 +90,39 @@ function pythonEncode(s) {
 }
 
 function rewriteUrl(title, description, prepend, previewImage) {
+
+    if (title==="") {
+        title=_appTitle
+    } else {
+        title=_appTitle+": "+title
+    }
+
+    if (description==="") {
+        description=_appDescription
+    }
+
+    if (previewImage==="") {
+        previewImage=getAppUrl()+_appLogo
+    } else {
+        if (!(previewImage.startsWith("https://") || previewImage.startsWith("http://"))) {
+            if (previewImage.startsWith("/")==false) {
+                previewImage="/"+previewImage
+            }
+            previewImage=getAppUrl()+previewImage
+        }
+    }
+
     console.log("Update urls")
     let params=expandUrl("place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}")
     let url="index.html?"+prepend+"&"+params
     let fullUrl=getAppUrl()+"/"+url
     let encodedShareUrl=
-        apiBaseUrl+"/share/"+pythonEncode(_appTitle+". "+title)+
+        apiBaseUrl+"/share/"+pythonEncode(title)+
         "/"+pythonEncode(description)+
         "/"+pythonEncode(previewImage)+
         "/"+pythonEncode(fullUrl)
 
-    window.history.pushState("",_appTitle+". "+title,url)
+    window.history.pushState("",title,url)
     $("a.navbar-brand").attr("href","index.html?"+params)
 
     $("#urlShareFacebook")
@@ -332,7 +354,7 @@ function map() {
 
         cards()
 
-        rewriteUrl("","","",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/map/image"))
+        rewriteUrl("",_appDescription,"",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/map/image"))
     });
 
     //$("#container_carousel").css("display","block")
@@ -394,7 +416,7 @@ function pages() {
 
     $.getJSON( pageUrl, function( data ) {
         let localizedData=data["i18n"][_lang]
-        let imageUrl=_appLogo
+        let imageUrl=""
         if ("image" in localizedData) {
             $("#page_image").attr("src",localizedData["image"]["src"])
             $("#page_image").attr("alt",localizedData["image"]["alt"])
@@ -402,7 +424,7 @@ function pages() {
         }
         $("#page_title").text(localizedData["title"])
 
-        let subtitle=_appDescription
+        let subtitle=""
         if ("subtitle" in localizedData) {
             $("#page_subtitle").text(localizedData["subtitle"])
             subtitle=localizedData["subtitle"]
@@ -418,9 +440,7 @@ function pages() {
         $("#container_pages").css("display","block")
 
 
-        if (!(imageUrl.startsWith("https://") || imageUrl.startsWith("http://"))) {
-            imageUrl=getAppUrl()+"/"+imageUrl
-        }
+
 
         rewriteUrl(localizedData["title"], subtitle,"page="+_page,imageUrl)
     });
