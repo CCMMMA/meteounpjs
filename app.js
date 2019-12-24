@@ -84,18 +84,18 @@ function pythonEncode(s) {
         .replace(/[.]/g,"__pt__")
 }
 
-function rewriteUrl(description, prepend, previewImage) {
+function rewriteUrl(title, description, prepend, previewImage) {
     console.log("Update urls")
     let params=expandUrl("place={place}&prod={prod}&output={output}&date={date}&step={step}&hours={hours}")
     let url="index.html?"+prepend+"&"+params
     let fullUrl=appUrl+"/"+url
     let encodedShareUrl=
-        apiBaseUrl+"/share/"+pythonEncode(_appTitle)+
+        apiBaseUrl+"/share/"+pythonEncode(_appTitle+". "+title)+
         "/"+pythonEncode(description)+
         "/"+pythonEncode(previewImage)+
         "/"+pythonEncode(fullUrl)
 
-    window.history.pushState("",_appTitle,url)
+    window.history.pushState("",_appTitle+". "+title,url)
     $("a.navbar-brand").attr("href",url)
 
     $("#urlShareFacebook")
@@ -103,20 +103,6 @@ function rewriteUrl(description, prepend, previewImage) {
         .attr("data-url",encodedShareUrl)
     $("#urlShareTwitter").attr("data-url",encodedShareUrl)
 
-/*
-    $('meta[property="og:url"]').remove();
-    $('meta[property="og:type"]').remove();
-    $('meta[property="og:title"]').remove();
-    $('meta[property="og:description"]').remove();
-    $('meta[property="og:image"]').remove();
-    $('head')
-        .append( '<meta property="og:url" content="'+fullUrl+'" />' )
-        .append( '<meta property="og:type" content="website" />' )
-        .append( '<meta property="og:title" content="'+_appTitle+'" />' )
-        .append( '<meta property="og:description" content="'+description+" "+_appDescription+'" />' )
-        .append( '<meta property="og:image" content="'+previewImage+'" />' )
-
- */
 }
 
 
@@ -210,6 +196,8 @@ function weatherReports() {
         $("#container_weatherreports")
             .html(html)
             .css("display","block")
+
+        rewriteUrl(localizedItem["title"],localizedItem["summary"],"page=weatherreports",expandUrl(apiBaseUrl+"/products/wrf5/forecast/reg15/map/image"))
     });
 
 }
@@ -339,7 +327,7 @@ function map() {
 
         cards()
 
-        rewriteUrl("Map description. ","",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/map/image"))
+        rewriteUrl("","","",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/map/image"))
     });
 
     //$("#container_carousel").css("display","block")
@@ -374,7 +362,7 @@ function products() {
         _output=output;
         _ncepDate=ncepDate;
 
-        rewriteUrl( "Product description","page=products",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
+        rewriteUrl( "Products.", "Product dashboard","page=products",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
     });
     $("#container_control").css("display","block")
     $("#container_plot").css("display","block")
@@ -405,6 +393,8 @@ function pages() {
         }
 
         $("#container_pages").css("display","block")
+
+        rewriteUrl(localizedData["title"], localizedData["subtitle"],"page="+_page,appUrl+"/"+localizedData["image"]["src"])
     });
 }
 
