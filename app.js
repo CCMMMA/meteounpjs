@@ -11,9 +11,8 @@ function pad(n, width, z) {
 }
 
 function getAppUrl() {
-    let getUrl = window.location;
-    let appUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
-    return appUrl
+    let getUrl = window.location
+    return getUrl .protocol + "//" + getUrl.host + "/"
 }
 function getURLParameter(sParam, defaultValue) {
 
