@@ -128,7 +128,9 @@ function rewriteUrl(title, description, prepend, previewImage) {
     $("#urlShareFacebook")
         .attr("href","https://facebook.com/sharer.php?u="+encodedShareUrl)
         .attr("data-url",encodedShareUrl)
-    $("#urlShareTwitter").attr("data-url",encodedShareUrl)
+    $("#urlShareTwitter")
+        .attr("href","https://twitter.com/intent/tweet?url="+encodedShareUrl)
+        .attr("data-url",encodedShareUrl)
 
 }
 
