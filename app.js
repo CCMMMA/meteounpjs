@@ -197,7 +197,7 @@ function weatherReports() {
             .html(html)
             .css("display","block")
 
-        rewriteUrl(localizedItem["title"],localizedItem["summary"],"page=weatherreports",expandUrl(apiBaseUrl+"/products/wrf5/forecast/reg15/map/image"))
+        rewriteUrl(localizedItem["title"],"","page=weatherreports",expandUrl(apiBaseUrl+"/products/wrf5/forecast/reg15/map/image"))
     });
 
 }
