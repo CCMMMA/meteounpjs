@@ -3,6 +3,7 @@ let _appLogo="/images/meteo_uniparthenope_logo.png"
 let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere Applications @ University of Naples Parthenope. https://app.meteo.uniparthenope.it"
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
 let dataBaseUrl="https://data.meteo.uniparthenope.it/opendap/opendap/"
+let wmsBaseUrl="https://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/"
 
 function pad(n, width, z) {
     z = z || '0';
@@ -397,13 +398,79 @@ function products() {
         _output=output;
         _ncepDate=ncepDate;
 
-        rewriteUrl( "Products.", "Product dashboard","page=products",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
-        $("#place_link").attr("href",expandUrl(apiBaseUrl+"/places/{place}"))
-        $("#plot_link").attr("href",expandUrl(apiBaseUrl+"/products/{prod}/forecast/{place}/plot/image?output={output}"))
-        $("#json_link").attr("href",expandUrl(apiBaseUrl+"/products/{prod}/timeseries/{place}"))
-        $("#csv_link").attr("href",expandUrl(apiBaseUrl+"/products/{prod}/timeseries/{place}/csv"))
-        $("#opendap_link").attr("href",expandUrl(dataBaseUrl+"/{prod}/"))
-        $("#wms_link").attr("href",expandUrl(dataBaseUrl+"/{prod}/"))
+        let placeUrl=apiBaseUrl + "/places/"+place
+        $.getJSON( placeUrl, function( data ) {
+
+            // Get the long name
+            let longName=""
+            if (_lang in data["long_name"]) {
+                longName=data["long_name"][_lang]
+            } else if (_lang.split("-")[0] in data["long_name"]) {
+                longName=data["long_name"][_lang.split("-")[0]]
+            } else {
+                longName=data["long_name"]["it"]
+            }
+
+            // Get the domain and the resolution
+            let domain=Object.keys(data["prods"][prod])[0];
+            let res=data["prods"][prod][domain]["res"].toFixed(4)
+
+            let cLat=data["cLat"]
+            let cLon=data["cLon"]
+
+            console.log("cLon:"+cLon+" cLat:"+cLat)
+
+            let d2r=0.0174533
+            resKm=(res*111.3199*Math.cos(cLat*d2r)).toFixed(2)
+
+            let fileName=prod+"_"+domain+"_"+ncepDate+".nc"
+
+            let year=ncepDate.substring(0,4)
+            let month=ncepDate.substring(4,6)
+            let day=ncepDate.substring(6,8)
+
+            let prodsUrl=apiBaseUrl+"/products/"+prod
+            $.getJSON( prodsUrl, function( data ) {
+
+
+                // Get the description
+                let description=""
+                if (_lang in data["outputs"]["desc"]) {
+                    description+=data["outputs"]["desc"][_lang]
+                } else if (_lang.split("-")[0] in data["outputs"]["desc"]) {
+                    description+=data["outputs"]["desc"][_lang.split("-")[0]]
+                } else {
+                    description+=data["outputs"]["desc"]["it"]
+                }
+
+                description+=". "
+
+                if (_lang in data["outputs"]["outputs"][output]) {
+                    description+=data["outputs"]["outputs"][output][_lang]
+                } else if (_lang.split("-")[0] in data["outputs"]["outputs"][output]) {
+                    description+=data["outputs"]["outputs"][output][_lang.split("-")[0]]
+                } else {
+                    description+=data["outputs"]["outputs"][output]["it"]
+                }
+
+                description += ". Resolution:" + res + "&deg; ("+resKm+"Km)."
+
+                rewriteUrl(longName + ".", description, "page=products", expandUrl(apiBaseUrl + "/products/{prod}/forecast/{place}/plot/image?output={output}"))
+
+                $("#card_title").html(longName)
+                $("#card_text").html(description)
+
+                $("#place_link").attr("href", expandUrl(apiBaseUrl + "/places/{place}"))
+                $("#plot_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/forecast/{place}/plot/image?output={output}"))
+                $("#json_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/timeseries/{place}"))
+                $("#csv_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/timeseries/{place}/csv"))
+                $("#opendap_history_link").attr("href", expandUrl(dataBaseUrl + "/{prod}/" + domain + "/history/" + year + "/" + month + "/" + day + "/" + fileName + ".html"))
+                $("#wms_history_link").attr("href", expandUrl(wmsBaseUrl + "/{prod}/" + domain + "/history/" + year + "/" + month + "/" + day + "/" + fileName + "?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0"))
+                $("#opendap_archive_link").attr("href", expandUrl(dataBaseUrl + "/{prod}/" + domain + "/archive/" + year + "/" + month + "/" + day + "/" + fileName + ".html"))
+                $("#wms_archive_link").attr("href", expandUrl(wmsBaseUrl + "/{prod}/" + domain + "/archive/" + year + "/" + month + "/" + day + "/" + fileName + "?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0"))
+
+            })
+        })
     });
     $("#container_control").css("display","block")
     $("#container_plot").css("display","block")
