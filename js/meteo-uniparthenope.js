@@ -143,6 +143,158 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     ];
 
 
+    let hsColors = [
+        "#01FF84",
+        "#00FFFF",
+        "#00DDDD",
+        "#6363FF",
+        "#0000E1",
+        "#840094",
+        "#B5199D",
+        "#D464C3",
+        "#CE0000",
+        "#FF0000",
+        "#FFC300",
+        "#FFF05A",
+        "#D0D0D0",
+        "#BABABA",
+        "#A1A1A1",
+        "#5A5A5A"
+    ];
+
+    let lmColors = [
+        "#000033",
+        "#641610"
+    ];
+
+    let fpColors = [
+        "#000033",
+        "#641610"
+    ];
+
+    let periodColors = [
+        "#000033",
+        "#641610"
+    ];
+
+    /*
+    'set clevs  0 0.1 0.3 0.5 0.8 1.25 1.6 2 2.5 3 4 5 6 7 8 9'
+     */
+    function hs2color(hs) {
+        let index=0;
+
+
+        if (hs<0.1) {
+            index=0;
+        } else if (hs>=0.1 && hs<0.3) {
+            index=1;
+        } else if (hs>=0.3 && hs<0.5) {
+            index=2;
+        } else if (hs>=0.5 && hs<0.8) {
+            index=3;
+        } else if (hs>=0.8 && hs<1.25) {
+            index=4;
+        } else if (hs>=1.25 && hs<1.6) {
+            index=5;
+        } else if (hs>=1.6 && hs<2) {
+            index=6;
+        } else if (hs>=2 && hs<2.5) {
+            index=7;
+        } else if (hs>=2.5 && hs<3) {
+            index=8;
+        } else if (hs>=3 && hs<4) {
+            index=9;
+        } else if (hs>=4 && hs<5) {
+            index=10;
+        } else if (hs>=5 && hs<6) {
+            index=11;
+        } else if (hs>=6 && hs<7) {
+            index=12;
+        } else if (hs>=7 && hs<8) {
+            index=13;
+        } else if (hs>=8 && hs<9) {
+            index=14;
+        } else if (hs>=9 ) {
+            index=15 ;
+        }
+
+        return hsColors[index];
+    }
+
+    function lm2color(lm) {
+        let index=0;
+
+        // 37.5 37.75 38 38.25 38.5 38.75 39
+        if (sss<37.5) {
+            index=0;
+        } else if (sss>=37.5 && sss<37.5) {
+            index=1;
+        } else if (sss>=37.75 && sss<38) {
+            index=2;
+        } else if (sss>=38 && sss<38.25) {
+            index=3;
+        } else if (sss>=38.25 && sss<38.5) {
+            index=4;
+        } else if (sss>=38.5 && sss<38.75) {
+            index=5;
+        } else if (sss>=38.75 && sss<39) {
+            index=6;
+        } else if (sss>=39 ) {
+            index=7 ;
+        }
+
+        return lmColors[index];
+    }
+
+    function fp2color(fp) {
+        let index=0;
+
+        // 37.5 37.75 38 38.25 38.5 38.75 39
+        if (sss<37.5) {
+            index=0;
+        } else if (sss>=37.5 && sss<37.5) {
+            index=1;
+        } else if (sss>=37.75 && sss<38) {
+            index=2;
+        } else if (sss>=38 && sss<38.25) {
+            index=3;
+        } else if (sss>=38.25 && sss<38.5) {
+            index=4;
+        } else if (sss>=38.5 && sss<38.75) {
+            index=5;
+        } else if (sss>=38.75 && sss<39) {
+            index=6;
+        } else if (sss>=39 ) {
+            index=7 ;
+        }
+
+        return fpColors[index];
+    }
+
+    function period2color(period) {
+        let index=0;
+
+        // 37.5 37.75 38 38.25 38.5 38.75 39
+        if (sss<37.5) {
+            index=0;
+        } else if (sss>=37.5 && sss<37.5) {
+            index=1;
+        } else if (sss>=37.75 && sss<38) {
+            index=2;
+        } else if (sss>=38 && sss<38.25) {
+            index=3;
+        } else if (sss>=38.25 && sss<38.5) {
+            index=4;
+        } else if (sss>=38.5 && sss<38.75) {
+            index=5;
+        } else if (sss>=38.75 && sss<39) {
+            index=6;
+        } else if (sss>=39 ) {
+            index=7 ;
+        }
+
+        return periodColors[index];
+    }
 
     function sss2color(sss) {
         let index=0;
@@ -411,8 +563,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         }
 
         let timeseriesUrl = apiBaseUrl+"/products/"+prod+"/timeseries/"+place+"?hours="+hours+"&step="+step;
-        //console.log("placeUrl: "+placeUrl);
-        //console.log("timeseriesUrl: "+timeseriesUrl);
+        console.log("placeUrl: "+placeUrl);
+        console.log("timeseriesUrl: "+timeseriesUrl);
 
         let divBox=null;
 
@@ -460,36 +612,37 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             table.attr( 'style','display:'+display);
 
             //table.attr( 'style','display: none');
-
-            if (type=="minibox") {
-                table.append('<tr class="legenda">' +
-                    '<td width="60%" colspan="2" valign="top" align="left">Forecast</td>' +
-                    '<td width="20%" valign="top" align="center">Wind</td>' +
-                    '<td width="20%" valign="top" align="center">Sea</td>' +
-                    '</tr>');
-            } else if (type=="compactbox") {
-                table.append('<tr class="legenda">'+
-                    '<td width="40%" colspan="2">Forecast</td>'+
-                    '<td width="20%" colspan="2">Temp</td>'+
-                    '<td width="20%">Wind</td>'+
-                    '<td width="20%">Sea</td>'+
-                    '</tr>');
-            } else if (type=="daybox") {
-                table.append('<tr class="legenda">' +
-                    '<td width="32%" colspan="2">Forecast</td>' +
-                    '<td width="9%" class="tMin">T&nbsp;min &deg;C</td>' +
-                    '<td width="9%" class="tMax">T&nbsp;max &deg;C</td>' +
-                    '<td width="21%" colspan="2">Wind (kn)</td>' +
-                    '<td width="28%">Rain (mm)</td>' +
-                    '</tr>');
-            } else {
-                table.append('<tr class="legenda">' +
-                    '<td width="32%" colspan="2">Forecast</td>' +
-                    '<td width="9%" class="press">Press (hPa)</td>' +
-                    '<td width="9%" class="temp">Temp &deg;C</td>' +
-                    '<td width="21%" colspan="2">Wind (kn)</td>' +
-                    '<td width="28%">Rain (mm)</td>' +
-                    '</tr>')
+            if (prod==="wrf5") {
+                if (type == "minibox") {
+                    table.append('<tr class="legenda">' +
+                        '<td width="60%" colspan="2" valign="top" align="left">Forecast</td>' +
+                        '<td width="20%" valign="top" align="center">Wind</td>' +
+                        '<td width="20%" valign="top" align="center">Sea</td>' +
+                        '</tr>');
+                } else if (type == "compactbox") {
+                    table.append('<tr class="legenda">' +
+                        '<td width="40%" colspan="2">Forecast</td>' +
+                        '<td width="20%" colspan="2">Temp</td>' +
+                        '<td width="20%">Wind</td>' +
+                        '<td width="20%">Sea</td>' +
+                        '</tr>');
+                } else if (type == "daybox") {
+                    table.append('<tr class="legenda">' +
+                        '<td width="32%" colspan="2">Forecast</td>' +
+                        '<td width="9%" class="tMin">T&nbsp;min &deg;C</td>' +
+                        '<td width="9%" class="tMax">T&nbsp;max &deg;C</td>' +
+                        '<td width="21%" colspan="2">Wind (kn)</td>' +
+                        '<td width="28%">Rain (mm)</td>' +
+                        '</tr>');
+                } else {
+                    table.append('<tr class="legenda">' +
+                        '<td width="32%" colspan="2">Forecast</td>' +
+                        '<td width="9%" class="press">Press (hPa)</td>' +
+                        '<td width="9%" class="temp">Temp &deg;C</td>' +
+                        '<td width="21%" colspan="2">Wind (kn)</td>' +
+                        '<td width="28%">Rain (mm)</td>' +
+                        '</tr>')
+                }
             }
             divBox.append(table);
 
@@ -514,7 +667,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                 async: false,
                 success: function (data) {
                 let timeseriesData=data['timeseries'];
-                //console.log("-------------> "+timeseriesData);
+                console.log("-------------> "+timeseriesData);
 
                 $.each( timeseriesData, function( key, val ) {
 
@@ -542,73 +695,75 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                     let row='<tr>';
 
-                    if (type=="minibox") {
-                        row += '  <td class="data" valign="top" align="center">';
-                        row += '    <a href="' + val['link'] + '" target="_blank" class="day" title="Meteo ' + placeData['long_name']['it'] + ' - ' + weekDayLabel + ' ' + monthDay + '" >';
-                        row += weekDayLabel + "<br/>" + monthDay;
-                        row += '    </a>';
-                        row += '  </td>';
-                        row += '  <td class="data" valign="top" align="center">';
-                        row += '      <img src="' + wIconUrl + '" width="16" height="16" alt="' + wTextLabel + '" title="' + wTextLabel + '" />';
-                        row += '    <br/>' + val['t2c-min'] + '/' + val['t2c-max'];
-                        row += '  </td>';
-                        row += '  <td class="data"  align="center">';
-                        row += '    <img src="' + windBarbUrl + '" alt="' + windLabel + '" title="' + windLabel + '" width="16" heigh="16" />';
-                        row += '  </td>';
-                        row += '  <td class="data"  align="center">';
-                        row += '    <img src="' + seaWaveUrl + '" alt="' + waveLabel + '" title="' + waveLabel + '" width="16" heigh="16" />';
-                        row += '  </td>';
-                    } else if (type=="compactbox") {
-                        row+='  <td class="data">'
-                        row+='    <a href="'+val['link']+'" target="_blank" class="day" title="Meteo '+placeData['long_name']['it']+' - '+weekDayLabel+' '+monthDay+'" >';
-                        row+=       weekDayLabel+" "+monthDay;
-                        row+='    </a>';
-                        row+='  </td>';
-                        row+='  <td class="data">';
-                        row+='    <a href="'+val['link']+'" target="_blank" class="day" title="Meteo '+placeData['long_name']['it']+' - '+weekDayLabel+' '+monthDay+'" >';
-                        row+='      <img src="'+wIconUrl+'" width="16" height="16" alt="'+wTextLabel+'" title="'+wTextLabel+'" />';
-                        row+='    </a>';
-                        row+='  </td>';
-                        row+='  <td class="data tmin">'+val['t2c-min']+'</td>';
-                        row+='  <td class="data tmax">'+val['t2c-max']+'</td>';
-                        row+='  <td class="data">';
-                        row+='    <img src="'+windBarbUrl+'" alt="'+windLabel+'" title="'+windLabel+'" width="16" heigh="16" />';
-                        row+='  </td>';
-                        row+='  <td class="data">';
-                        row+='    <img src="'+seaWaveUrl+'" alt="'+waveLabel+'" title="'+waveLabel+'" width="16" heigh="16" />';
-                        row+='  </td>';
-                    } else if (type=="daybox") {
-                        row+='  <td class="data">'
-                        row+='    <a href="'+val['link']+'" target="_blank" class="day" title="Meteo '+placeData['long_name']['it']+' - '+weekDayLabel+' '+monthDay+'" >';
-                        row+=       weekDayLabel+"<br/>"+monthDay;
-                        row+='    </a>';
-                        row+='  </td>';
-                        row+='  <td class="data">';
-                        row+='    <a href="'+val['link']+'" target="_blank" class="day" title="Meteo '+placeData['long_name']['it']+' - '+weekDayLabel+' '+monthDay+'" >';
-                        row+='      <img src="'+wIconUrl+'" class="weathericon" alt="'+wTextLabel+'" title="'+wTextLabel+'" />';
-                        row+='    </a>';
-                        row+='  </td>';
-                        row+='  <td class="data tmin">'+val['t2c-min']+'</td>';
-                        row+='  <td class="data tmax">'+val['t2c-max']+'</td>';
-                        row+='  <td class="data">'+val['winds']+'</td>';
-                        row+='  <td class="data">'+val['ws10n']+'</td>';
-                        row+='  <td class="data">'+val['crh']+'</td>';
-                    } else {
-                        row+='  <td class="data">'
-                        row+='    <a href="'+val['link']+'" target="_blank" class="day" title="Meteo '+placeData['long_name']['it']+' - '+formatDate(dateTime)+'" >';
-                        row+=       formatDate(dateTime);
-                        row+='    </a>';
-                        row+='  </td>';
-                        row+='  <td class="data">';
-                        row+='    <a href="'+val['link']+'" target="_blank" class="day" title="Meteo '+placeData['long_name']['it']+' - '+formatDate(dateTime)+'" >';
-                        row+='      <img src="'+wIconUrl+'" class="weathericon" alt="'+wTextLabel+'" title="'+wTextLabel+'" />';
-                        row+='    </a>';
-                        row+='  </td>';
-                        row+='  <td class="data press">'+val['slp']+'</td>';
-                        row+='  <td class="data temp">'+val['t2c']+'</td>';
-                        row+='  <td class="data">'+val['winds']+'</td>';
-                        row+='  <td class="data">'+val['ws10n']+'</td>';
-                        row+='  <td class="data">'+val['crh']+'</td>';
+                    if (prod==="wrf5") {
+                        if (type == "minibox") {
+                            row += '  <td class="data" valign="top" align="center">';
+                            row += '    <a href="' + val['link'] + '" target="_blank" class="day" title="Meteo ' + placeData['long_name']['it'] + ' - ' + weekDayLabel + ' ' + monthDay + '" >';
+                            row += weekDayLabel + "<br/>" + monthDay;
+                            row += '    </a>';
+                            row += '  </td>';
+                            row += '  <td class="data" valign="top" align="center">';
+                            row += '      <img src="' + wIconUrl + '" width="16" height="16" alt="' + wTextLabel + '" title="' + wTextLabel + '" />';
+                            row += '    <br/>' + val['t2c-min'] + '/' + val['t2c-max'];
+                            row += '  </td>';
+                            row += '  <td class="data"  align="center">';
+                            row += '    <img src="' + windBarbUrl + '" alt="' + windLabel + '" title="' + windLabel + '" width="16" heigh="16" />';
+                            row += '  </td>';
+                            row += '  <td class="data"  align="center">';
+                            row += '    <img src="' + seaWaveUrl + '" alt="' + waveLabel + '" title="' + waveLabel + '" width="16" heigh="16" />';
+                            row += '  </td>';
+                        } else if (type == "compactbox") {
+                            row += '  <td class="data">'
+                            row += '    <a href="' + val['link'] + '" target="_blank" class="day" title="Meteo ' + placeData['long_name']['it'] + ' - ' + weekDayLabel + ' ' + monthDay + '" >';
+                            row += weekDayLabel + " " + monthDay;
+                            row += '    </a>';
+                            row += '  </td>';
+                            row += '  <td class="data">';
+                            row += '    <a href="' + val['link'] + '" target="_blank" class="day" title="Meteo ' + placeData['long_name']['it'] + ' - ' + weekDayLabel + ' ' + monthDay + '" >';
+                            row += '      <img src="' + wIconUrl + '" width="16" height="16" alt="' + wTextLabel + '" title="' + wTextLabel + '" />';
+                            row += '    </a>';
+                            row += '  </td>';
+                            row += '  <td class="data tmin">' + val['t2c-min'] + '</td>';
+                            row += '  <td class="data tmax">' + val['t2c-max'] + '</td>';
+                            row += '  <td class="data">';
+                            row += '    <img src="' + windBarbUrl + '" alt="' + windLabel + '" title="' + windLabel + '" width="16" heigh="16" />';
+                            row += '  </td>';
+                            row += '  <td class="data">';
+                            row += '    <img src="' + seaWaveUrl + '" alt="' + waveLabel + '" title="' + waveLabel + '" width="16" heigh="16" />';
+                            row += '  </td>';
+                        } else if (type == "daybox") {
+                            row += '  <td class="data">'
+                            row += '    <a href="' + val['link'] + '" target="_blank" class="day" title="Meteo ' + placeData['long_name']['it'] + ' - ' + weekDayLabel + ' ' + monthDay + '" >';
+                            row += weekDayLabel + "<br/>" + monthDay;
+                            row += '    </a>';
+                            row += '  </td>';
+                            row += '  <td class="data">';
+                            row += '    <a href="' + val['link'] + '" target="_blank" class="day" title="Meteo ' + placeData['long_name']['it'] + ' - ' + weekDayLabel + ' ' + monthDay + '" >';
+                            row += '      <img src="' + wIconUrl + '" class="weathericon" alt="' + wTextLabel + '" title="' + wTextLabel + '" />';
+                            row += '    </a>';
+                            row += '  </td>';
+                            row += '  <td class="data tmin">' + val['t2c-min'] + '</td>';
+                            row += '  <td class="data tmax">' + val['t2c-max'] + '</td>';
+                            row += '  <td class="data">' + val['winds'] + '</td>';
+                            row += '  <td class="data">' + val['ws10n'] + '</td>';
+                            row += '  <td class="data">' + val['crh'] + '</td>';
+                        } else {
+                            row += '  <td class="data">'
+                            row += '    <a href="' + val['link'] + '" target="_blank" class="day" title="Meteo ' + placeData['long_name']['it'] + ' - ' + formatDate(dateTime) + '" >';
+                            row += formatDate(dateTime);
+                            row += '    </a>';
+                            row += '  </td>';
+                            row += '  <td class="data">';
+                            row += '    <a href="' + val['link'] + '" target="_blank" class="day" title="Meteo ' + placeData['long_name']['it'] + ' - ' + formatDate(dateTime) + '" >';
+                            row += '      <img src="' + wIconUrl + '" class="weathericon" alt="' + wTextLabel + '" title="' + wTextLabel + '" />';
+                            row += '    </a>';
+                            row += '  </td>';
+                            row += '  <td class="data press">' + val['slp'] + '</td>';
+                            row += '  <td class="data temp">' + val['t2c'] + '</td>';
+                            row += '  <td class="data">' + val['winds'] + '</td>';
+                            row += '  <td class="data">' + val['ws10n'] + '</td>';
+                            row += '  <td class="data">' + val['crh'] + '</td>';
+                        }
                     }
                     row+='</tr>';
                     table.append(row);
@@ -693,6 +848,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             container.append(divBox);
 
             //console.log("-----------------------------------");
+            //console.log("Prod:"+prod);
 
             let title = "Forecast";
             let dataPoints = [];
@@ -857,7 +1013,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                     });
 
                 } else if (output === "sts") {
-                    title="Surface temperature and salinity";
+                    title = "Surface temperature and salinity";
                     axisY = {
                         title: "Surface temperature (°C)",
                         includeZero: false,
@@ -881,6 +1037,121 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         yValueFormatString: "#0.## ",
                         dataPoints: dataPoints2
                     });
+                }
+
+            } else if (prod==='ww33') {
+                //console.log("ww33 -------------- ww33")
+                if (output === "gen" || output === "hsd") {
+                    title = "Significant wave height and direction";
+                    axisY = {
+                        title: "Significant wave height (m)",
+                        includeZero: false,
+                        suffix: " m"
+                    };
+                    axisY2 = {
+                        title: "Mean wave direction surface (°N)",
+                        maximum: 360,
+                        interval: 45,
+                        includeZero: false,
+                        suffix: " °"
+                    };
+                    data.push({
+                        name: "hs",
+                        type: "column",
+                        yValueFormatString: "##.# m",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "dir",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °",
+                        dataPoints: dataPoints2
+                    });
+                } else if (output === "lmd") {
+                    title = "Mean wave length and direction";
+                    axisY = {
+                        title: "Mean wave length (m)",
+                        includeZero: false,
+                        suffix: " m"
+                    };
+                    axisY2 = {
+                        title: "Mean wave direction surface (°N)",
+                        maximum: 360,
+                        interval: 45,
+                        includeZero: false,
+                        suffix: " °"
+                    };
+                    data.push({
+                        name: "lm",
+                        type: "column",
+                        yValueFormatString: "##.# m",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "dir",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °",
+                        dataPoints: dataPoints2
+                    });
+
+                } else if (output === "fpd") {
+                    title = "Peak frequency and direction";
+                    axisY = {
+                        title: "Peak frequency (s-1)",
+                        includeZero: false,
+                        suffix: " s-1"
+                    };
+                    axisY2 = {
+                        title: "Mean wave direction surface (°N)",
+                        maximum: 360,
+                        interval: 45,
+                        includeZero: false,
+                        suffix: " °"
+                    };
+                    data.push({
+                        name: "fp",
+                        type: "line",
+                        yValueFormatString: "##.# s-1",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "dir",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °",
+                        dataPoints: dataPoints2
+                    });
+
+                } else if (output === "ppd") {
+                    title = "Mean period and direction";
+                    axisY = {
+                        title: "Mean period (s)",
+                        includeZero: false,
+                        suffix: " s"
+                    };
+                    axisY2 = {
+                        title: "Mean wave direction surface (°N)",
+                        maximum: 360,
+                        interval: 45,
+                        includeZero: false,
+                        suffix: " °"
+                    };
+                    data.push({
+                        name: "period",
+                        type: "column",
+                        yValueFormatString: "##.# s",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "dir",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °",
+                        dataPoints: dataPoints2
+                    });
+
                 }
             }
 
@@ -1003,6 +1274,54 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                             dataPoints2.push({
                                 x: dateTime,
                                 y: val.sss
+                            });
+                        }
+                    } else if (prod==='ww33') {
+                        if (output === "gen" || output === "hsd") {
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.hs,
+                                color: hs2color(val.hs)
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.dir
+                            });
+                        } else if (output === "lmd") {
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.lm,
+                                color: lm2color(val.lm)
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.dir
+                            });
+
+                        } else if (output === "fpd") {
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.fp,
+                                color: fp2color(val.fp)
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.dir
+                            });
+
+                        } else if (output === "ppd") {
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.period,
+                                color: period2color(val.period)
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.dir
                             });
                         }
                     }
