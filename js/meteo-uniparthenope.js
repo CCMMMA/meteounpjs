@@ -162,9 +162,33 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         "#5A5A5A"
     ];
 
+    /*
+
+
+
+
+'set rgb 26 220 220 220'
+'set rgb 27 170 170 170'
+
+
+
+'set ccols  16 17 18 19 20 21 22 23 24 25 26 27 28 29'
+     */
     let lmColors = [
-        "#000033",
-        "#641610"
+        "#00CE7B",
+        "#00AA00",
+        "#7BCE00",
+        "#FFCE00",
+        "#FF6D00",
+        "#DC0000",
+        "#A00000",
+        "#DC84D1",
+        "#B5199D",
+        "#640078",
+        "#DCDCDC",
+        "#AAAAAA",
+        "#6E6E6E",
+        "#464646"
     ];
 
     let fpColors = [
@@ -173,13 +197,23 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     ];
 
     let periodColors = [
-        "#000033",
-        "#641610"
+        "#00CE7B",
+        "#00AA00",
+        "#7BCE00",
+        "#FFCE00",
+        "#FF6D00",
+        "#DC0000",
+        "#A00000",
+        "#DC84D1",
+        "#B5199D",
+        "#640078",
+        "#DCDCDC",
+        "#AAAAAA",
+        "#6E6E6E",
+        "#464646"
     ];
 
-    /*
-    'set clevs  0 0.1 0.3 0.5 0.8 1.25 1.6 2 2.5 3 4 5 6 7 8 9'
-     */
+
     function hs2color(hs) {
         let index=0;
 
@@ -224,23 +258,35 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     function lm2color(lm) {
         let index=0;
 
-        // 37.5 37.75 38 38.25 38.5 38.75 39
-        if (sss<37.5) {
+
+        if (lm<10) {
             index=0;
-        } else if (sss>=37.5 && sss<37.5) {
+        } else if (lm>=10 && lm<20) {
             index=1;
-        } else if (sss>=37.75 && sss<38) {
+        } else if (lm>=20 && lm<30) {
             index=2;
-        } else if (sss>=38 && sss<38.25) {
+        } else if (lm>=30 && lm<40) {
             index=3;
-        } else if (sss>=38.25 && sss<38.5) {
+        } else if (lm>=40 && lm<50) {
             index=4;
-        } else if (sss>=38.5 && sss<38.75) {
+        } else if (lm>=50 && lm<60) {
             index=5;
-        } else if (sss>=38.75 && sss<39) {
+        } else if (lm>=60 && lm<70) {
             index=6;
-        } else if (sss>=39 ) {
-            index=7 ;
+        } else if (lm>=70 && lm<80) {
+            index=7;
+        } else if (lm>=80 && lm<90) {
+            index=8;
+        } else if (lm>=90 && lm<100) {
+            index=9;
+        } else if (lm>=100 && lm<110) {
+            index=10;
+        } else if (lm>=110 && lm<120) {
+            index=11;
+        } else if (lm>=120 && lm<130) {
+            index=12;
+        } else if (lm>=130 ) {
+            index=13 ;
         }
 
         return lmColors[index];
@@ -250,21 +296,21 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         let index=0;
 
         // 37.5 37.75 38 38.25 38.5 38.75 39
-        if (sss<37.5) {
+        if (fp<37.5) {
             index=0;
-        } else if (sss>=37.5 && sss<37.5) {
+        } else if (fp>=37.5 && fp<37.5) {
             index=1;
-        } else if (sss>=37.75 && sss<38) {
+        } else if (fp>=37.75 && fp<38) {
             index=2;
-        } else if (sss>=38 && sss<38.25) {
+        } else if (fp>=38 && fp<38.25) {
             index=3;
-        } else if (sss>=38.25 && sss<38.5) {
+        } else if (fp>=38.25 && fp<38.5) {
             index=4;
-        } else if (sss>=38.5 && sss<38.75) {
+        } else if (fp>=38.5 && fp<38.75) {
             index=5;
-        } else if (sss>=38.75 && sss<39) {
+        } else if (fp>=38.75 && fp<39) {
             index=6;
-        } else if (sss>=39 ) {
+        } else if (fp>=39 ) {
             index=7 ;
         }
 
@@ -274,23 +320,35 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     function period2color(period) {
         let index=0;
 
-        // 37.5 37.75 38 38.25 38.5 38.75 39
-        if (sss<37.5) {
+        // 0 2 3 4 5 6 7 8 9 10 11 12 13 14
+        if (period<2) {
             index=0;
-        } else if (sss>=37.5 && sss<37.5) {
+        } else if (period>=2 && period<3) {
             index=1;
-        } else if (sss>=37.75 && sss<38) {
+        } else if (period>=3 && period<4) {
             index=2;
-        } else if (sss>=38 && sss<38.25) {
+        } else if (period>=4 && period<5) {
             index=3;
-        } else if (sss>=38.25 && sss<38.5) {
+        } else if (period>=5 && period<6) {
             index=4;
-        } else if (sss>=38.5 && sss<38.75) {
+        } else if (period>=6 && period<7) {
             index=5;
-        } else if (sss>=38.75 && sss<39) {
+        } else if (period>=7 && period<8) {
             index=6;
-        } else if (sss>=39 ) {
-            index=7 ;
+        } else if (period>=8 && period<9) {
+            index=7;
+        } else if (period>=9 && period<10) {
+            index=8;
+        } else if (period>=10 && period<11) {
+            index=9;
+        } else if (period>=11 && period<12) {
+            index=10;
+        } else if (period>=12 && period<13) {
+            index=11;
+        } else if (period>=13 && period<14) {
+            index=12;
+        } else if (period>=14 ) {
+            index=13 ;
         }
 
         return periodColors[index];
