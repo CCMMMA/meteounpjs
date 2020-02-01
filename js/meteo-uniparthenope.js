@@ -162,18 +162,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         "#5A5A5A"
     ];
 
-    /*
 
-
-
-
-'set rgb 26 220 220 220'
-'set rgb 27 170 170 170'
-
-
-
-'set ccols  16 17 18 19 20 21 22 23 24 25 26 27 28 29'
-     */
     let lmColors = [
         "#00CE7B",
         "#00AA00",
@@ -223,34 +212,34 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
     ];
 
     let sweColors = [
-        "#FF0000",
-        "#FFFF00",
-        "#00FF00",
-        "#00FFFF",
-        "#0078DC",
-        "#FF00FF"
+        "#000000",
+        "#DDA0DD",
+        "#DA70D6",
+        "#BA55D3",
+        "#9932CC",
+        "#9400D3"
     ];
 
     function swe2color(rh) {
         let index=0;
 
-        // set clevs  20 40 60 80 99
+        // .5 2.5 5.5 8.5 11.5 15.5
 
-        if (rh<20) {
+        if (rh<.5) {
             index=0;
-        } else if (rh>=20 && rh<40) {
+        } else if (rh>=.5 && rh<2.5) {
             index=1;
-        } else if (rh>=40 && rh<60) {
+        } else if (rh>=2.5 && rh<5.5) {
             index=2;
-        } else if (rh>=60 && rh<80) {
+        } else if (rh>=5.5 && rh<8.5) {
             index=3;
-        } else if (rh>=80 && rh<99) {
+        } else if (rh>=8.5 && rh<11.5) {
             index=4;
-        } else if (rh>=99 ) {
-            index=5 ;
+        } else if (rh>=11.5) {
+            index=5;
         }
 
-        return rhColors[index];
+        return sweColors[index];
     }
 
     function rh2color(rh) {
