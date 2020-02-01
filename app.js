@@ -457,13 +457,13 @@ function products() {
 
                 description += ". Resolution:" + res + "&deg; ("+resKm+"Km)."
 
-                rewriteUrl(longName + ".", description, "page=products", expandUrl(apiBaseUrl + "/products/{prod}/forecast/{place}/plot/image?output={output}"))
+                rewriteUrl(longName + ".", description, "page=products", expandUrl(apiBaseUrl + "/products/{prod}/forecast/{place}/plot/image?output={output}&opt=bars"))
 
                 $("#card_title").html(longName)
                 $("#card_text").html(description)
 
                 $("#place_link").attr("href", expandUrl(apiBaseUrl + "/places/{place}"))
-                $("#plot_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/forecast/{place}/plot/image?output={output}"))
+                $("#plot_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/forecast/{place}/plot/image?output={output}&opt=bars"))
                 $("#json_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/timeseries/{place}"))
                 $("#csv_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/timeseries/{place}/csv"))
                 $("#opendap_history_link").attr("href", expandUrl(dataBaseUrl + "/{prod}/" + domain + "/history/" + year + "/" + month + "/" + day + "/" + fileName + ".html"))
