@@ -213,6 +213,36 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         "#464646"
     ];
 
+    let rhColors = [
+        "#FF0000",
+        "#FFFF00",
+        "#00FF00",
+        "#00FFFF",
+        "#0078DC",
+        "#FF00FF"
+    ];
+
+    function rh2color(rh) {
+        let index=0;
+
+        // set clevs  20 40 60 80 99
+
+        if (rh<20) {
+            index=0;
+        } else if (rh>=20 && rh<40) {
+            index=1;
+        } else if (rh>=40 && rh<60) {
+            index=2;
+        } else if (rh>=60 && rh<80) {
+            index=3;
+        } else if (rh>=80 && rh<99) {
+            index=4;
+        } else if (rh>=99 ) {
+            index=5 ;
+        }
+
+        return fpColors[index];
+    }
 
     function hs2color(hs) {
         let index=0;
@@ -954,7 +984,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         title: "Wind Direction at 10m (°N)",
                         maximum: 360,
                         interval: 45,
-                        includeZero: false,
+                        includeZero: true,
                         suffix: " °"
                     };
                     data.push({
@@ -996,6 +1026,61 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         yValueFormatString: "#0.## %",
                         dataPoints: dataPoints2
                     });
+                } else if (output==="rh2") {
+                    title="Relative Humidity at 2m";
+                    axisY= {
+                        title: "Relative Humidity at 2m (%)",
+                        includeZero: false,
+                        maximum: 100,
+                        suffix: "%"
+                    };
+                    axisY2 = {
+                        title: "Wind Direction at 10m (°N)",
+                        maximum: 360,
+                        interval: 45,
+                        includeZero: true,
+                        suffix: " °"
+                    };
+                    data.push({
+                        name: "rh2",
+                        type: "column",
+                        yValueFormatString: "#0.## %",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "wd",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °",
+                        dataPoints: dataPoints2
+                    });
+                } else if (output==="swe") {
+                    title="Hourly cumulated snow fall";
+                    axisY= {
+                        title: "Hourly cumulated snow fall (cm)",
+                        includeZero: false,
+                        suffix: "cm"
+                    };
+                    axisY2 = {
+                        title: "Wind Direction at 10m (°N)",
+                        maximum: 360,
+                        interval: 45,
+                        includeZero: true,
+                        suffix: " °"
+                    };
+                    data.push({
+                        name: "rh2",
+                        type: "column",
+                        yValueFormatString: "#0.## %",
+                        dataPoints: dataPoints
+                    });
+                    data.push({
+                        name: "wd",
+                        type: "line",
+                        axisYType: "secondary",
+                        yValueFormatString: "#0.## °",
+                        dataPoints: dataPoints2
+                    });
                 }
             } else if (prod==='wcm3') {
                 if (output === "gen" || output === "con") {
@@ -1026,7 +1111,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         title: "Current Direction at the surface (°N)",
                         maximum: 360,
                         interval: 45,
-                        includeZero: false,
+                        includeZero: true,
                         suffix: " °"
                     };
                     data.push({
@@ -1110,7 +1195,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         title: "Mean wave direction surface (°N)",
                         maximum: 360,
                         interval: 45,
-                        includeZero: false,
+                        includeZero: true,
                         suffix: " °"
                     };
                     data.push({
@@ -1137,7 +1222,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         title: "Mean wave direction surface (°N)",
                         maximum: 360,
                         interval: 45,
-                        includeZero: false,
+                        includeZero: true,
                         suffix: " °"
                     };
                     data.push({
@@ -1165,7 +1250,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         title: "Mean wave direction surface (°N)",
                         maximum: 360,
                         interval: 45,
-                        includeZero: false,
+                        includeZero: true,
                         suffix: " °"
                     };
                     data.push({
@@ -1193,7 +1278,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                         title: "Mean wave direction surface (°N)",
                         maximum: 360,
                         interval: 45,
-                        includeZero: false,
+                        includeZero: true,
                         suffix: " °"
                     };
                     data.push({
@@ -1285,6 +1370,28 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
                             dataPoints2.push({
                                 x: dateTime,
                                 y: val.clf * 100
+                            });
+                        } else if (output=="rh2") {
+
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.rh2
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.wd10
+                            });
+                        } else if (output=="swe") {
+
+                            dataPoints.push({
+                                x: dateTime,
+                                y: val.swe
+                            });
+
+                            dataPoints2.push({
+                                x: dateTime,
+                                y: val.wd10
                             });
                         }
                     } else if (prod==='wcm3') {
