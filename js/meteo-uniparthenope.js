@@ -222,6 +222,37 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         "#FF00FF"
     ];
 
+    let sweColors = [
+        "#FF0000",
+        "#FFFF00",
+        "#00FF00",
+        "#00FFFF",
+        "#0078DC",
+        "#FF00FF"
+    ];
+
+    function swe2color(rh) {
+        let index=0;
+
+        // set clevs  20 40 60 80 99
+
+        if (rh<20) {
+            index=0;
+        } else if (rh>=20 && rh<40) {
+            index=1;
+        } else if (rh>=40 && rh<60) {
+            index=2;
+        } else if (rh>=60 && rh<80) {
+            index=3;
+        } else if (rh>=80 && rh<99) {
+            index=4;
+        } else if (rh>=99 ) {
+            index=5 ;
+        }
+
+        return rhColors[index];
+    }
+
     function rh2color(rh) {
         let index=0;
 
@@ -241,7 +272,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
             index=5 ;
         }
 
-        return fpColors[index];
+        return rhColors[index];
     }
 
     function hs2color(hs) {
@@ -1375,7 +1406,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                             dataPoints.push({
                                 x: dateTime,
-                                y: val.rh2
+                                y: val.rh2,
+                                color: rh2color(val.rh2)
                             });
 
                             dataPoints2.push({
@@ -1386,7 +1418,8 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
                             dataPoints.push({
                                 x: dateTime,
-                                y: val.swe
+                                y: val.swe,
+                                color: swe2color(val.swe)
                             });
 
                             dataPoints2.push({
