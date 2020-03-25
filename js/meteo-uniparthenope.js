@@ -30,9 +30,12 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 */
 
 (function( $) {
+    let languages = [ "en-US", "it-IT"]
 
     let apiBaseUrl="https://api.meteo.uniparthenope.it"
     let _language = (navigator.language || navigator.userLanguage).split("-")[0]
+
+
 
     let weatherIconUrl="images/";
     let loadingUrl="images/animated_progress_bar.gif";
@@ -1599,7 +1602,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
         let _baseLink=window.location.href;
         let _mapName="muggles";
-        //let _language = (navigator.language || navigator.userLanguage).split("-")[0]
+
         let _customPrefix=null;
         let _noPopup=false;
 
