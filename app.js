@@ -31,7 +31,13 @@ function getURLParameter(sParam, defaultValue) {
     return defaultValue;
 }
 
-let _lang=getURLParameter("lang",(navigator.language || navigator.userLanguage));
+let languages = [ "en-US", "it-IT"]
+let lang=getURLParameter("lang",(navigator.language || navigator.userLanguage));
+let _lang=lang.split("-")[0].toLowerCase()+"-"+lang.split("-")[1].toUpperCase()
+if (languages.includes(_lang)==false) {
+    _lang=languages[0]
+}
+
 
 let _page=getURLParameter("page","home");
 
