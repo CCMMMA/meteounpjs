@@ -520,6 +520,54 @@ function pages() {
 
 $( document ).ready(function() {
 
+    let user = localStorage.getItem('user');
+    if (user !== null && user !== "") {
+        let userObject =  JSON.parse(user)
+        $("#user").text(userObject["name"])
+        $("#container_user").css("display","block")
+    } else {
+        $("#container_login").css("display","block")
+    }
+
+    $('#form_login').submit(function(e) {
+        let name=$('#name').val()
+        let pass=$('#pass').val()
+
+        $.ajax({
+            type        : 'POST',
+            url         : apiBaseUrl+"/user/login",
+            cache       : false,
+            data        : JSON.stringify({
+                "name": name,
+                "pass": pass
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData : false,
+
+            success: function(response) {
+                console.log(response)
+                if ("message" in response) {
+                    $('#messages_login').addClass('alert alert-danger').text(response.message);
+                } else {
+                    // store a value
+                    localStorage.setItem( 'user', JSON.stringify(response) );
+
+                    $("#user").text(response["name"])
+                    $("#container_login").css("display","none")
+                    $("#container_user").css("display","block")
+
+                    //$("#modal_login").modal("toggle")
+                    //$("#modal_login").attr('class', 'modal');
+                    $('#cancel_login').click()
+                }
+
+
+            }
+        });
+        e.preventDefault();
+    });
+
     console.log("READY _ncepDate:"+_ncepDate)
 
     navBar()

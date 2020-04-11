@@ -55,7 +55,8 @@
     <!-- cookiealert styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <!--<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
     <link rel="stylesheet" href='css/social.css'>
 
@@ -112,10 +113,28 @@
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
         -->
+        <div id="container_login" style="display: none">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#modal_register"><span class="fas fa-user"></span> Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#modal_login"><span class="fas fa-sign-in-alt"></span> Login</a>
+                </li>
+            </ul>
+        </div>
 
-    </div>
+        <div id="container_user" style="display: none">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><span class="fas fa-user"></span><span id="user"></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#modal_logout"><span class="fas fa-sign-in-alt"></span> Logout</a>
+                </li>
+            </ul>
+        </div>
 
-    <div id="socialHolder" class="col-md-3">
         <div id="socialShare" class="btn-group share-group">
             <a data-toggle="dropdown" class="btn btn-info">
                 <i class="fa fa-share-alt fa-inverse"></i>
@@ -139,6 +158,61 @@
     </div>
 
 </nav>
+
+<!-- Login -->
+<div class="modal" id="modal_login">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="form_login" role="form">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Login</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <input type="text" id="name" class="fadeIn second" name="name" placeholder="name">
+                    <input type="password" id="pass" class="fadeIn third" name="pass" placeholder="password">
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <div id="messages_login"></div>
+                    <button id="cancel_login" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" >Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Register -->
+<div class="modal" id="modal_register">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="form_register" role="form">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Register</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <input type="text" id="email" class="fadeIn second" name="email" placeholder="email">
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <div id="messages_register"></div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" >Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div id="container_map" class="container-fluid" style="display: none">
     <div class="row">
