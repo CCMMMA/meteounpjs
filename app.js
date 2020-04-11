@@ -1,6 +1,7 @@
 let _appTitle="meteo@uniparthenope"
 let _appLogo="/images/meteo_uniparthenope_logo.png"
 let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere Applications @ University of Naples Parthenope. https://app.meteo.uniparthenope.it"
+let unpApiBaseUrl="https://api.uniparthenope.it/uniparthenope"
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
 let dataBaseUrl="https://data.meteo.uniparthenope.it/opendap/opendap/"
 let wmsBaseUrl="https://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/"
@@ -159,6 +160,25 @@ function footer() {
 function navBar() {
     let navBarUrl=apiBaseUrl+"/v2/navbar?lang="+_lang
     console.log("navBarUrl:"+navBarUrl)
+
+    // Get the user name from the local storage
+    let user = localStorage.getItem('user');
+
+    // CHeck if the user is not null and not empty
+    if (user !== null && user !== "") {
+
+        // Get the user object
+        let userObject =  JSON.parse(user)
+
+        // Fill the user name in the GUI
+        $("#user").text(userObject["user"]["userId"])
+
+        // Show the user info in the GUI
+        $("#container_user").css("display","block")
+    } else {
+        // Show the user login GUI
+        $("#container_login").css("display","block")
+    }
 
 
 
@@ -523,43 +543,66 @@ function pages() {
     });
 }
 
-
+// When the document is ready
 $( document ).ready(function() {
 
-    let user = localStorage.getItem('user');
-    if (user !== null && user !== "") {
-        let userObject =  JSON.parse(user)
-        $("#user").text(userObject["name"])
-        $("#container_user").css("display","block")
-    } else {
-        $("#container_login").css("display","block")
-    }
 
+
+    // Register the login event handler
     $('#form_login').submit(function(e) {
+
+        // Get user name
         let name=$('#name').val()
+
+        // Get password
         let pass=$('#pass').val()
 
+        // Prepare the ajax call
         $.ajax({
+            // Type of the HTTP request
             type        : 'POST',
-            url         : apiBaseUrl+"/user/login",
+            // The URL
+            url         : apiBaseUrl+"/v2/auth/login",
+            // Don't use the cache
             cache       : false,
+            // Prepare the payload
             data        : JSON.stringify({
                 "name": name,
                 "pass": pass
             }),
+            // Set the content type
             contentType: "application/json; charset=utf-8",
+            // Set the data type
             dataType: "json",
+            // Don't process data
             processData : false,
 
+            // In case of request success (it is different than authentication success)
             success: function(response) {
                 console.log(response)
-                if ("message" in response) {
-                    $('#messages_login').addClass('alert alert-danger').text(response.message);
+
+                /** Correct HTTP answer with authorization error
+                 *
+                 * {
+                 * "errMsg": "Invalid Username or Password!",
+                 * "statusCode": 401
+                 * }
+                 *
+                 */
+
+                // Check if the authentication was a success
+                if ("errMsg" in response) {
+
+                    // The authentication was a failure
+                    $('#messages_login').addClass('alert alert-danger').text(response.errMsg);
                 } else {
-                    // store a value
+
+                    // The authentication was a success
+
+                    // Store the result in the local storage
                     localStorage.setItem( 'user', JSON.stringify(response) );
 
-                    $("#user").text(response["name"])
+                    $("#user").text(response["user"]["userId"])
                     $("#container_login").css("display","none")
                     $("#container_user").css("display","block")
 
@@ -576,9 +619,14 @@ $( document ).ready(function() {
 
     console.log("READY _ncepDate:"+_ncepDate)
 
+    // Display the navigation bar
     navBar()
 
     console.log("PAGE:"+_page)
+
+    // Beginning of page selection
+
+    // Check if the page is the home page
     if (_page==="home") {
         console.log("HOME")
         map()
