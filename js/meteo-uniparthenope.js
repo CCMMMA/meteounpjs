@@ -2252,9 +2252,7 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
 
             //console.log("UPDATE MAP IN CONTROL: place:"+_place+" ncepDate:"+_ncepDate);
         }
-        function prova(){
-            console.log("QUESTA è UNA PROVA");
-        }
+
         //$("#"+container).empty();
         container.empty();
 
@@ -2273,16 +2271,18 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         controlsHtml+='<div class="ui-widget">';
 
 
-        let sNcepDate=
-            _ncepDate.substring(6,8)+"/"+
-            _ncepDate.substring(4,6)+"/"+
-            _ncepDate.substring(0,4)+" "+
-            _ncepDate.substring(9,11)+":"+
-            _ncepDate.substring(11,13)
+        if (_ncepDate!=null) {
+            let sNcepDate =
+                _ncepDate.substring(6, 8) + "/" +
+                _ncepDate.substring(4, 6) + "/" +
+                _ncepDate.substring(0, 4) + " " +
+                _ncepDate.substring(9, 11) + ":" +
+                _ncepDate.substring(11, 13)
 
-        controlsHtml+='<div style="display: inline-block">'+
-            '<label for="control-container-datetimepicker">UTC:</label><input type="text" value="'+sNcepDate+'" id="'+baseName+'control-container-datetimepicker"/> '+
-            '</div>';
+            controlsHtml += '<div style="display: inline-block">' +
+                '<label for="control-container-datetimepicker">UTC:</label><input type="text" value="' + sNcepDate + '" id="' + baseName + 'control-container-datetimepicker"/> ' +
+                '</div>';
+        }
 
         if (prod!=null) {
             controlsHtml+='<div style="display: inline-block">'+
@@ -2364,38 +2364,39 @@ function chart(container,place="com63049",prod="wrf5",output="gen", hours=0, ste
         } );
 
         console.log("control: _ncepDate:"+_ncepDate)
-        $( "#"+baseName+"control-container-datetimepicker" )
-            .datetimepicker({
-                beforeShow: function() {
-                    setTimeout(function(){
-                        $('.ui-datepicker').css('z-index', 99999999999999);
-                    }, 0);
-                },
-                showOtherMonths: true,
-                selectOtherMonths: true,
-                dateFormat: "dd/mm/yy",
-                timeFormat: 'HH:mm',
-                stepHour: 1,
-                stepMinute: 60,
-                addSliderAccess: true,
-                sliderAccessArgs: { touchonly: false },
+        if (_ncepDate!=null) {
+            $("#" + baseName + "control-container-datetimepicker")
+                .datetimepicker({
+                    beforeShow: function () {
+                        setTimeout(function () {
+                            $('.ui-datepicker').css('z-index', 99999999999999);
+                        }, 0);
+                    },
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    dateFormat: "dd/mm/yy",
+                    timeFormat: 'HH:mm',
+                    stepHour: 1,
+                    stepMinute: 60,
+                    addSliderAccess: true,
+                    sliderAccessArgs: {touchonly: false},
 
-                onSelect: function(dateText) {
-                    let dateTime=$('#'+baseName+'control-container-datetimepicker').datetimepicker('getDate');
-                    _ncepDate=dateTime.getFullYear()+pad(dateTime.getMonth()+1,2)+pad(dateTime.getDate(),2)+"Z"+pad(dateTime.getHours(),2)+pad(dateTime.getMinutes(),2);
+                    onSelect: function (dateText) {
+                        let dateTime = $('#' + baseName + 'control-container-datetimepicker').datetimepicker('getDate');
+                        _ncepDate = dateTime.getFullYear() + pad(dateTime.getMonth() + 1, 2) + pad(dateTime.getDate(), 2) + "Z" + pad(dateTime.getHours(), 2) + pad(dateTime.getMinutes(), 2);
 
-                    update();
-                },
+                        update();
+                    },
 
-                setDate: new Date(
-                    parseInt(_ncepDate.substring(0,4)),
-                    parseInt(_ncepDate.substring(4,6))-1,
-                    parseInt(_ncepDate.substring(6,8)),
-                    parseInt(_ncepDate.substring(9,11)),
-                    parseInt(_ncepDate.substring(11,12))
-                )
-            });
-
+                    setDate: new Date(
+                        parseInt(_ncepDate.substring(0, 4)),
+                        parseInt(_ncepDate.substring(4, 6)) - 1,
+                        parseInt(_ncepDate.substring(6, 8)),
+                        parseInt(_ncepDate.substring(9, 11)),
+                        parseInt(_ncepDate.substring(11, 12))
+                    )
+                });
+        }
 
 
 
