@@ -158,6 +158,10 @@ function footer() {
 }
 
 function navBar() {
+    // The token value
+    let tokenData={}
+
+    // Set the navBar resource url
     let navBarUrl=apiBaseUrl+"/v2/navbar?lang="+_lang
     console.log("navBarUrl:"+navBarUrl)
 
@@ -173,6 +177,9 @@ function navBar() {
         // Fill the user name in the GUI
         $("#user").text(userObject["user"]["userId"])
 
+        // Set the auth token
+        tokenData={ "value":userObject["user"]["token"]}
+
         // Show the user info in the GUI
         $("#container_user").css("display","block")
     } else {
@@ -182,7 +189,7 @@ function navBar() {
 
 
 
-    $.getJSON( navBarUrl, function( data ) {
+    $.getJSON( navBarUrl, tokenData,function( data ) {
 
         let navBarBrandUrl="index.html"
         let items = [];
@@ -229,6 +236,50 @@ function navBar() {
         $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
         $("#navbar_items").append(items.join("\n"));
     });
+}
+
+function dataAvailability() {
+    let availUrl=apiBaseUrl+"/products"
+
+    console.log("dataAvailability:CALENDAR")
+
+    function update(place, prod) {
+        let calendarEl = document.getElementById('calendar');
+
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['dayGrid', 'timeGrid', 'list', 'bootstrap'],
+            timeZone: 'UTC',
+            themeSystem: 'bootstrap',
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+            },
+            weekNumbers: true,
+            eventLimit: true, // allow "more" link when too many events
+            events: availUrl + "/" + prod + "/" + place + "/avail/calendar?baseUrl=index.html?page=products"
+        });
+
+        calendar.render();
+    }
+
+    update(_place,_prod)
+
+    control=$("#control").MeteoUniparthenopeControl(_place,_prod,null,null);
+    control.on( "update", function( event, place, prod, output, ncepDate ) {
+
+        if (place !== _place || prod!== _prod) {
+
+            update(place,prod)
+
+            _prod = prod;
+            _place = place;
+        }
+
+    })
+
+    $("#container_dataavailability").css("display","block")
+    $("#container_control").css("display","block")
 }
 
 function weatherReports() {
@@ -638,6 +689,9 @@ $( document ).ready(function() {
     } else if (_page==="weatherreports") {
         console.log("weatherreports")
         weatherReports()
+    } else if (_page==="dataavailability") {
+        console.log("dataavailability")
+        dataAvailability()
     } else {
         console.log("PAGES")
         pages()
