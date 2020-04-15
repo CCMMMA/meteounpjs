@@ -540,9 +540,9 @@ function products() {
                 $("#card_text").html(description)
 
                 $("#place_link").attr("href", expandUrl(apiBaseUrl + "/places/{place}"))
-                $("#plot_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/forecast/{place}/plot/image?output={output}&opt=bars"))
-                $("#json_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/timeseries/{place}"))
-                $("#csv_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/timeseries/{place}/csv"))
+                $("#plot_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/forecast/{place}/plot/image?output={output}&opt=bars&date={date}"))
+                $("#json_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/timeseries/{place}?date={date}"))
+                $("#csv_link").attr("href", expandUrl(apiBaseUrl + "/products/{prod}/timeseries/{place}/csv?date={date}"))
                 $("#opendap_history_link").attr("href", expandUrl(dataBaseUrl + "/{prod}/" + domain + "/history/" + year + "/" + month + "/" + day + "/" + fileName + ".html"))
                 $("#wms_history_link").attr("href", expandUrl(wmsBaseUrl + "/{prod}/" + domain + "/history/" + year + "/" + month + "/" + day + "/" + fileName + "?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0"))
                 $("#opendap_archive_link").attr("href", expandUrl(dataBaseUrl + "/{prod}/" + domain + "/archive/" + year + "/" + month + "/" + day + "/" + fileName + ".html"))
