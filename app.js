@@ -238,40 +238,49 @@ function navBar() {
     });
 }
 
+let _calendar=null
+
 function dataAvailability() {
     let availUrl=apiBaseUrl+"/products"
 
     console.log("dataAvailability:CALENDAR")
 
-    function update(place, prod) {
-        let calendarEl = document.getElementById('calendar');
+    let calendarEl = document.getElementById('calendar');
 
-        let calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: ['dayGrid', 'timeGrid', 'list', 'bootstrap'],
-            timeZone: 'UTC',
-            themeSystem: 'bootstrap',
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-            },
-            weekNumbers: true,
-            eventLimit: true, // allow "more" link when too many events
-            events: availUrl + "/" + prod + "/" + place + "/avail/calendar?baseUrl=index.html?page=products"
-        });
+    _calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['dayGrid', 'timeGrid', 'list', 'bootstrap'],
+        timeZone: 'UTC',
+        themeSystem: 'bootstrap',
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+        },
+        weekNumbers: true,
+        eventLimit: true, // allow "more" link when too many events
+        eventSources: [
+            {
+                "id":_prod,
+                "url":availUrl + "/" + _prod + "/" + _place + "/avail/calendar?baseUrl=index.html?page=products"
+            }
+        ]
+    });
 
-        calendar.render();
-    }
-
-    update(_place,_prod)
+    _calendar.render();
 
     control=$("#control").MeteoUniparthenopeControl(_place,_prod,null,null);
+
     control.on( "update", function( event, place, prod, output, ncepDate ) {
 
         if (place !== _place || prod!== _prod) {
 
-            update(place,prod)
+            //_calendar["events"]=availUrl + "/" + prod + "/" + place + "/avail/calendar?baseUrl=index.html?page=products"
+            _calendar.getEventSourceById(_prod).remove()
 
+            _calendar.addEventSource({
+                "id":prod,
+                "url":availUrl + "/" + prod + "/" + place + "/avail/calendar?baseUrl=index.html?page=products"
+            })
             _prod = prod;
             _place = place;
         }
