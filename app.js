@@ -320,6 +320,79 @@ function weatherReports() {
 
 }
 
+function infrastructure() {
+    let sinfoUrl=apiBaseUrl+"/v2/slurm/info"
+    let squeueUrl=apiBaseUrl+"/v2/slurm/queue"
+
+    let gangliaBaseUrl="http://blackjeans.uniparthenope.it/ganglia/graph.php?z=small&c=Blackjeans-UniParthenope&"
+
+    $.getJSON( sinfoUrl, function( data ) {
+
+        $("#container_sinfo_row").empty()
+
+
+
+        for (let index in data) {
+            let item=data[index]
+
+            let hostName = item["hostnames"]
+            switch (hostName) {
+                case "node1":
+                    hostName = "node01"
+                    break
+                case "node2":
+                    hostName = "node02"
+                    break
+                case "node3":
+                    hostName = "node03"
+                    break
+                case "node4":
+                    hostName = "node04"
+                    break
+                case "node5":
+                    hostName = "node05"
+                    break
+                case "node6":
+                    hostName = "node06"
+                    break
+                case "node7":
+                    hostName = "node07"
+                    break
+                case "node8":
+                    hostName = "node08"
+                    break
+                case "node9":
+                    hostName = "node09"
+                    break
+            }
+
+            let hostId = "host_" + hostName
+
+            let html = ""
+            html += "<div id=\"" + hostId + "_container\" class=\"col\">"
+            html += "  <div class=\"card\" id=\"" + hostId + "\">"
+            //html+="    <a href=\""+expandUrl(localizedItem["button"]["href"])+"\">"
+            html += "      <img id=\"" + hostId + "_image\" class=\"card-img-top\" src=\"" + expandUrl(gangliaBaseUrl + "m=load_one&h=" + hostName) + "\" alt=\"" + hostName + "\">"
+            //html+="    </a>"
+            html += "    <div class=\"card-body\">"
+            html += "      <h5 id=\"" + hostId + "_title\" class=\"card-title\">" + hostName + "</h5>"
+            html += "      <p id=\"" + hostId + "_text\" class=\"card-text\">"
+            html += item["cpus_a_i_o_t"] + " " + item["free_mem"] + "/" + item["memory"]+" "+item["cpu_load"]+" "+item["avail"]+" "+item["partition"]+" "+item["state"]
+            html += "      </p>"
+            //html+="      <a href=\""+expandUrl(localizedItem["button"]["href"])+"\" class=\"btn btn-primary\">"+localizedItem["button"]["text"]+"</a>"
+            html += "    </div>"
+            html += "  </div>"
+            html += "</div>"
+
+
+            $("#container_sinfo_row").append(html)
+        }
+
+        $("#container_sinfo").css("display", "block")
+    });
+
+}
+
 function cards() {
     let cardsUrl=apiBaseUrl+"/v2/cards?lang="+_lang
     console.log("cardsUrl:"+cardsUrl)
@@ -701,6 +774,9 @@ $( document ).ready(function() {
     } else if (_page==="dataavailability") {
         console.log("dataavailability")
         dataAvailability()
+    } else if (_page==="infrastructure") {
+        console.log("infrastructure")
+        infrastructure()
     } else {
         console.log("PAGES")
         pages()
