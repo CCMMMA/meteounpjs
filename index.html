@@ -331,7 +331,27 @@
 
 <!-- Slurm Queue -->
 <div id="container_squeue" class="container-fluid" style="display: none">
-    <div id="container_squeue_row" class="row"></div>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Job Id</th>
+                            <th>Command</th>
+                            <th>Partition</th>
+                            <th>Status</th>
+                            <th>Node List</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody_squeue">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Data Availability -->

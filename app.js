@@ -320,9 +320,8 @@ function weatherReports() {
 
 }
 
-function infrastructure() {
+function sinfo() {
     let sinfoUrl=apiBaseUrl+"/v2/slurm/info"
-    let squeueUrl=apiBaseUrl+"/v2/slurm/queue"
 
     let gangliaBaseUrl="http://blackjeans.uniparthenope.it/ganglia/graph.php?z=small&c=Blackjeans-UniParthenope&"
 
@@ -389,6 +388,56 @@ function infrastructure() {
         }
 
         $("#container_sinfo").css("display", "block")
+    });
+
+}
+
+function squeue() {
+    let squeueUrl=apiBaseUrl+"/v2/slurm/queue"
+
+    function baseName(str)
+    {
+        let base = new String(str).substring(str.lastIndexOf('/') + 1);
+        if(base.lastIndexOf(".") != -1)
+            base = base.substring(0, base.lastIndexOf("."));
+        return base;
+    }
+    let table_background = {
+        "PENDING":"primary",
+        "A":"success",
+        "B":"danger",
+        "C":"info",
+        "RUNNING":"warning",
+        "D":"active",
+        "E":"secondary"
+    }
+
+
+    $.getJSON( squeueUrl, function( data ) {
+
+        $("#squeue").empty()
+
+        for (let index in data) {
+            let item=data[index]
+
+            let command = baseName(item["command"].split(" ")[0])
+
+            let html = ""
+
+            html += "<tr class=\"table-"+table_background[item["state"]]+"\">"
+            html += "    <td>"+item["jobid"]+"</td>"
+            html += "    <td>"+command+"</td>"
+            html += "    <td>"+item["partition"]+"</td>"
+            html += "    <td>"+item["state"]+"</td>"
+            html += "    <td>"+item["nodelist_reason"]+"</td>"
+            html += "</tr>"
+
+
+
+            $("#tbody_squeue").append(html)
+        }
+
+        $("#container_squeue").css("display", "block")
     });
 
 }
@@ -763,7 +812,7 @@ $( document ).ready(function() {
     if (_page==="home") {
         console.log("HOME")
         map()
-        // Cards is automatically isued by update
+        // Cards is automatically issued by update
         //cards()
     } else if (_page==="products") {
         console.log("PRODUCTS")
@@ -776,7 +825,8 @@ $( document ).ready(function() {
         dataAvailability()
     } else if (_page==="infrastructure") {
         console.log("infrastructure")
-        infrastructure()
+        sinfo()
+        squeue()
     } else {
         console.log("PAGES")
         pages()
