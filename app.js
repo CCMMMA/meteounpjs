@@ -320,80 +320,134 @@ function weatherReports() {
 
 }
 
+function infrastructure() {
+    let gangliaBaseUrl="http://blackjeans.uniparthenope.it/ganglia/stacked.php?m=load_one&c=Blackjeans-UniParthenope&r=hour"
+
+    function update() {
+        $("#card_infrastructure_image").attr("src",gangliaBaseUrl)
+    }
+    update()
+    setInterval(update, 180000);
+    $("#container_infrastructure").css("display", "block")
+}
+
 function sinfo() {
     let sinfoUrl=apiBaseUrl+"/v2/slurm/info"
 
     let gangliaBaseUrl="http://blackjeans.uniparthenope.it/ganglia/graph.php?z=small&c=Blackjeans-UniParthenope&"
 
-    $.getJSON( sinfoUrl, function( data ) {
+    function update() {
+        $.getJSON(sinfoUrl, function (data) {
 
-        $("#container_sinfo_row").empty()
+            $("#container_sinfo_row").empty()
 
 
+            for (let index in data) {
+                let item = data[index]
 
-        for (let index in data) {
-            let item=data[index]
+                let hostName = item["hostnames"]
+                switch (hostName) {
+                    case "node1":
+                        hostName = "node01"
+                        break
+                    case "node2":
+                        hostName = "node02"
+                        break
+                    case "node3":
+                        hostName = "node03"
+                        break
+                    case "node4":
+                        hostName = "node04"
+                        break
+                    case "node5":
+                        hostName = "node05"
+                        break
+                    case "node6":
+                        hostName = "node06"
+                        break
+                    case "node7":
+                        hostName = "node07"
+                        break
+                    case "node8":
+                        hostName = "node08"
+                        break
+                    case "node9":
+                        hostName = "node09"
+                        break
+                }
 
-            let hostName = item["hostnames"]
-            switch (hostName) {
-                case "node1":
-                    hostName = "node01"
-                    break
-                case "node2":
-                    hostName = "node02"
-                    break
-                case "node3":
-                    hostName = "node03"
-                    break
-                case "node4":
-                    hostName = "node04"
-                    break
-                case "node5":
-                    hostName = "node05"
-                    break
-                case "node6":
-                    hostName = "node06"
-                    break
-                case "node7":
-                    hostName = "node07"
-                    break
-                case "node8":
-                    hostName = "node08"
-                    break
-                case "node9":
-                    hostName = "node09"
-                    break
+                let hostId = "host_" + hostName
+
+                let cardClass="card"
+
+                if (item["state"].includes("down")) {
+                    cardClass+=" bg-danger"
+                } else if (item["state"].includes("allocated")) {
+                    cardClass+=" bg-success"
+                } if (item["state"].includes("mixed")) {
+                    cardClass+=" bg-warning"
+                }
+
+                let html = ""
+                html += "<div id=\"" + hostId + "_container\" class=\"col\">"
+                html += "  <div class=\""+cardClass+"\" id=\"" + hostId + "\">"
+                //html+="    <a href=\""+expandUrl(localizedItem["button"]["href"])+"\">"
+                html += "      <img id=\"" + hostId + "_image\" class=\"card-img-top\" src=\"" + expandUrl(gangliaBaseUrl + "m=load_one&h=" + hostName) + "\" alt=\"" + hostName + "\">"
+                //html+="    </a>"
+                html += "    <div class=\"card-header\">"+ hostName +"</div>"
+                html += "    <div class=\"card-body\">"
+                html += "      <h5 id=\"" + hostId + "_title\" class=\"card-title\">" + item["state"] + "</h5>"
+                if (!item["state"].includes("down")) {
+                    html += "      <ul class=\"list-group list-group-flush\">"
+                    html += "        <li class=\"list-group-item\">CPU Load:" + item["cpu_load"] + "</li>"
+                    html += "        <li class=\"list-group-item\">CPUs:" + item["cpus_a_i_o_t"] + "</li>"
+                    html += "        <li class=\"list-group-item\">Memory:" + item["free_mem"] + "/" + item["memory"] + "</li>"
+                    html += "      </ul>"
+                }
+                html += "      <p id=\"" + hostId + "_text\" class=\"card-text\">"
+                html += "      Partition:<strong>" + item["partition"]+"</strong>"
+                html += "      </p>"
+                html += "    </div>"
+                html += "  </div>"
+                html += "</div>"
+
+
+                $("#container_sinfo_row").append(html)
             }
-
-            let hostId = "host_" + hostName
-
-            let html = ""
-            html += "<div id=\"" + hostId + "_container\" class=\"col\">"
-            html += "  <div class=\"card\" id=\"" + hostId + "\">"
-            //html+="    <a href=\""+expandUrl(localizedItem["button"]["href"])+"\">"
-            html += "      <img id=\"" + hostId + "_image\" class=\"card-img-top\" src=\"" + expandUrl(gangliaBaseUrl + "m=load_one&h=" + hostName) + "\" alt=\"" + hostName + "\">"
-            //html+="    </a>"
-            html += "    <div class=\"card-body\">"
-            html += "      <h5 id=\"" + hostId + "_title\" class=\"card-title\">" + hostName + "</h5>"
-            html += "      <p id=\"" + hostId + "_text\" class=\"card-text\">"
-            html += item["cpus_a_i_o_t"] + " " + item["free_mem"] + "/" + item["memory"]+" "+item["cpu_load"]+" "+item["avail"]+" "+item["partition"]+" "+item["state"]
-            html += "      </p>"
-            //html+="      <a href=\""+expandUrl(localizedItem["button"]["href"])+"\" class=\"btn btn-primary\">"+localizedItem["button"]["text"]+"</a>"
-            html += "    </div>"
-            html += "  </div>"
-            html += "</div>"
-
-
-            $("#container_sinfo_row").append(html)
-        }
-
-        $("#container_sinfo").css("display", "block")
-    });
-
+        });
+    }
+    update()
+    setInterval(update, 60000);
+    $("#container_sinfo").css("display", "block")
 }
 
 function squeue() {
     let squeueUrl=apiBaseUrl+"/v2/slurm/queue"
+
+    let table_background = {
+        "BOOT_FAIL":"danger",
+        "CANCELLED":"warning",
+        "CONFIGURING":"secondary",
+        "COMPLETING":"success",
+        "DEADLINE":"info",
+        "FAILED":"danger",
+        "NODE_FAIL":"danger",
+        "OUT_OF_MEMORY":"warning",
+        "PENDING":"primary",
+        "PREEMPTED":"warning",
+        "RESV_DEL_HOLD":"info",
+        "REQUEUED_FED":"info",
+        "REQUEUED_HOLD":"info",
+        "REQUEUED":"info",
+        "RESIZING":"info",
+        "REVOKED":"warning",
+        "RUNNING":"active",
+        "SPECIAL_EXIT":"warning",
+        "STAGE_OUT":"active",
+        "STOPPED":"warning",
+        "SUSPENDED":"warning",
+        "TIMEOUT":"warning"
+    }
 
     function baseName(str)
     {
@@ -402,43 +456,47 @@ function squeue() {
             base = base.substring(0, base.lastIndexOf("."));
         return base;
     }
-    let table_background = {
-        "PENDING":"primary",
-        "A":"success",
-        "B":"danger",
-        "C":"info",
-        "RUNNING":"warning",
-        "D":"active",
-        "E":"secondary"
+
+
+    function update() {
+        $.getJSON(squeueUrl, function (data) {
+
+            $("#tbody_squeue").empty()
+
+            for (let index in data) {
+                let item = data[index]
+
+                let command = baseName(item["command"].split(" ")[0])
+                let time=""
+                if (item["state"]==="RUNNING") {
+                    time="<br/>Started:"+item["start_time"]+
+                        "<br/>("+item["time"]+")"
+                }
+
+                let html = ""
+
+                html += "<tr class=\"table-" + table_background[item["state"]] + "\">"
+                html += "    <td>" + item["jobid"] + "</td>"
+                html += "    <td>" + item["name"] +
+                    "<br/>CPUs: " + item["cpus"] + " Nodes:" + item["nodes"] + " Memory:" + item["min_memory"] +
+                    "</td>"
+                html += "    <td>" + item["partition"] + "</td>"
+                html += "    <td>" + item["state"] +
+                    "<br/>Submitted:" + item["submit_time"] + time
+                    "</td>"
+                html += "    <td>" + item["nodelist_reason"] + "</td>"
+                html += "</tr>"
+
+
+                $("#tbody_squeue").append(html)
+            }
+
+
+        });
     }
-
-
-    $.getJSON( squeueUrl, function( data ) {
-
-        $("#squeue").empty()
-
-        for (let index in data) {
-            let item=data[index]
-
-            let command = baseName(item["command"].split(" ")[0])
-
-            let html = ""
-
-            html += "<tr class=\"table-"+table_background[item["state"]]+"\">"
-            html += "    <td>"+item["jobid"]+"</td>"
-            html += "    <td>"+command+"</td>"
-            html += "    <td>"+item["partition"]+"</td>"
-            html += "    <td>"+item["state"]+"</td>"
-            html += "    <td>"+item["nodelist_reason"]+"</td>"
-            html += "</tr>"
-
-
-
-            $("#tbody_squeue").append(html)
-        }
-
-        $("#container_squeue").css("display", "block")
-    });
+    update()
+    setInterval(update, 15000);
+    $("#container_squeue").css("display", "block")
 
 }
 
@@ -825,6 +883,7 @@ $( document ).ready(function() {
         dataAvailability()
     } else if (_page==="infrastructure") {
         console.log("infrastructure")
+        infrastructure()
         sinfo()
         squeue()
     } else {
