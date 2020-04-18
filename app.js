@@ -321,10 +321,44 @@ function weatherReports() {
 }
 
 function infrastructure() {
-    let gangliaBaseUrl="http://blackjeans.uniparthenope.it/ganglia/stacked.php?m=load_one&c=Blackjeans-UniParthenope&r=hour"
+    let storageUrl=apiBaseUrl+"/v2/slurm/storage"
+    let gangliaBaseUrl="http://blackjeans.uniparthenope.it/ganglia/"
 
     function update() {
-        $("#card_infrastructure_image").attr("src",gangliaBaseUrl)
+        $("#card_aggregated_load_one_image").attr("src",gangliaBaseUrl+"stacked.php?c=Blackjeans-UniParthenope&r=hour&m=load_one")
+        $("#card_webserv_load_one_image").attr("src",gangliaBaseUrl+"graph.php?c=Blackjeans-UniParthenope&r=hour&h=webserv&m=load_one")
+
+        console.log(storageUrl)
+        $.getJSON(storageUrl, function (data) {
+
+            $("#tbody_storage").empty()
+
+            for (let index in data) {
+                let item = data[index]
+
+                let html = ""
+
+                if (item["status"]!=="down") {
+                    html += "<tr class=\"table-" + item["alert"] + "\">"
+                } else {
+                    html += "<tr class=\"table bg-danger\">"
+                }
+                html += "    <td>" + item["name"] + "</td>"
+                html += "    <td><strong>" + item["status"] + "</strong></td>"
+                if (item["status"]!=="down") {
+                    html += "    <td>" + item["total_mb"]/1000000 + "</td>"
+                    html += "    <td>" + item["used_mb"]/1000000 + "</td>"
+                    html += "    <td>" + item["available_mb"]/1000000 + "</td>"
+                    html += "    <td>" + (item["used_perc"]*100) + "</td>"
+                } else {
+                    html += "<td></td><td></td><td></td><td></td>"
+                }
+                html += "</tr>"
+
+
+                $("#tbody_storage").append(html)
+            }
+        });
     }
     update()
     setInterval(update, 180000);

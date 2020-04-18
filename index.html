@@ -326,20 +326,53 @@
 
 <!-- Infrastructure -->
 <div id="container_infrastructure" class="container-fluid" style="display: none">
-    <div class="card">
-        <img id="card_infrastructure_image" class="card-img-top" src="..." alt="Card image cap">
-        <div class="card-body">
-            <!--
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-            -->
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">Statistics</div>
+                <div class="card-body">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Storage Status</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Total (TB)</th>
+                            <th>Used (TB)</th>
+                            <th>Available (TB)</th>
+                            <th>Used (%)</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody_storage">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">HPC-GPU blackJeans</div>
+                <img id="card_aggregated_load_one_image" class="card-img-top">
+                <div class="card-body">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Web Service Provider</div>
+                <img id="card_webserv_load_one_image" class="card-img-top">
+                <div class="card-body">
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Slurm Info -->
 <div id="container_sinfo" class="container-fluid" style="display: none">
+    <div class="card-header">Computing Nodes</div>
     <div id="container_sinfo_row" class="row"></div>
 </div>
 
@@ -348,6 +381,7 @@
     <div class="row">
         <div class="col">
             <div class="card">
+                <div class="card-header">Workflow</div>
                 <div class="card-body">
                     <table class="table">
                         <thead>
