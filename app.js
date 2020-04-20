@@ -159,10 +159,12 @@ function footer() {
 
 function navBar() {
     // The token value
-    let tokenData={}
+    let token=""
 
     // Set the navBar resource url
-    let navBarUrl=apiBaseUrl+"/v2/navbar?lang="+_lang
+    //let navBarUrl=apiBaseUrl+"/v2/navbar?lang="+_lang
+    let navBarUrl="http://193.205.230.6:5000"+"/v2/navbar?lang="+_lang
+
     console.log("navBarUrl:"+navBarUrl)
 
     // Get the user name from the local storage
@@ -174,11 +176,17 @@ function navBar() {
         // Get the user object
         let userObject =  JSON.parse(user)
 
+        console.log("User")
+        console.log(userObject)
+
         // Fill the user name in the GUI
         $("#user").text(userObject["user"]["userId"])
 
         // Set the auth token
-        tokenData={ "value":userObject["user"]["token"]}
+        token=userObject["token"]
+
+        console.log("Token")
+        console.log(token)
 
         // Show the user info in the GUI
         $("#container_user").css("display","block")
@@ -188,7 +196,65 @@ function navBar() {
     }
 
 
+    $.ajax({
+        url: navBarUrl,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            let navBarBrandUrl="index.html"
+            let items = [];
 
+            $.each( data, function( key, values ) {
+                values.forEach(function(item, index) {
+                    let html="";
+                    let localizedItem=item["i18n"][_lang]
+
+                    if ("items" in localizedItem) {
+                        if ("isHome" in item && item["isHome"]) {
+                            navBarBrandUrl=localizedItem["href"]
+                        }
+
+                        html += "<li class='nav-item dropdown'>"
+                        html += "    <a class='nav-link dropdown-toggle' href='"+expandUrl(localizedItem["href"])+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false\'>"+localizedItem["text"]+"</a>"
+                        html += "    <div class='dropdown-menu' aria-labelledby='navbarDropdown'>"
+                        localizedItem["items"].forEach(function(item1, index1) {
+
+                            if (item1["text"]==="-") {
+                                html += "        <div class='dropdown-divider'></div>"
+                            } else {
+                                html += "        <a class='dropdown-item' href='" + expandUrl(item1["href"]) + "'>" + item1["text"]+ "</a>"
+                            }
+
+                            if ("isHome" in item1 && item1["isHome"]) {
+                                navBarBrandUrl=item1["href"]
+                            }
+                        })
+                        html += "    </div>"
+                        html += "</li>"
+                    } else {
+                        html += "<li class='nav-item active'>"
+                        html += "    <a class='nav-link' href='"+expandUrl(localizedItem["href"])+"'>"+localizedItem["text"]+"</a>"
+                        html += "</li>"
+
+                        if ("isHome" in item && item["isHome"]) {
+                            navBarBrandUrl=localizedItem["href"]
+                        }
+                    }
+                    items.push(  html );
+                });
+            });
+            $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
+            $("#navbar_items").append(items.join("\n"));
+        },
+        //error: function() { alert('boo!'); },
+        beforeSend: setHeader
+    });
+
+    function setHeader(xhr) {
+        xhr.setRequestHeader('X-USER-TOKEN', token);
+    }
+
+    /*
     $.getJSON( navBarUrl, tokenData,function( data ) {
 
         let navBarBrandUrl="index.html"
@@ -236,6 +302,7 @@ function navBar() {
         $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
         $("#navbar_items").append(items.join("\n"));
     });
+    */
 }
 
 let _calendar=null
