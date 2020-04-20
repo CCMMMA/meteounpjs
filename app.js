@@ -159,25 +159,22 @@ function footer() {
 
 function navBar() {
     // The token value
-    let token=""
+    let token=null
 
     // Set the navBar resource url
-    //let navBarUrl=apiBaseUrl+"/v2/navbar?lang="+_lang
-    let navBarUrl="http://193.205.230.6:5000"+"/v2/navbar?lang="+_lang
+    let navBarUrl=apiBaseUrl+"/v2/navbar?lang="+_lang
+    //navBarUrl="http://193.205.230.6:5000/v2/navbar?lang="+_lang
 
     console.log("navBarUrl:"+navBarUrl)
 
     // Get the user name from the local storage
     let user = localStorage.getItem('user');
 
-    // CHeck if the user is not null and not empty
-    if (user !== null && user !== "") {
+    // Check if the user is not null and not empty
+    if (user != null && user !== "" ) {
 
         // Get the user object
         let userObject =  JSON.parse(user)
-
-        console.log("User")
-        console.log(userObject)
 
         // Fill the user name in the GUI
         $("#user").text(userObject["user"]["userId"])
@@ -251,58 +248,10 @@ function navBar() {
     });
 
     function setHeader(xhr) {
-        xhr.setRequestHeader('X-USER-TOKEN', token);
+        if (token != null) {
+            xhr.setRequestHeader('X-USER-TOKEN', token);
+        }
     }
-
-    /*
-    $.getJSON( navBarUrl, tokenData,function( data ) {
-
-        let navBarBrandUrl="index.html"
-        let items = [];
-
-        $.each( data, function( key, values ) {
-            values.forEach(function(item, index) {
-                let html="";
-                let localizedItem=item["i18n"][_lang]
-
-                if ("items" in localizedItem) {
-                    if ("isHome" in item && item["isHome"]) {
-                        navBarBrandUrl=localizedItem["href"]
-                    }
-
-                    html += "<li class='nav-item dropdown'>"
-                    html += "    <a class='nav-link dropdown-toggle' href='"+expandUrl(localizedItem["href"])+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false\'>"+localizedItem["text"]+"</a>"
-                    html += "    <div class='dropdown-menu' aria-labelledby='navbarDropdown'>"
-                    localizedItem["items"].forEach(function(item1, index1) {
-
-                        if (item1["text"]==="-") {
-                            html += "        <div class='dropdown-divider'></div>"
-                        } else {
-                            html += "        <a class='dropdown-item' href='" + expandUrl(item1["href"]) + "'>" + item1["text"]+ "</a>"
-                        }
-
-                        if ("isHome" in item1 && item1["isHome"]) {
-                            navBarBrandUrl=item1["href"]
-                        }
-                    })
-                    html += "    </div>"
-                    html += "</li>"
-                } else {
-                    html += "<li class='nav-item active'>"
-                    html += "    <a class='nav-link' href='"+expandUrl(localizedItem["href"])+"'>"+localizedItem["text"]+"</a>"
-                    html += "</li>"
-
-                    if ("isHome" in item && item["isHome"]) {
-                        navBarBrandUrl=localizedItem["href"]
-                    }
-                }
-                items.push(  html );
-            });
-        });
-        $("a.navbar-brand").attr("href",expandUrl(navBarBrandUrl))
-        $("#navbar_items").append(items.join("\n"));
-    });
-    */
 }
 
 let _calendar=null
@@ -887,6 +836,24 @@ function pages() {
 // When the document is ready
 $( document ).ready(function() {
 
+    // Register the login event handler
+    $('#form_logout').submit(function(e) {
+
+        console.log("logout")
+
+        // Store the result in the local storage
+        localStorage.removeItem('user')
+
+        $("#user").text("")
+        $("#container_login").css("display","block")
+        $("#container_user").css("display","none")
+
+        $('#cancel_logout').click()
+
+        e.preventDefault();
+        location.reload();
+    })
+
 
 
     // Register the login event handler
@@ -950,6 +917,7 @@ $( document ).ready(function() {
                     //$("#modal_login").modal("toggle")
                     //$("#modal_login").attr('class', 'modal');
                     $('#cancel_login').click()
+                    location.reload();
                 }
 
 

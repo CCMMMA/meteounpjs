@@ -123,9 +123,11 @@
         -->
         <div id="container_login" style="display: none">
             <ul class="nav navbar-nav ml-auto">
+                <!--
                 <li class="nav-item">
                     <a class="nav-link" href="#" data-toggle="modal" data-target="#modal_register"><span class="fas fa-user"></span> Register</a>
                 </li>
+                -->
                 <li class="nav-item">
                     <a class="nav-link" href="#" data-toggle="modal" data-target="#modal_login"><span class="fas fa-sign-in-alt"></span> Login</a>
                 </li>
@@ -189,6 +191,33 @@
                     <div id="messages_login"></div>
                     <button id="cancel_login" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" >Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Login -->
+<div class="modal" id="modal_logout">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="form_logout" role="form">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Logout</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Are you sure?
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <div id="messages_logout"></div>
+                    <button id="cancel_logout" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" >Logout</button>
                 </div>
             </form>
         </div>
