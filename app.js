@@ -144,6 +144,22 @@ function rewriteUrl(title, description, prepend, previewImage) {
 
 }
 
+function getUserObjectIfAny() {
+    let userObject=null
+
+    // Get the user name from the local storage
+    let user = localStorage.getItem('user');
+
+    // Check if the user is not null and not empty
+    if (user != null && user !== "" ) {
+
+        // Get the user object
+        userObject =  JSON.parse(user)
+
+    }
+
+    return userObject
+}
 
 function footer() {
     let legalDisclaimerUrl=apiBaseUrl+"/legal/disclaimer?lang="+_lang
@@ -163,27 +179,17 @@ function navBar() {
 
     // Set the navBar resource url
     let navBarUrl=apiBaseUrl+"/v2/navbar?lang="+_lang
-    //navBarUrl="http://193.205.230.6:5000/v2/navbar?lang="+_lang
 
-    console.log("navBarUrl:"+navBarUrl)
+    // Get the userObject
+    let userObject = getUserObjectIfAny()
 
-    // Get the user name from the local storage
-    let user = localStorage.getItem('user');
-
-    // Check if the user is not null and not empty
-    if (user != null && user !== "" ) {
-
-        // Get the user object
-        let userObject =  JSON.parse(user)
-
+    // Check if the user is logged
+    if (userObject != null) {
         // Fill the user name in the GUI
-        $("#user").text(userObject["user"]["userId"])
+        $("#user").text(userObject["name"])
 
         // Set the auth token
         token=userObject["token"]
-
-        console.log("Token")
-        console.log(token)
 
         // Show the user info in the GUI
         $("#container_user").css("display","block")
@@ -192,6 +198,11 @@ function navBar() {
         $("#container_login").css("display","block")
     }
 
+    function setHeader(xhr) {
+        if (token != null) {
+            xhr.setRequestHeader('authorization', "Basic "+token);
+        }
+    }
 
     $.ajax({
         url: navBarUrl,
@@ -246,12 +257,6 @@ function navBar() {
         //error: function() { alert('boo!'); },
         beforeSend: setHeader
     });
-
-    function setHeader(xhr) {
-        if (token != null) {
-            xhr.setRequestHeader('X-USER-TOKEN', token);
-        }
-    }
 }
 
 let _calendar=null
@@ -799,8 +804,62 @@ function products() {
 
 function pages() {
     let pageUrl=apiBaseUrl+"/v2/pages/"+_page+"?lang="+_lang
+    //let pageUrl="http://193.205.230.6:5000"+"/v2/pages/"+_page+"?lang="+_lang
     console.log("pageUrl:"+pageUrl)
 
+    // Define the token
+    let token=null
+
+    // Get the userObject
+    let userObject = getUserObjectIfAny()
+
+    // Check if the user is logged
+    if (userObject != null) {
+
+        // Set the auth token
+        token=userObject["token"]
+    }
+
+    function setHeader(xhr) {
+        if (token != null) {
+            xhr.setRequestHeader('authorization', "Basic "+token);
+        }
+    }
+
+    $.ajax({
+        url: pageUrl,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            let localizedData=data["i18n"][_lang]
+            let imageUrl=""
+            if ("image" in localizedData) {
+                $("#page_image").attr("src",localizedData["image"]["src"])
+                $("#page_image").attr("alt",localizedData["image"]["alt"])
+                imageUrl=localizedData["image"]["src"]
+            }
+            $("#page_title").text(localizedData["title"])
+
+            let subtitle=""
+            if ("subtitle" in localizedData) {
+                $("#page_subtitle").text(localizedData["subtitle"])
+                subtitle=localizedData["subtitle"]
+            }
+            $("#page_body").html(localizedData["body"])
+
+            if ("links" in localizedData) {
+                localizedData["links"].forEach(function(link, index) {
+                    $("#page_links").append("<a href=\""+link["href"]+"\" class=\"card-link\">"+link["text"]+"</a>")
+                })
+            }
+
+            $("#container_pages").css("display","block")
+
+            rewriteUrl(localizedData["title"], subtitle,"page="+_page,imageUrl)
+        },
+        beforeSend: setHeader
+    });
+/*
     $.getJSON( pageUrl, function( data ) {
         let localizedData=data["i18n"][_lang]
         let imageUrl=""
@@ -831,6 +890,8 @@ function pages() {
 
         rewriteUrl(localizedData["title"], subtitle,"page="+_page,imageUrl)
     });
+
+ */
 }
 
 // When the document is ready
@@ -858,32 +919,43 @@ $( document ).ready(function() {
 
     // Register the login event handler
     $('#form_login').submit(function(e) {
+        let authLoginUrl=apiBaseUrl+"/v2/auth/login"
+        //let authLoginUrl="http://193.205.230.6:5000/v2/auth/login"
 
         // Get user name
-        let name=$('#name').val()
+        let userName=$('#name').val()
 
         // Get password
-        let pass=$('#pass').val()
+        let userPass =$('#pass').val()
+
+        let token=btoa(userName+":"+userPass)
+
+        console.log("TOKEN")
+        console.log(token)
+
+        function setHeader(xhr) {
+            if (token != null) {
+                xhr.setRequestHeader('authorization', "Basic "+token);
+            }
+        }
 
         // Prepare the ajax call
         $.ajax({
             // Type of the HTTP request
-            type        : 'POST',
+            type        : 'GET',
             // The URL
-            url         : apiBaseUrl+"/v2/auth/login",
+            url         : authLoginUrl,
             // Don't use the cache
             cache       : false,
-            // Prepare the payload
-            data        : JSON.stringify({
-                "name": name,
-                "pass": pass
-            }),
             // Set the content type
             contentType: "application/json; charset=utf-8",
             // Set the data type
             dataType: "json",
             // Don't process data
             processData : false,
+
+            // Set header before sending
+            beforeSend: setHeader,
 
             // In case of request success (it is different than authentication success)
             success: function(response) {
@@ -903,14 +975,15 @@ $( document ).ready(function() {
 
                     // The authentication was a failure
                     $('#messages_login').addClass('alert alert-danger').text(response.errMsg);
+
                 } else {
 
                     // The authentication was a success
 
                     // Store the result in the local storage
-                    localStorage.setItem( 'user', JSON.stringify(response) );
+                    localStorage.setItem( 'user', JSON.stringify({ "token": token, "name":userName }) );
 
-                    $("#user").text(response["user"]["userId"])
+                    $("#user").text(userName)
                     $("#container_login").css("display","none")
                     $("#container_user").css("display","block")
 
