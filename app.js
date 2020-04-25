@@ -3,6 +3,7 @@ let _appLogo="/images/meteo_uniparthenope_logo.png"
 let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere Applications @ University of Naples Parthenope. https://app.meteo.uniparthenope.it"
 let unpApiBaseUrl="https://api.uniparthenope.it/uniparthenope"
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
+//apiBaseUrl="http://193.205.230.6:5000"
 let dataBaseUrl="https://data.meteo.uniparthenope.it/opendap/opendap/"
 let wmsBaseUrl="https://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/"
 
@@ -559,97 +560,123 @@ function cards() {
     let cardsUrl=apiBaseUrl+"/v2/cards?lang="+_lang
     console.log("cardsUrl:"+cardsUrl)
 
-    $.getJSON( cardsUrl, function( data ) {
+    // Define the token
+    let token=null
 
-        $("#container_cards_row").empty()
+    // Get the userObject
+    let userObject = getUserObjectIfAny()
 
+    // Check if the user is logged
+    if (userObject != null) {
 
+        // Set the auth token
+        token=userObject["token"]
+    }
 
-        $.each( data, function( key, values ) {
-            values.forEach(function(item, index) {
-                let localizedItem=item["i18n"][_lang]
-                let cardId="card_"+item["_id"]
+    function setHeader(xhr) {
+        if (token != null) {
+            xhr.setRequestHeader('authorization', "Basic "+token);
+        }
+    }
 
-
-
-                let html=""
-                html+="<div id=\""+cardId+"_container\" class=\"col\" style=\"display: none\">"
-                html+="  <div class=\"card\" id=\""+cardId+"\">"
-                html+="    <a href=\""+expandUrl(localizedItem["button"]["href"])+"\">"
-                html+="      <img id=\""+cardId+"_image\" class=\"card-img-top\" src=\""+expandUrl(localizedItem["image"]["src"])+"\" alt=\""+localizedItem["image"]["alt"]+"\">"
-                html+="    </a>"
-                html+="    <div class=\"card-body\">"
-                html+= "      <h5 id=\""+cardId+"_title\" class=\"card-title\"></h5>"
-                html+= "      <p id=\""+cardId+"_text\" class=\"card-text\"></p>"
-                html+="      <a href=\""+expandUrl(localizedItem["button"]["href"])+"\" class=\"btn btn-primary\">"+localizedItem["button"]["text"]+"</a>"
-                html+="    </div>"
-                html+="  </div>"
-                html+="</div>"
-
-
-                $("#container_cards_row").append(html)
-
-                if ("timeout" in item) {
-                    (function(){
-                        let imageUrl=expandUrl(localizedItem["image"]["src"])
-                        console.log("Update:"+imageUrl)
-                        $("#"+cardId+"_image").attr("src",imageUrl)
-                        setTimeout(arguments.callee, parseInt(item["timeout"])*1000);
-                    })();
-
-                }
-
-                let title=localizedItem["title"]
+    $.ajax({
+            url: cardsUrl,
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: setHeader,
+            success: function (data) {
+                $("#container_cards_row").empty()
 
 
 
-                if (title instanceof Object) {
+                $.each( data, function( key, values ) {
+                    values.forEach(function(item, index) {
+                        let localizedItem=item["i18n"][_lang]
+                        let cardId="card_"+item["_id"]
 
-                    if ( "url" in title) {
-                        let titleUrl=apiBaseUrl+"/v2/weatherreports/latest/title/json?lang="+_lang
 
-                        $.getJSON( titleUrl, function( data ) {
-                            title=data["title"]
+
+                        let html=""
+                        html+="<div id=\""+cardId+"_container\" class=\"col\" style=\"display: none\">"
+                        html+="  <div class=\"card\" id=\""+cardId+"\">"
+                        html+="    <a href=\""+expandUrl(localizedItem["button"]["href"])+"\">"
+                        html+="      <img id=\""+cardId+"_image\" class=\"card-img-top\" src=\""+expandUrl(localizedItem["image"]["src"])+"\" alt=\""+localizedItem["image"]["alt"]+"\">"
+                        html+="    </a>"
+                        html+="    <div class=\"card-body\">"
+                        html+= "      <h5 id=\""+cardId+"_title\" class=\"card-title\"></h5>"
+                        html+= "      <p id=\""+cardId+"_text\" class=\"card-text\"></p>"
+                        html+="      <a href=\""+expandUrl(localizedItem["button"]["href"])+"\" class=\"btn btn-primary\">"+localizedItem["button"]["text"]+"</a>"
+                        html+="    </div>"
+                        html+="  </div>"
+                        html+="</div>"
+
+
+                        $("#container_cards_row").append(html)
+
+                        if ("timeout" in item) {
+                            (function(){
+                                let imageUrl=expandUrl(localizedItem["image"]["src"])
+                                console.log("Update:"+imageUrl)
+                                $("#"+cardId+"_image").attr("src",imageUrl)
+                                setTimeout(arguments.callee, parseInt(item["timeout"])*1000);
+                            })();
+
+                        }
+
+                        let title=localizedItem["title"]
+
+
+
+                        if (title instanceof Object) {
+
+                            if ( "url" in title) {
+                                let titleUrl=apiBaseUrl+"/v2/weatherreports/latest/title/json?lang="+_lang
+
+                                $.getJSON( titleUrl, function( data ) {
+                                    title=data["title"]
+                                    $("#"+cardId+"_title").html(title)
+                                })
+
+                            }
+                        } else {
                             $("#"+cardId+"_title").html(title)
-                        })
+                        }
 
-                    }
-                } else {
-                    $("#"+cardId+"_title").html(title)
-                }
+                        let text=localizedItem["text"]
+                        if (text instanceof Object) {
+                            if ( "url" in text) {
+                                let textUrl=apiBaseUrl+"/v2/weatherreports/latest/text/json?lang="+_lang
 
-                let text=localizedItem["text"]
-                if (text instanceof Object) {
-                    if ( "url" in text) {
-                        let textUrl=apiBaseUrl+"/v2/weatherreports/latest/text/json?lang="+_lang
+                                $.getJSON(textUrl, function (data) {
+                                    text = data["summary"]
+                                    $("#" + cardId + "_text").html(text)
+                                })
+                            }
+                        } else {
+                            $("#"+cardId+"_text").html(text)
+                        }
 
-                        $.getJSON(textUrl, function (data) {
-                            text = data["summary"]
-                            $("#" + cardId + "_text").html(text)
-                        })
-                    }
-                } else {
-                    $("#"+cardId+"_text").html(text)
-                }
+                        if ("avail" in item && item["avail"]!=="") {
+                            let availUrl=expandUrl(item["avail"])
 
-                if ("avail" in item && item["avail"]!=="") {
-                    let availUrl=expandUrl(item["avail"])
+                            $.getJSON(availUrl, function (data) {
 
-                    $.getJSON(availUrl, function (data) {
+                                if (data["avail"].length > 0) {
+                                    $("#"+cardId+"_container").css("display","block")
+                                }
+                            })
 
-                        if (data["avail"].length > 0) {
+                        } else {
                             $("#"+cardId+"_container").css("display","block")
                         }
-                    })
+                    });
+                });
 
-                } else {
-                    $("#"+cardId+"_container").css("display","block")
-                }
-            });
-        });
+                $("#container_cards").css("display","block")
 
-        $("#container_cards").css("display","block")
-    });
+            },
+        }
+    );
 }
 
 function map() {
@@ -804,7 +831,6 @@ function products() {
 
 function pages() {
     let pageUrl=apiBaseUrl+"/v2/pages/"+_page+"?lang="+_lang
-    //let pageUrl="http://193.205.230.6:5000"+"/v2/pages/"+_page+"?lang="+_lang
     console.log("pageUrl:"+pageUrl)
 
     // Define the token
@@ -830,6 +856,7 @@ function pages() {
         url: pageUrl,
         type: 'GET',
         dataType: 'json',
+        beforeSend: setHeader,
         success: function(data) {
             let localizedData=data["i18n"][_lang]
             let imageUrl=""
@@ -853,45 +880,142 @@ function pages() {
                 })
             }
 
+            console.log("DATA")
+            console.log(data)
+
+            // Check if the user can edit the page
+            if ("permissions" in data ) {
+                console.log("Has permissions")
+
+                if (data["permissions"].includes("edit")) {
+                    console.log("Can Edit")
+                    // Query the edit button
+                    $("#page_edit_button")
+
+                        // Show the edit button
+                        .css("display", "block")
+
+                        // Register the click event responder
+                        .click(function (e) {
+                            console.log("SHOW EDIT")
+
+                            // Show the edit button
+                            $("#page_edit_button").css("display","none")
+
+                            // Fill the form items
+                            $("#page_edit_title").val(localizedData["title"])
+                            $("#page_edit_subtitle").val(localizedData["subtitle"])
+
+                            $("#page_edit_abstract").html(localizedData["abstract"])
+                            $("#page_edit_abstract").summernote()
+
+                            // Fill the summernote with the body of the page
+                            $("#page_edit_body").html(localizedData["body"])
+                            $("#page_edit_body").summernote()
+
+
+                            // Register the cancel button
+                            $("#page_save_button")
+                                .css("display", "block")
+                                .click(function (e) {
+
+
+                                    let updatedPage = {
+                                        "_id": data["_id"],
+                                        "active": data["active"],
+                                        "author": data["author"],
+                                        "i18n": {}
+                                    }
+
+                                    updatedPage["i18n"][_lang] = {
+                                        "title": $("#page_edit_title").val(),
+                                        "subtitle":$("#page_edit_subtitle").val(),
+                                        "abstract": $("#page_edit_abstract").val(),
+                                        "body": $("#page_edit_body").val(),
+                                        "links": localizedData["links"]
+                                    }
+
+
+                                    // Save the modifications.
+                                    $.ajax({
+                                        url: pageUrl,
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        data: JSON.stringify({
+                                            "page":updatedPage
+                                        }),
+                                        contentType: "application/json; charset=utf-8",
+                                        beforeSend: setHeader,
+                                        success: function (data) {
+
+                                            // Show the edit button
+                                            $("#page_edit_button").css("display", "block")
+
+                                            // Hide the save button
+                                            $("#page_save_button").css("display", "none")
+
+                                            // Hide the cancel button
+                                            $("#page_cancel_button").css("display", "none")
+
+                                            // Hide the edit div
+                                            $("#page_edit").css("display", "none")
+
+                                            // Show the edit div
+                                            $("#page_view").css("display", "block")
+                                        }
+                                    })
+                                })
+
+                            // Register the cancel button
+                            $("#page_cancel_button")
+                                .css("display", "block")
+                                .click(function (e) {
+                                    // Show the edit button
+                                    $("#page_edit_button").css("display","block")
+
+                                    // Hide the save button
+                                    $("#page_save_button").css("display","none")
+
+                                    // Hide the cancel button
+                                    $("#page_cancel_button").css("display","none")
+
+                                    // Hide the edit div
+                                    $("#page_edit").css("display", "none")
+
+                                    // Show the edit div
+                                    $("#page_view").css("display", "block")
+                                })
+
+                            // Show the editor
+                            $("#page_edit").css("display", "block")
+                            $("#page_view").css("display", "none")
+                            console.log("SHOW EDIT END")
+                        })
+                } else {
+                    $("#page_edit_button").css("display","none")
+                }
+
+                if (data["permissions"].includes("delete")) {
+                    console.log("Can Delete")
+                    // Query the edit button
+                    $("#page_delete_button")
+
+                        // Show the edit button
+                        .css("display", "block")
+
+                        // Register the click event responder
+                        .click(function (e) {
+                        })
+                } else {
+                    $("#page_delete_button").css("display","none")
+                }
+            }
+
             $("#container_pages").css("display","block")
 
             rewriteUrl(localizedData["title"], subtitle,"page="+_page,imageUrl)
-        },
-        beforeSend: setHeader
+        }
     });
-/*
-    $.getJSON( pageUrl, function( data ) {
-        let localizedData=data["i18n"][_lang]
-        let imageUrl=""
-        if ("image" in localizedData) {
-            $("#page_image").attr("src",localizedData["image"]["src"])
-            $("#page_image").attr("alt",localizedData["image"]["alt"])
-            imageUrl=localizedData["image"]["src"]
-        }
-        $("#page_title").text(localizedData["title"])
-
-        let subtitle=""
-        if ("subtitle" in localizedData) {
-            $("#page_subtitle").text(localizedData["subtitle"])
-            subtitle=localizedData["subtitle"]
-        }
-        $("#page_body").html(localizedData["body"])
-
-        if ("links" in localizedData) {
-            localizedData["links"].forEach(function(link, index) {
-                $("#page_links").append("<a href=\""+link["href"]+"\" class=\"card-link\">"+link["text"]+"</a>")
-            })
-        }
-
-        $("#container_pages").css("display","block")
-
-
-
-
-        rewriteUrl(localizedData["title"], subtitle,"page="+_page,imageUrl)
-    });
-
- */
 }
 
 // When the document is ready
@@ -920,7 +1044,6 @@ $( document ).ready(function() {
     // Register the login event handler
     $('#form_login').submit(function(e) {
         let authLoginUrl=apiBaseUrl+"/v2/auth/login"
-        //let authLoginUrl="http://193.205.230.6:5000/v2/auth/login"
 
         // Get user name
         let userName=$('#name').val()
