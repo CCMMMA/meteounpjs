@@ -4,6 +4,7 @@ let _appDescription="Center for Monitoring and Modelling Marine and Atmosphere A
 let unpApiBaseUrl="https://api.uniparthenope.it/uniparthenope"
 let apiBaseUrl="https://api.meteo.uniparthenope.it"
 //apiBaseUrl="http://193.205.230.6:5000"
+//apiBaseUrl="http://193.205.230.6"
 let dataBaseUrl="https://data.meteo.uniparthenope.it/opendap/opendap/"
 let wmsBaseUrl="https://data.meteo.uniparthenope.it/ncWMS2/wms/lds/opendap/"
 
