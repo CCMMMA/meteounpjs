@@ -78,6 +78,26 @@
     -->
 
     <title>meteo@uniparthenope</title>
+
+    <script>
+        // Get the user agent
+        let userAgent=(navigator.userAgent || navigator.vendor || window.opera).toLowerCase();
+
+        // Check if it a mobile phone
+        if (userAgent.includes("android") || userAgent.includes("iphone") || userAgent.includes("ipad")) {
+            let location="https://meteo.uniparthenope.it";
+            if (userAgent.includes("android")) {
+                // Redirect to Android app
+                location = 'https://play.google.com/store/apps/details?id=it.uniparthenope.meteo';
+                window.location(location);
+            } else if (userAgent.includes("iphone") || userAgent.includes("ipad")) {
+                // Redirect to the iOS app
+                location = 'https://apps.apple.com/us/app/meteo-uniparthenope/id1518001997';
+
+            }
+            window.location.href = location;
+        }
+    </script>
 </head>
 <body>
 
