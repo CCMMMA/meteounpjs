@@ -1022,6 +1022,24 @@ function pages() {
 // When the document is ready
 $( document ).ready(function() {
 
+    // Get the user agent
+    let userAgent=(navigator.userAgent || navigator.vendor || window.opera).toLowerCase();
+
+    //console.log(userAgent)
+
+    if (userAgent.includes("android") || userAgent.includes("iphone") || userAgent.includes("ipad")) {
+        if (userAgent.includes("android")) {
+            // Redirect to Android app
+            location = 'https://play.google.com/store/apps/details?id=it.uniparthenope.meteo';
+            window.location(location);
+        } else if (userAgent.includes("iphone") || userAgent.includes("ipad")) {
+            // Redirect to the iOS app
+            location = 'https://apps.apple.com/us/app/meteo-uniparthenope/id1518001997';
+
+        }
+        window.location.href = location;
+    }
+
     // Register the login event handler
     $('#form_logout').submit(function(e) {
 
